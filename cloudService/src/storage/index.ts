@@ -1,0 +1,1 @@
+export { getAllSaves } from "./storage";
