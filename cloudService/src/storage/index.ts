@@ -1,1 +1,1 @@
-export { getAllSaves } from "./storage";
+export * from "./storage";

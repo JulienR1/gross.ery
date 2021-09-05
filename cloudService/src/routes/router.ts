@@ -1,7 +1,7 @@
 import express, { Request, Response, Router } from "express";
 import { QueryParams } from "../models";
-import { getAllSaves } from "../storage";
-import { readSavedFile } from "../storage/storage";
+import { getAllSaves, readSavedFile } from "../storage";
+import { generateUniqueCode } from "../storage/codes";
 import { Routes } from "./routes";
 
 const routes = (): Router => {
@@ -22,7 +22,11 @@ const routes = (): Router => {
 	});
 
 	router.put(Routes.NEW, (req: Request, res: Response) => {
-		res.sendStatus(200);
+		const code = generateUniqueCode();
+		if (code) {
+			return res.send(code).status(200);
+		}
+		return res.sendStatus(500);
 	});
 
 	router.post(Routes.ADD, (req: Request, res: Response) => {

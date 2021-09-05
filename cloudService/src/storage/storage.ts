@@ -2,18 +2,18 @@ import path from "path";
 import fs from "fs";
 import { Filename, Registry, SavedList } from "../models";
 
-const storageDir = "storage";
-const registryName = "registry.json";
+const storageDir = () => process.env.STORAGE_DIR as string;
+const registryName = () => process.env.REGISTRY_NAME as string;
 
-const getFilepath = (filename: Filename) => path.join(process.cwd(), storageDir, filename);
+const getFilepath = (filename: Filename) => path.join(process.cwd(), storageDir(), filename);
 
 const writeToRegistry = (content: Registry) => {
-	const registryPath = path.join(process.cwd(), storageDir, registryName);
+	const registryPath = path.join(process.cwd(), storageDir(), registryName());
 	fs.writeFileSync(registryPath, JSON.stringify(content));
 };
 
 const openStorage = (): string => {
-	const storagePath = path.join(process.cwd(), storageDir);
+	const storagePath = path.join(process.cwd(), storageDir());
 	if (!fs.existsSync(storagePath)) {
 		fs.mkdirSync(storagePath);
 	}
@@ -23,7 +23,7 @@ const openStorage = (): string => {
 
 const getAllSaves = () => {
 	const storagePath = openStorage();
-	const registryPath = path.join(storagePath, registryName);
+	const registryPath = path.join(storagePath, registryName());
 
 	if (!fs.existsSync(registryPath)) {
 		const emptyRegistry: Registry = { files: [] };
