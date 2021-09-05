@@ -5,7 +5,7 @@
 	"main": "index.js",
 	"scripts": {
 		"start": "concurrently \"npm run start:cloudService\" \"npm run start:mobileApp\"",
-		"start:cloudService": "",
+		"start:cloudService": "cd cloudService && npm run dev",
 		"start:mobileApp": "",
 		"publish:cloudService": "cd cloudService && npm run publish"
 	},
