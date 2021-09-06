@@ -86,6 +86,7 @@ const removeSavedFile = (filename: Filename): void => {
 		const fileIndex = registry.files.findIndex((savedFileName) => savedFileName === filename);
 		registry.files.splice(fileIndex, 1);
 		writeToRegistry(registry);
+		fs.unlinkSync(getFilepath(filename));
 		return;
 	}
 	throw new Error(`Could not complete removal of '${filename}'.`);

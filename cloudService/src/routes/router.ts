@@ -1,6 +1,13 @@
 import express, { Request, Response, Router } from "express";
-import { generateUniqueCode, getAllSaves, readSavedFile, saveNewFile, updateSavedFile } from "../storage";
-import { SavedList, AddBody, UpdateBody, SavedItem } from "../models";
+import {
+	generateUniqueCode,
+	getAllSaves,
+	readSavedFile,
+	removeSavedFile,
+	saveNewFile,
+	updateSavedFile,
+} from "../storage";
+import { SavedList, AddBody, UpdateBody, SavedItem, RemoveBody } from "../models";
 import { Routes } from "./routes";
 
 const routes = (): Router => {
@@ -67,7 +74,16 @@ const routes = (): Router => {
 	});
 
 	router.delete(Routes.REMOVE, (req: Request, res: Response) => {
-		res.sendStatus(200);
+		const { code } = req.body as RemoveBody;
+		if (code) {
+			try {
+				removeSavedFile(`${code}.json`);
+				return res.sendStatus(200);
+			} catch (ex) {
+				console.error(ex);
+			}
+		}
+		return res.sendStatus(400);
 	});
 
 	return router;

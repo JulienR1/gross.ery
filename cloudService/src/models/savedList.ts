@@ -18,3 +18,7 @@ export interface UpdateBody {
 	itemName: string;
 	newItem: SavedItem;
 }
+
+export interface RemoveBody {
+	code: string;
+}
