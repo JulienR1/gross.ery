@@ -1,15 +1,13 @@
 import express, { Request, Response, Router } from "express";
-import { QueryParams } from "../models";
-import { getAllSaves, readSavedFile } from "../storage";
-import { generateUniqueCode } from "../storage/codes";
+import { generateUniqueCode, getAllSaves, readSavedFile, saveNewFile } from "../storage";
+import { SavedList } from "../models";
 import { Routes } from "./routes";
 
 const routes = (): Router => {
 	const router = express.Router();
 
 	router.get(Routes.READ, (req: Request, res: Response) => {
-		const queryParams = req.query as QueryParams;
-		const queryKeys = Object.keys(queryParams);
+		const queryKeys = Object.keys(req.query);
 
 		if (queryKeys.length === 1) {
 			const readFile = readSavedFile(`${queryKeys[0]}.json`);
@@ -24,6 +22,8 @@ const routes = (): Router => {
 	router.put(Routes.NEW, (req: Request, res: Response) => {
 		const code = generateUniqueCode();
 		if (code) {
+			const newSavedList: SavedList = { code, items: [] };
+			saveNewFile(`${code}.json`, newSavedList);
 			return res.send(code).status(200);
 		}
 		return res.sendStatus(500);
