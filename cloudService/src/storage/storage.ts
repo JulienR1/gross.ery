@@ -1,95 +1,64 @@
-import path from "path";
-import fs from "fs";
-import { Filename, Registry, SavedList } from "../models";
+import { SavedItem, SavedList } from "../models";
+import { executeOnDB } from "./database";
+import { ObjectId } from "bson";
 
-const storageDir = () => process.env.STORAGE_DIR as string;
-const registryName = () => process.env.REGISTRY_NAME as string;
+const collectionName = "listes";
 
-const getFilepath = (filename: Filename) => path.join(process.cwd(), storageDir(), filename);
-
-const writeToRegistry = (content: Registry) => {
-	const registryPath = path.join(process.cwd(), storageDir(), registryName());
-	fs.writeFileSync(registryPath, JSON.stringify(content));
-};
-
-const openStorage = (): string => {
-	const storagePath = path.join(process.cwd(), storageDir());
-	if (!fs.existsSync(storagePath)) {
-		fs.mkdirSync(storagePath);
-	}
-
-	return storagePath;
-};
-
-const getAllSaves = () => {
-	const storagePath = openStorage();
-	const registryPath = path.join(storagePath, registryName());
-
-	if (!fs.existsSync(registryPath)) {
-		const emptyRegistry: Registry = { files: [] };
-		writeToRegistry(emptyRegistry);
-		return emptyRegistry;
-	}
-
-	const registryData = fs.readFileSync(registryPath, "utf8");
-	const registry = JSON.parse(registryData) as Registry;
-	return registry;
-};
-
-const validateSavedFile = (filename: Filename, ignoreRegistry = false): boolean => {
-	if (!filename.endsWith(".json")) {
-		throw new Error("Invalid filename, needs to have the '.json' extension.");
-	}
-
-	if (ignoreRegistry) {
-		return true;
-	}
-
-	// TODO: cache the read files in memory when reading in getAllSaves() instead of loading it twice
-	if (getAllSaves().files.includes(filename)) {
-		return fs.existsSync(getFilepath(filename));
-	}
-	return false;
-};
-
-const readSavedFile = (saveFile: Filename): SavedList | undefined => {
-	if (validateSavedFile(saveFile)) {
-		const savedData = fs.readFileSync(getFilepath(saveFile), "utf8");
-		return JSON.parse(savedData);
+const readSavedFile = async (id: string): Promise<SavedList | undefined> => {
+	if (id) {
+		return new Promise(async (resolve) => {
+			await executeOnDB(async ({ db }) => {
+				const foundDoc = (await db.collection(collectionName).findOne({ _id: new ObjectId(id) })) as SavedList;
+				return resolve(foundDoc);
+			});
+		});
 	}
 	return undefined;
 };
 
-const saveNewFile = (file: Filename, content: SavedList): void => {
-	validateSavedFile(file, true);
-
-	const filepath = getFilepath(file);
-	fs.writeFileSync(filepath, JSON.stringify(content));
-
-	const registry = getAllSaves();
-	registry.files.push(file);
-	writeToRegistry(registry);
+const createNewList = (): Promise<ObjectId> => {
+	return new Promise(async (resolve) => {
+		await executeOnDB(async ({ db }) => {
+			const emptyList: SavedList = { items: [] };
+			const insertedDocument = await db.collection(collectionName).insertOne(emptyList);
+			return resolve(insertedDocument.insertedId);
+		});
+	});
 };
 
-const updateSavedFile = (filename: Filename, content: SavedList): void => {
-	if (validateSavedFile(filename)) {
-		const filepath = getFilepath(filename);
-		fs.writeFileSync(filepath, JSON.stringify(content));
+const addItemToList = (id: string, itemName: string): Promise<void> => {
+	return executeOnDB(async ({ db }) => {
+		await db.collection(collectionName).updateOne({ _id: new ObjectId(id) }, { $push: { items: itemName } });
+	});
+};
+
+const updateSavedFile = async (id: string, oldItem: string, newValues: SavedItem): Promise<void> => {
+	if (id && oldItem && newValues) {
+		await executeOnDB(async ({ db }) => {
+			const foundItem = (await db.collection(collectionName).findOne({ _id: new ObjectId(id) })) as SavedList;
+
+			const itemIndex = foundItem.items.findIndex(({ name }) => name === oldItem);
+			if (itemIndex >= 0) {
+				const oldData = (await db.collection(collectionName).findOne({ _id: new ObjectId(id) })) as SavedList;
+
+				await db
+					.collection(collectionName)
+					.updateOne(
+						{ _id: new ObjectId(id) },
+						{ $set: { "items.$[itemToModify]": { ...oldData.items[itemIndex], ...newValues } } },
+						{ arrayFilters: [{ "itemToModify.name": oldItem }] }
+					);
+			}
+		});
 		return;
 	}
-	throw new Error(`Could not complete update of '${filename}'.`);
+	throw new Error("Could not complete update");
 };
 
-const removeSavedFile = (filename: Filename): void => {
-	if (validateSavedFile(filename)) {
-		const registry = getAllSaves();
-		const fileIndex = registry.files.findIndex((savedFileName) => savedFileName === filename);
-		registry.files.splice(fileIndex, 1);
-		writeToRegistry(registry);
-		fs.unlinkSync(getFilepath(filename));
-		return;
-	}
-	throw new Error(`Could not complete removal of '${filename}'.`);
+const removeSavedFile = (id: string): Promise<void> => {
+	return executeOnDB(async ({ db }) => {
+		await db.collection(collectionName).deleteOne({ _id: new ObjectId(id) });
+	});
 };
 
-export { getAllSaves, readSavedFile, saveNewFile, updateSavedFile, removeSavedFile };
+export { readSavedFile, updateSavedFile, removeSavedFile, createNewList, addItemToList };

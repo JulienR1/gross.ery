@@ -1,87 +1,54 @@
 import express, { Request, Response, Router } from "express";
-import {
-	generateUniqueCode,
-	getAllSaves,
-	readSavedFile,
-	removeSavedFile,
-	saveNewFile,
-	updateSavedFile,
-} from "../storage";
-import { SavedList, AddBody, UpdateBody, SavedItem, RemoveBody } from "../models";
+import { addItemToList, createNewList, readSavedFile, removeSavedFile, updateSavedFile } from "../storage";
+import { AddBody, UpdateBody, RemoveBody } from "../models";
 import { Routes } from "./routes";
 
 const routes = (): Router => {
 	const router = express.Router();
 
-	router.get(Routes.READ, (req: Request, res: Response) => {
+	router.get(Routes.READ, async (req: Request, res: Response) => {
 		const queryKeys = Object.keys(req.query);
 
 		if (queryKeys.length === 1) {
-			const readFile = readSavedFile(`${queryKeys[0]}.json`);
-			if (readFile) {
-				return res.send(readFile).status(200);
-			}
-			return res.sendStatus(400);
+			const savedList = await readSavedFile(queryKeys[0]);
+			return res.send(savedList).status(200);
 		}
-		return res.send(getAllSaves()).status(200);
+
+		return res.sendStatus(200);
 	});
 
-	router.put(Routes.NEW, (req: Request, res: Response) => {
-		const code = generateUniqueCode();
-		if (code) {
-			const newSavedList: SavedList = { code, items: [] };
-			saveNewFile(`${code}.json`, newSavedList);
-			return res.send(code).status(200);
+	router.put(Routes.NEW, async (req: Request, res: Response) => {
+		const generatedId = await createNewList();
+		if (generatedId) {
+			return res.send(generatedId.toHexString()).status(200);
 		}
 		return res.sendStatus(500);
 	});
 
-	router.post(Routes.ADD, (req: Request, res: Response) => {
-		const { code, itemName } = req.body as AddBody;
-		if (code && itemName) {
-			const savedFile = readSavedFile(`${code}.json`);
-			if (savedFile) {
-				savedFile.items.push({ name: itemName, checked: false });
-				updateSavedFile(`${code}.json`, savedFile);
-				return res.sendStatus(200);
-			}
+	router.post(Routes.ADD, async (req: Request, res: Response) => {
+		const { id, itemName } = req.body as AddBody;
+		if (id && itemName) {
+			await addItemToList(id, itemName);
+			return res.sendStatus(200);
 		}
 		return res.sendStatus(400);
 	});
 
-	router.post(Routes.UPDATE, (req: Request, res: Response) => {
-		const body = req.body as UpdateBody;
-		const { code, itemName, newItem } = body;
+	router.post(Routes.UPDATE, async (req: Request, res: Response) => {
+		const { id, itemName, newValues } = req.body as UpdateBody;
 
-		if (code && itemName && newItem) {
-			const savedFile = readSavedFile(`${code}.json`);
-			if (savedFile) {
-				const itemToUpdateIndex = savedFile.items.findIndex((item) => item.name === itemName);
-
-				if (itemToUpdateIndex >= 0) {
-					const sanitizedNewItem: SavedItem = {
-						name: newItem.name || savedFile.items[itemToUpdateIndex].name,
-						checked: newItem.checked || savedFile.items[itemToUpdateIndex].checked,
-					};
-
-					savedFile.items[itemToUpdateIndex] = sanitizedNewItem;
-					updateSavedFile(`${code}.json`, savedFile);
-					return res.sendStatus(200);
-				}
-			}
+		if (id && itemName && newValues) {
+			await updateSavedFile(id, itemName, newValues);
+			return res.sendStatus(200);
 		}
-		res.sendStatus(400);
+		return res.sendStatus(400);
 	});
 
-	router.delete(Routes.REMOVE, (req: Request, res: Response) => {
-		const { code } = req.body as RemoveBody;
-		if (code) {
-			try {
-				removeSavedFile(`${code}.json`);
-				return res.sendStatus(200);
-			} catch (ex) {
-				console.error(ex);
-			}
+	router.delete(Routes.REMOVE, async (req: Request, res: Response) => {
+		const { id } = req.body as RemoveBody;
+		if (id) {
+			await removeSavedFile(id);
+			return res.sendStatus(200);
 		}
 		return res.sendStatus(400);
 	});

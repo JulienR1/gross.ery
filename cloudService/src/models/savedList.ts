@@ -1,5 +1,7 @@
+import { ObjectId } from "bson";
+
 export interface SavedList {
-	code: string;
+	_id?: ObjectId;
 	items: SavedItem[];
 }
 
@@ -9,16 +11,16 @@ export interface SavedItem {
 }
 
 export interface AddBody {
-	code: string;
+	id: string;
 	itemName: string;
 }
 
 export interface UpdateBody {
-	code: string;
+	id: string;
 	itemName: string;
-	newItem: SavedItem;
+	newValues: SavedItem;
 }
 
 export interface RemoveBody {
-	code: string;
+	id: string;
 }
