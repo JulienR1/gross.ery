@@ -1,27 +1,27 @@
 {
-	"name": "gross.ery",
-	"version": "1.0.0",
-	"description": "A simple grocery list app",
-	"main": "index.js",
-	"scripts": {
-		"start": "concurrently \"npm run start:cloudService\" \"npm run start:mobileApp\"",
-		"start:cloudService": "cd cloudService && npm run dev",
-		"start:mobileApp": "",
-		"publish:cloudService": "cd cloudService && npm run publish"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/JulienR1/gross.ery.git"
-	},
-	"author": "Julien Rousseau",
-	"license": "ISC",
-	"bugs": {
-		"url": "https://github.com/JulienR1/gross.ery/issues"
-	},
-	"homepage": "https://github.com/JulienR1/gross.ery#readme",
-	"devDependencies": {
-		"concurrently": "^6.2.1",
-		"mongodb": "^4.1.1"
-	},
-	"dependencies": {}
+  "name": "gross.ery",
+  "version": "1.0.0",
+  "description": "A simple grocery list app",
+  "main": "index.js",
+  "scripts": {
+    "start": "concurrently \"npm run start:cloudService\" \"npm run start:mobileApp\"",
+    "start:cloudService": "cd cloudService && npm run dev",
+    "start:mobileApp": "cd mobileApp && npm run start",
+    "publish:cloudService": "cd cloudService && npm run publish"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JulienR1/gross.ery.git"
+  },
+  "author": "Julien Rousseau",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JulienR1/gross.ery/issues"
+  },
+  "homepage": "https://github.com/JulienR1/gross.ery#readme",
+  "devDependencies": {
+    "concurrently": "^6.2.1",
+    "mongodb": "^4.1.1"
+  },
+  "dependencies": {}
 }
