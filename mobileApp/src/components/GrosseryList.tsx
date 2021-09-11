@@ -11,8 +11,14 @@ interface INavigationRoute {
 }
 
 export function GrosseryList({route}: IProps) {
+  const server = process.env.REACT_APP_SERVER_ENDPOINT as string;
+
   useEffect(() => {
-    console.log('adajodwn');
+    fetch(`${server}/${route.params.listId}`).then(response => {
+      response.json().then(content => {
+        console.log(content);
+      });
+    });
   }, []);
   return <Text>{route.params.listId}</Text>;
 }

@@ -9,14 +9,14 @@ import {Routes} from '../navigation/routes';
 export function Home() {
   const navigation = useNavigation();
 
-  let tempdata = Array(5).fill({
-    title: 'stuff',
-    lastModification: new Date(),
-    itemCount: 3,
-    id: '613c0da5cffed8a1df1b2a01',
-  });
-
-  tempdata = tempdata.map((elem, index) => ({...elem, id: elem.id + index}));
+  let tempdata = [
+    {
+      title: 'stuff',
+      lastModification: new Date(),
+      itemCount: 3,
+      id: '613c0da5cffed8a1df1b2a01',
+    },
+  ];
 
   const renderClickableListCard = (listId: string) => {
     const navigationParams: IListParams = {listId};
