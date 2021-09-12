@@ -2,7 +2,11 @@ import React, {useEffect, useState} from 'react';
 import {Text, View} from 'react-native';
 import {IListParams} from '../models/NavigationParams';
 import {SERVER_ENDPOINT} from '@env';
-import {FlatList, TouchableOpacity} from 'react-native-gesture-handler';
+import {
+  FlatList,
+  TextInput,
+  TouchableOpacity,
+} from 'react-native-gesture-handler';
 import {saveListToLocalStorage} from '../localstorage';
 
 interface IProps {
@@ -18,24 +22,17 @@ interface ListData {
   items: ItemData[];
 }
 
+// TODO: Sync w/ cloudservice models
 interface ItemData {
   name: string;
   checked: boolean;
 }
 
-interface ILocallySavedLists {
-  [key: string]: ILocallySavedList;
-}
-
-interface ILocallySavedList {
-  id: string;
-  title: string;
-  itemCount: number;
-  lastUpdateTime: Date;
-}
-
 export function GrosseryList({route}: IProps) {
   const [items, setItems] = useState<ItemData[]>([]);
+
+  const [addingNewItem, setAddingNewItem] = useState<boolean>(false);
+  const [newItemText, setNewItemText] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     let isMounted = true;
@@ -64,26 +61,76 @@ export function GrosseryList({route}: IProps) {
     });
   };
 
+  const saveNewItem = async () => {
+    if (newItemText) {
+      const bodyToSend = {id: route.params.listId, itemName: newItemText};
+      await fetch(`${SERVER_ENDPOINT}/add`, {
+        body: JSON.stringify(bodyToSend),
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      });
+      await fetchListData(route.params.listId).then(listData => {
+        setItems(listData.items);
+        saveListToLocalStorage(
+          listData._id,
+          'random title for now',
+          listData.items.length,
+        );
+      });
+    } else {
+      // pop-up ?
+    }
+
+    setNewItemText(undefined);
+    setAddingNewItem(false);
+  };
+
+  const render = () => {
+    return (
+      <View>
+        <Text>Nom de la liste ici</Text>
+        <FlatList
+          data={items}
+          keyExtractor={(_, index) => index.toString()}
+          renderItem={({item}: {item: ItemData}) => (
+            <View>
+              <Text>{item.name}</Text>
+              <TouchableOpacity>
+                <Text> {item.checked ? 'checked' : 'not checked'}</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        />
+
+        {!addingNewItem && (
+          <TouchableOpacity onPress={() => setAddingNewItem(true)}>
+            <Text>+</Text>
+          </TouchableOpacity>
+        )}
+        {addingNewItem && (
+          <View>
+            <Text>Ajouter un nouvel item</Text>
+            <TextInput
+              placeholder="Nom.."
+              onChangeText={text => setNewItemText(text)}
+              onSubmitEditing={saveNewItem}
+            />
+            <TouchableOpacity onPress={saveNewItem}>
+              <Text>OK!</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </View>
+    );
+  };
+
   return (
     <>
       {items?.length === 0 && <Text>Loading!</Text>}
-      {items?.length !== 0 && (
-        <View>
-          <Text>Nom de la liste ici</Text>
-          <FlatList
-            data={items}
-            keyExtractor={(_, index) => index.toString()}
-            renderItem={({item}: {item: ItemData}) => (
-              <View>
-                <Text>{item.name}</Text>
-                <TouchableOpacity>
-                  <Text> {item.checked ? 'checked' : 'not checked'}</Text>
-                </TouchableOpacity>
-              </View>
-            )}
-          />
-        </View>
-      )}
+      {items?.length !== 0 && render()}
     </>
   );
 }
