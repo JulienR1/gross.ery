@@ -3,6 +3,7 @@ import {Text, View} from 'react-native';
 import {IListParams} from '../models/NavigationParams';
 import {SERVER_ENDPOINT} from '@env';
 import {FlatList, TouchableOpacity} from 'react-native-gesture-handler';
+import {saveListToLocalStorage} from '../localstorage';
 
 interface IProps {
   route: INavigationRoute;
@@ -22,14 +23,37 @@ interface ItemData {
   checked: boolean;
 }
 
+interface ILocallySavedLists {
+  [key: string]: ILocallySavedList;
+}
+
+interface ILocallySavedList {
+  id: string;
+  title: string;
+  itemCount: number;
+  lastUpdateTime: Date;
+}
+
 export function GrosseryList({route}: IProps) {
   const [items, setItems] = useState<ItemData[]>([]);
 
   useEffect(() => {
+    let isMounted = true;
+
     fetchListData(route.params.listId).then(listData => {
-      setItems(listData.items);
-      updateLocalStorage(listData._id, listData.items.length);
+      if (isMounted) {
+        setItems(listData.items);
+        saveListToLocalStorage(
+          listData._id,
+          'random title for now',
+          listData.items.length,
+        );
+      }
     });
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const fetchListData = (listId: string): Promise<ListData> => {
@@ -38,11 +62,6 @@ export function GrosseryList({route}: IProps) {
       const jsonData = await response.json();
       return resolve(jsonData);
     });
-  };
-
-  const updateLocalStorage = (id: string, itemCount: number) => {
-    const lastUpdateTime = new Date();
-    console.log('Saving to local storage.. TODO');
   };
 
   return (

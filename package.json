@@ -6,7 +6,7 @@
   "scripts": {
     "start": "concurrently \"npm run start:cloudService\" \"npm run start:mobileApp\"",
     "start:cloudService": "cd cloudService && npm run dev",
-    "start:mobileApp": "cd mobileApp && npm run start",
+    "start:mobileApp": "cd mobileApp && start npm run start",
     "publish:cloudService": "cd cloudService && npm run publish"
   },
   "repository": {

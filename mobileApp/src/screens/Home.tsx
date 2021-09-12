@@ -1,29 +1,36 @@
 import {useNavigation} from '@react-navigation/core';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {SafeAreaView, Text} from 'react-native';
 import {FlatList, TouchableOpacity} from 'react-native-gesture-handler';
 import {ListCard} from '../components/ListCard';
+import {getAllLocalListData} from '../localstorage';
+import {ILocalList} from '../models/ILocalList';
 import {IListParams} from '../models/NavigationParams';
 import {Routes} from '../navigation/routes';
 
 export function Home() {
   const navigation = useNavigation();
+  const [localLists, setLocalLists] = useState<ILocalList[]>([]);
 
-  let tempdata = [
-    {
-      title: 'stuff',
-      lastModification: new Date(),
-      itemCount: 3,
-      id: '613c0da5cffed8a1df1b2a01',
-    },
-  ];
+  useEffect(() => {
+    let isMounted = true;
+    getAllLocalListData().then(savedLocalLists => {
+      if (isMounted) {
+        setLocalLists(savedLocalLists);
+      }
+    });
 
-  const renderClickableListCard = (listId: string) => {
-    const navigationParams: IListParams = {listId};
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const renderClickableListCard = (localList: ILocalList) => {
+    const navigationParams: IListParams = {listId: localList.id};
     return (
       <TouchableOpacity
         onPress={() => navigation.navigate(Routes.List, navigationParams)}>
-        <ListCard id={listId} />
+        <ListCard localList={localList} />
       </TouchableOpacity>
     );
   };
@@ -32,9 +39,9 @@ export function Home() {
     <SafeAreaView>
       <Text>Listes enregistrées</Text>
       <FlatList
-        data={tempdata}
-        keyExtractor={item => item.id} // TODO: Remove + index
-        renderItem={({item}) => renderClickableListCard(item.id)}
+        data={localLists}
+        keyExtractor={item => item.id}
+        renderItem={({item}) => renderClickableListCard(item)}
       />
     </SafeAreaView>
   );
