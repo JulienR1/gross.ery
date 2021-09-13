@@ -88,6 +88,28 @@ export function GrosseryList({route}: IProps) {
     setAddingNewItem(false);
   };
 
+  const removeItem = async (itemName: string) => {
+    if (items.find(item => item.name === itemName)) {
+      const bodyToSend = {id: route.params.listId, itemName};
+      await fetch(`${SERVER_ENDPOINT}/remove`, {
+        body: JSON.stringify(bodyToSend),
+        method: 'DELETE',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      });
+      await fetchListData(route.params.listId).then(listData => {
+        setItems(listData.items);
+        saveListToLocalStorage(
+          listData._id,
+          'random title for now',
+          listData.items.length,
+        );
+      });
+    }
+  };
+
   const render = () => {
     return (
       <View>
@@ -100,6 +122,9 @@ export function GrosseryList({route}: IProps) {
               <Text>{item.name}</Text>
               <TouchableOpacity>
                 <Text> {item.checked ? 'checked' : 'not checked'}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => removeItem(item.name)}>
+                <Text>Remove</Text>
               </TouchableOpacity>
             </View>
           )}

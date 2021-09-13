@@ -10,6 +10,8 @@ const Stack = createStackNavigator();
 
 const App = () => {
   return (
+    // TODO: Require internet connection to function properly.
+    // create custom hook
     <NavigationContainer>
       <Stack.Navigator
         initialRouteName={Routes.Home}
