@@ -30,11 +30,7 @@ function NewList() {
     if (idToRecord) {
       try {
         const listData: ListData = await fetchListData(idToRecord);
-        saveListToLocalStorage(
-          listData._id,
-          'random name',
-          listData.items.length,
-        );
+        saveListToLocalStorage(listData);
       } catch (exception) {
         console.log('The provided id does not exist.');
       }

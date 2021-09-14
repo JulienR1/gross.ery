@@ -1,22 +1,19 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {IListData} from '../models/IListData';
 import {ILocalList} from '../models/ILocalList';
 
 const localListPrefix = '@list_';
 
-const saveListToLocalStorage = async (
-  id: string,
-  name: string,
-  itemCount: number,
-) => {
+const saveListToLocalStorage = async (listToSave: IListData) => {
   const dataToSave: ILocalList = {
-    id,
-    name,
-    itemCount,
+    id: listToSave._id,
+    name: 'random name TODO',
+    itemCount: listToSave.items.length,
     lastUpdateTime: new Date(),
   };
 
   return AsyncStorage.setItem(
-    `${localListPrefix}${id}`,
+    `${localListPrefix}${dataToSave.id}`,
     JSON.stringify(dataToSave),
   );
 };

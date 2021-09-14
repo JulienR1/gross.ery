@@ -4,7 +4,7 @@ import NewList from './screens/NewList';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {Routes} from './navigation/routes';
-import GrosseryList from './components/GrosseryList';
+import GrosseryList from './screens/GrosseryList';
 
 const Stack = createStackNavigator();
 
