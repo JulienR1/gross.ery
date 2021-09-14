@@ -1,10 +1,10 @@
 import React from 'react';
-import {Home} from './screens/Home';
+import Home from './screens/Home';
 import {Subscribe} from './screens/Subscribe';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {Routes} from './navigation/routes';
-import {GrosseryList} from './components/GrosseryList';
+import GrosseryList from './components/GrosseryList';
 
 const Stack = createStackNavigator();
 

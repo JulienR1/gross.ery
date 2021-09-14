@@ -47,4 +47,12 @@ const getAllLocalListData = async (): Promise<ILocalList[]> => {
   ) as ILocalList[];
 };
 
-export {saveListToLocalStorage, getAllLocalListData};
+const removeListFromLocalStorage = async (id: string): Promise<void> => {
+  return AsyncStorage.removeItem(`${localListPrefix}${id}`);
+};
+
+export {
+  saveListToLocalStorage,
+  getAllLocalListData,
+  removeListFromLocalStorage,
+};

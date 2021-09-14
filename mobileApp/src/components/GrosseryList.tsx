@@ -7,7 +7,11 @@ import {
   TextInput,
   TouchableOpacity,
 } from 'react-native-gesture-handler';
-import {saveListToLocalStorage} from '../localstorage';
+import {
+  removeListFromLocalStorage,
+  saveListToLocalStorage,
+} from '../localstorage';
+import {useNavigation} from '@react-navigation/core';
 
 interface IProps {
   route: INavigationRoute;
@@ -28,25 +32,35 @@ interface ItemData {
   checked: boolean;
 }
 
-export function GrosseryList({route}: IProps) {
+function GrosseryList({route}: IProps) {
+  const navigation = useNavigation();
   const [items, setItems] = useState<ItemData[]>([]);
 
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [addingNewItem, setAddingNewItem] = useState<boolean>(false);
   const [newItemText, setNewItemText] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     let isMounted = true;
 
-    fetchListData(route.params.listId).then(listData => {
-      if (isMounted) {
-        setItems(listData.items);
-        saveListToLocalStorage(
-          listData._id,
-          'random title for now',
-          listData.items.length,
-        );
-      }
-    });
+    setIsLoading(true);
+    fetchListData(route.params.listId)
+      .then(listData => {
+        if (isMounted) {
+          setItems(listData.items);
+          saveListToLocalStorage(
+            listData._id,
+            'random title for now',
+            listData.items.length,
+          );
+          setIsLoading(false);
+        }
+      })
+      .catch(async () => {
+        // Si la liste ne peut pas etre trouvee.
+        await removeListFromLocalStorage(route.params.listId);
+        navigation.goBack();
+      });
 
     return () => {
       isMounted = false;
@@ -54,10 +68,14 @@ export function GrosseryList({route}: IProps) {
   }, []);
 
   const fetchListData = (listId: string): Promise<ListData> => {
-    return new Promise(async resolve => {
-      const response = await fetch(`${SERVER_ENDPOINT}?${listId}`);
-      const jsonData = await response.json();
-      return resolve(jsonData);
+    return new Promise(async (resolve, reject) => {
+      try {
+        const response = await fetch(`${SERVER_ENDPOINT}?${listId}`);
+        const jsonData = await response.json();
+        return resolve(jsonData);
+      } catch (exception) {
+        return reject();
+      }
     });
   };
 
@@ -91,7 +109,7 @@ export function GrosseryList({route}: IProps) {
   const removeItem = async (itemName: string) => {
     if (items.find(item => item.name === itemName)) {
       const bodyToSend = {id: route.params.listId, itemName};
-      await fetch(`${SERVER_ENDPOINT}/remove`, {
+      await fetch(`${SERVER_ENDPOINT}/remove/item`, {
         body: JSON.stringify(bodyToSend),
         method: 'DELETE',
         headers: {
@@ -154,8 +172,10 @@ export function GrosseryList({route}: IProps) {
 
   return (
     <>
-      {items?.length === 0 && <Text>Loading!</Text>}
-      {items?.length !== 0 && render()}
+      {isLoading && <Text>Loading!</Text>}
+      {!isLoading && render()}
     </>
   );
 }
+
+export default GrosseryList;

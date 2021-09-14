@@ -1,5 +1,5 @@
-import {useNavigation} from '@react-navigation/core';
-import React, {useEffect, useState} from 'react';
+import {useFocusEffect, useNavigation} from '@react-navigation/core';
+import React, {useState} from 'react';
 import {SafeAreaView, Text} from 'react-native';
 import {FlatList, TouchableOpacity} from 'react-native-gesture-handler';
 import {ListCard} from '../components/ListCard';
@@ -8,11 +8,11 @@ import {ILocalList} from '../models/ILocalList';
 import {IListParams} from '../models/NavigationParams';
 import {Routes} from '../navigation/routes';
 
-export function Home() {
+function Home() {
   const navigation = useNavigation();
   const [localLists, setLocalLists] = useState<ILocalList[]>([]);
 
-  useEffect(() => {
+  useFocusEffect(() => {
     let isMounted = true;
     getAllLocalListData().then(savedLocalLists => {
       if (isMounted) {
@@ -23,7 +23,7 @@ export function Home() {
     return () => {
       isMounted = false;
     };
-  }, []);
+  });
 
   const renderClickableListCard = (localList: ILocalList) => {
     const navigationParams: IListParams = {listId: localList.id};
@@ -43,6 +43,11 @@ export function Home() {
         keyExtractor={item => item.id}
         renderItem={({item}) => renderClickableListCard(item)}
       />
+      <TouchableOpacity onPress={() => navigation.navigate(Routes.Subscribe)}>
+        <Text>Ajouter une nouvelle liste</Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 }
+
+export default Home;
