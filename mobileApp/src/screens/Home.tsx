@@ -43,7 +43,7 @@ function Home() {
         keyExtractor={item => item.id}
         renderItem={({item}) => renderClickableListCard(item)}
       />
-      <TouchableOpacity onPress={() => navigation.navigate(Routes.Subscribe)}>
+      <TouchableOpacity onPress={() => navigation.navigate(Routes.NewList)}>
         <Text>Ajouter une nouvelle liste</Text>
       </TouchableOpacity>
     </SafeAreaView>

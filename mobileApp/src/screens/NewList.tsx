@@ -15,15 +15,21 @@ interface ItemData {
   checked: boolean;
 }
 
-export function Subscribe() {
-  const [enteredId, setEnteredId] = useState<string>(
-    '6140b24f7a4c24d18a7edf00',
-  );
+function NewList() {
+  const [enteredId, setEnteredId] = useState<string>('');
 
-  const recordList = async () => {
-    if (enteredId) {
+  const createNewList = async () => {
+    const response = await fetch(`${SERVER_ENDPOINT}/new`, {method: 'PUT'});
+    const generatedListId = await response.text();
+    if (generatedListId) {
+      await recordList(generatedListId);
+    }
+  };
+
+  const recordList = async (idToRecord: string) => {
+    if (idToRecord) {
       try {
-        const listData: ListData = await fetchListData(enteredId);
+        const listData: ListData = await fetchListData(idToRecord);
         saveListToLocalStorage(
           listData._id,
           'random name',
@@ -52,12 +58,17 @@ export function Subscribe() {
       <Text>Subscribe</Text>
       <TextInput
         placeholder="id de la liste"
-        onSubmitEditing={() => recordList()}
+        onSubmitEditing={() => recordList(enteredId)}
         onChangeText={text => setEnteredId(text)}
       />
-      <TouchableOpacity onPress={() => recordList()}>
+      <TouchableOpacity onPress={() => recordList(enteredId)}>
         <Text>OK!</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => createNewList()}>
+        <Text>Créer une nouvelle liste!</Text>
       </TouchableOpacity>
     </View>
   );
 }
+
+export default NewList;

@@ -128,6 +128,23 @@ function GrosseryList({route}: IProps) {
     }
   };
 
+  const deleteList = async () => {
+    try {
+      await fetch(`${SERVER_ENDPOINT}/remove`, {
+        method: 'DELETE',
+        body: JSON.stringify({id: route.params.listId}),
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      });
+      await removeListFromLocalStorage(route.params.listId);
+      navigation.goBack();
+    } catch (err) {
+      console.log('Tu es con');
+    }
+  };
+
   const render = () => {
     return (
       <View>
@@ -166,6 +183,10 @@ function GrosseryList({route}: IProps) {
             </TouchableOpacity>
           </View>
         )}
+
+        <TouchableOpacity onPress={() => deleteList()}>
+          <Text>DELETE LIST</Text>
+        </TouchableOpacity>
       </View>
     );
   };

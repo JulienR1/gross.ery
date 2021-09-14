@@ -1,5 +1,5 @@
 export enum Routes {
   Home = 'HOME',
-  Subscribe = 'SUBSCRIBE',
+  NewList = 'NEW_LIST',
   List = 'LIST',
 }
