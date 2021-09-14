@@ -4,4 +4,5 @@ export enum Routes {
 	ADD = "/add",
 	UPDATE = "/update",
 	REMOVE = "/remove",
+	REMOVE_ITEM = "/remove/item",
 }

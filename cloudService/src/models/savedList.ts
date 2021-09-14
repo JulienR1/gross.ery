@@ -24,3 +24,8 @@ export interface UpdateBody {
 export interface RemoveBody {
 	id: string;
 }
+
+export interface RemoveItemBody {
+	id: string;
+	itemName: string;
+}
