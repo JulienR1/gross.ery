@@ -16,14 +16,17 @@ const readSavedFile = async (id: string): Promise<SavedList | undefined> => {
 	return undefined;
 };
 
-const createNewList = (): Promise<ObjectId> => {
-	return new Promise(async (resolve) => {
-		await executeOnDB(async ({ db }) => {
-			const emptyList: SavedList = { items: [] };
-			const insertedDocument = await db.collection(collectionName).insertOne(emptyList);
-			return resolve(insertedDocument.insertedId);
+const createNewList = (listName: string): Promise<ObjectId> => {
+	if (listName) {
+		return new Promise(async (resolve) => {
+			await executeOnDB(async ({ db }) => {
+				const emptyList: SavedList = { name: listName, items: [] };
+				const insertedDocument = await db.collection(collectionName).insertOne(emptyList);
+				return resolve(insertedDocument.insertedId);
+			});
 		});
-	});
+	}
+	throw new Error("No names were provided.");
 };
 
 const addItemToList = (id: string, itemToAdd: SavedItem): Promise<void> => {

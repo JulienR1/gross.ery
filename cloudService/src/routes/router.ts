@@ -9,7 +9,7 @@ import {
 } from "../storage";
 import { AddBody, UpdateBody, RemoveBody, SavedItem } from "../models";
 import { Routes } from "./routes";
-import { RemoveItemBody } from "../models/savedList";
+import { NewBody, RemoveItemBody } from "../models/savedList";
 
 const routes = (): Router => {
 	const router = express.Router();
@@ -26,10 +26,14 @@ const routes = (): Router => {
 	});
 
 	router.put(Routes.NEW, async (req: Request, res: Response) => {
-		const generatedId = await createNewList();
-		if (generatedId) {
-			return res.send(generatedId.toHexString()).status(200);
-		}
+		const { listName } = req.body as NewBody;
+
+		try {
+			const generatedId = await createNewList(listName);
+			if (generatedId) {
+				return res.send(generatedId.toHexString()).status(200);
+			}
+		} catch (ex) {}
 		return res.sendStatus(500);
 	});
 

@@ -7,7 +7,7 @@ const localListPrefix = '@list_';
 const saveListToLocalStorage = async (listToSave: IListData) => {
   const dataToSave: ILocalList = {
     id: listToSave._id,
-    name: 'random name TODO',
+    name: listToSave.name,
     itemCount: listToSave.items.length,
     lastUpdateTime: new Date(),
   };

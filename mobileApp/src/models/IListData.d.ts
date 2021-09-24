@@ -1,5 +1,6 @@
 export interface IListData {
   _id: string;
+  name: string;
   items: IItemData[];
 }
 

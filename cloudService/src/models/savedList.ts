@@ -2,12 +2,17 @@ import { ObjectId } from "bson";
 
 export interface SavedList {
 	_id?: ObjectId;
+	name: string;
 	items: SavedItem[];
 }
 
 export interface SavedItem {
 	name: string;
 	checked: boolean;
+}
+
+export interface NewBody {
+	listName: string;
 }
 
 export interface AddBody {
