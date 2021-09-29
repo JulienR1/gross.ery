@@ -51,6 +51,9 @@ const drawerStyles = StyleSheet.create({
     lineHeight: 19,
     marginBottom: 4,
   },
+  flexContainer: {
+    flexDirection: 'row',
+  },
   inputField: {
     borderRadius: 8,
     borderWidth: 2,
@@ -61,10 +64,41 @@ const drawerStyles = StyleSheet.create({
     paddingVertical: 5,
     paddingHorizontal: 15,
   },
+  inputError: {
+    backgroundColor: Colors.Red,
+  },
+  inputSuccess: {
+    backgroundColor: Colors.Green,
+  },
+  iconButton: {
+    backgroundColor: Colors.Main,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1,
+    padding: 10,
+    borderRadius: 8,
+    marginLeft: 6,
+  },
+  sharedInputField: {
+    flex: 1,
+  },
   feedbackIcon: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  detailsContainer: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  detailsHeader: {
+    fontFamily: Rubik.Medium,
+    fontSize: 15,
+    marginBottom: 4,
+  },
+  detailsText: {
+    fontFamily: Rubik.Regular,
+    fontSize: 14,
   },
 });
 

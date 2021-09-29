@@ -13,7 +13,7 @@ export const recordList = async (idToRecord: string) => {
   }
 };
 
-const fetchListData = (listId: string): Promise<IListData> => {
+export const fetchListData = (listId: string): Promise<IListData> => {
   return new Promise(async (resolve, reject) => {
     try {
       const response = await fetch(`${SERVER_ENDPOINT}?${listId}`);

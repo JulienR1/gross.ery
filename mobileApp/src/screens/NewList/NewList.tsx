@@ -5,6 +5,7 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import {drawerStyles, styles} from './styles';
 import {OptionDrawer} from '../../components/OptionDrawer';
 import {NewListDrawer} from './NewListDrawer';
+import {SubscribeDrawer} from './SubscribeDrawer';
 
 enum SubscribeState {
   None,
@@ -53,12 +54,7 @@ function NewList() {
       </View>
 
       {subscribingState === SubscribeState.Subscribing && (
-        <OptionDrawer
-          onClose={() => setSubscribingState(SubscribeState.None)}
-          onSubmit={() => console.log('submit')}
-          submitTitle="S'abonner">
-          <Text style={drawerStyles.title}>S'abonner</Text>
-        </OptionDrawer>
+        <SubscribeDrawer onClose={onDrawerClose} />
       )}
 
       {subscribingState === SubscribeState.CreatingNew && (

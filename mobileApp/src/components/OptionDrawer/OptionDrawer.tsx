@@ -1,5 +1,5 @@
 import React, {ReactNode, ReactNodeArray, useEffect, useState} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {View} from 'react-native';
 import {Text} from 'react-native-elements';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {Drawer} from '../Drawer';

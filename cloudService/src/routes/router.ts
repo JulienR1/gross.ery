@@ -17,12 +17,12 @@ const routes = (): Router => {
 	router.get(Routes.READ, async (req: Request, res: Response) => {
 		const queryKeys = Object.keys(req.query);
 
-		if (queryKeys.length === 1) {
+		if (queryKeys.length === 1 && queryKeys[0].length === 24) {
 			const savedList = await readSavedFile(queryKeys[0]);
 			return res.send(savedList).status(200);
 		}
 
-		return res.sendStatus(200);
+		return res.sendStatus(400);
 	});
 
 	router.put(Routes.NEW, async (req: Request, res: Response) => {
