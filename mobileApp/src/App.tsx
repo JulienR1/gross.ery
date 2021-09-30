@@ -1,5 +1,5 @@
 import React from 'react';
-import Home from './screens/Home';
+import {Home} from './screens/Home';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {Routes} from './navigation/routes';
