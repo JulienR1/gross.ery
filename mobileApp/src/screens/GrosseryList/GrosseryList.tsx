@@ -1,14 +1,15 @@
 import React, {useEffect, useState} from 'react';
 import {Text, View} from 'react-native';
-import {IListParams} from '../models/NavigationParams';
 import {
   FlatList,
   TextInput,
   TouchableOpacity,
 } from 'react-native-gesture-handler';
 import {useNavigation} from '@react-navigation/core';
-import {doRequest} from '../services/requests';
-import {IItemData} from '../models/IListData';
+import {IListParams} from '../../models/NavigationParams';
+import {IItemData} from '../../models/IListData';
+import {doRequest} from '../../services/requests';
+import {Loader} from '../../components/Loader';
 
 interface IProps {
   route: INavigationRoute;
@@ -18,7 +19,7 @@ interface INavigationRoute {
   params: IListParams;
 }
 
-function GrosseryList({route}: IProps) {
+export function GrosseryList({route}: IProps) {
   const navigation = useNavigation();
   const [items, setItems] = useState<IItemData[]>([]);
 
@@ -122,10 +123,8 @@ function GrosseryList({route}: IProps) {
 
   return (
     <>
-      {isLoading && <Text>Loading!</Text>}
-      {!isLoading && render()}
+      {(isLoading || true) && <Loader />}
+      {!isLoading && false && render()}
     </>
   );
 }
-
-export default GrosseryList;

@@ -3,7 +3,7 @@ import {Home} from './screens/Home';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {Routes} from './navigation/routes';
-import GrosseryList from './screens/GrosseryList';
+import {GrosseryList} from './screens/GrosseryList';
 import {NewList} from './screens/NewList';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {baseStyle} from './styles/base';
