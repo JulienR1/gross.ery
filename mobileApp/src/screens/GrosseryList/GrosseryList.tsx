@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Text, View} from 'react-native';
 import {
   FlatList,
@@ -23,7 +23,7 @@ export function GrosseryList({route}: IProps) {
   const navigation = useNavigation();
   const [items, setItems] = useState<IItemData[]>([]);
 
-  const [isMounted, setIsMounted] = useState<boolean>(true);
+  const isMounted = useRef<boolean>(true);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const [addingNewItem, setAddingNewItem] = useState<boolean>(false);
@@ -40,7 +40,7 @@ export function GrosseryList({route}: IProps) {
       });
 
     return () => {
-      setIsMounted(false);
+      isMounted.current = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -69,8 +69,7 @@ export function GrosseryList({route}: IProps) {
 
   const updateLists = async () => {
     const listData = await doRequest(route.params.listId).getListData();
-    console.log(listData, isMounted);
-    if (isMounted) {
+    if (isMounted.current) {
       setItems(listData.items);
     }
   };
@@ -123,8 +122,8 @@ export function GrosseryList({route}: IProps) {
 
   return (
     <>
-      {(isLoading || true) && <Loader />}
-      {!isLoading && false && render()}
+      {isLoading && <Loader />}
+      {!isLoading && render()}
     </>
   );
 }

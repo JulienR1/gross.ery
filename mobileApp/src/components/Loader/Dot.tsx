@@ -1,5 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {Animated} from 'react-native';
+import {QuadraticAnimation} from '../../animations';
 import {styles} from './styles';
 
 interface IProps {
@@ -11,28 +12,24 @@ interface IProps {
 
 export function Dot({size, growFactor, animationDuration, isActive}: IProps) {
   const [currentScaleFactor, setCurrentScaleFactor] = useState<number>(1);
-  const animationRef = useRef<Animated.CompositeAnimation>();
+  const isMounted = useRef(true);
+
+  useEffect(() => {
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
 
   useEffect(() => {
     if (!isActive) {
       return;
     }
 
-    // TODO: prevent set state when unmounted
-
-    const percent = new Animated.Value(0);
-    animationRef.current = Animated.timing(percent, {
-      toValue: 1,
-      duration: animationDuration,
-      useNativeDriver: true,
-    });
-    animationRef.current?.start();
-
-    if (!percent.hasListeners()) {
-      percent.addListener(({value}) =>
-        setCurrentScaleFactor(1 - 4 * value * (growFactor - 1) * (value - 1)),
-      );
-    }
+    new QuadraticAnimation(animationDuration, animationPercent => {
+      if (isMounted.current) {
+        setCurrentScaleFactor((growFactor - 1) * animationPercent + 1);
+      }
+    }).start();
   }, [isActive]);
 
   const scaledSize = currentScaleFactor * size;

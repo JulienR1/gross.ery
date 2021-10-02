@@ -1,13 +1,15 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {View} from 'react-native';
 import {Dot} from './Dot';
 import {styles} from './styles';
 
 interface IProps {
-  dotCount?: number;
+  dotCount: number;
+  dotSize: number;
+  growFactor: number;
 }
 
-export function Loader({dotCount = 3}: IProps) {
+export function Loader({dotCount, dotSize, growFactor}: IProps) {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const fullAnimationTime = 1200;
   const animationDuration = 800;
@@ -18,7 +20,7 @@ export function Loader({dotCount = 3}: IProps) {
       setCurrentIndex(counter++ % dotCount);
     }, fullAnimationTime / dotCount);
 
-    () => {
+    return () => {
       clearInterval(interval);
     };
   }, []);
@@ -30,12 +32,18 @@ export function Loader({dotCount = 3}: IProps) {
         .map((_, index) => (
           <Dot
             key={index}
-            animationDuration={animationDuration}
-            growFactor={1.4}
-            size={10}
+            size={dotSize}
+            growFactor={growFactor}
             isActive={index === currentIndex}
+            animationDuration={animationDuration}
           />
         ))}
     </View>
   );
 }
+
+Loader.defaultProps = {
+  dotCount: 3,
+  dotSize: 10,
+  growFactor: 1.4,
+};
