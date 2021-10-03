@@ -4,6 +4,7 @@ import {SafeAreaView, Text, View} from 'react-native';
 import {Icon} from 'react-native-elements';
 import {FlatList, TouchableOpacity} from 'react-native-gesture-handler';
 import {ListCard} from '../../components/ListCard';
+import {Loader} from '../../components/Loader';
 import {getAllLocalListData} from '../../localstorage';
 import {ILocalList} from '../../models/ILocalList';
 import {IListParams} from '../../models/NavigationParams';
@@ -13,6 +14,7 @@ import {styles} from './styles';
 
 export function Home() {
   const navigation = useNavigation();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [localLists, setLocalLists] = useState<ILocalList[]>([]);
 
   useFocusEffect(() => {
@@ -20,6 +22,7 @@ export function Home() {
     getAllLocalListData().then(savedLocalLists => {
       if (isMounted) {
         setLocalLists(savedLocalLists);
+        setIsLoading(false);
       }
     });
 
@@ -43,17 +46,20 @@ export function Home() {
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
         <Text style={styles.header}>Mes listes</Text>
-        <TouchableOpacity onPress={() => navigation.navigate(Routes.NewList)}>
-          <Icon name="add" size={36} color={Colors.Black} />
-        </TouchableOpacity>
+        {!isLoading && (
+          <TouchableOpacity onPress={() => navigation.navigate(Routes.NewList)}>
+            <Icon name="add" size={36} color={Colors.Black} />
+          </TouchableOpacity>
+        )}
       </View>
 
-      {localLists.length === 0 && (
+      {isLoading && <Loader />}
+      {!isLoading && localLists.length === 0 && (
         <View style={styles.emptyContainer}>
           <Text style={styles.emptyText}>Aucune liste n'est enregistrée</Text>
         </View>
       )}
-      {localLists.length > 0 && (
+      {!isLoading && localLists.length > 0 && (
         <FlatList
           scrollEnabled
           data={localLists}
