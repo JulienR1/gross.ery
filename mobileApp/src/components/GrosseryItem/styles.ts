@@ -6,7 +6,12 @@ export const styles = StyleSheet.create({
   container: {
     marginVertical: 7,
     flexDirection: 'row',
-    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    position: 'relative',
+  },
+  checkboxContainer: {
+    flexDirection: 'row',
     alignItems: 'center',
   },
   checkbox: {
@@ -22,7 +27,6 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 18,
     color: Colors.Black,
-    flex: 1,
   },
   textChecked: {
     textDecorationLine: 'line-through',

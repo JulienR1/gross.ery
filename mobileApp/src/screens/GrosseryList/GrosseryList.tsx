@@ -13,6 +13,7 @@ import {Loader} from '../../components/Loader';
 import {styles} from './styles';
 import {Icon} from 'react-native-elements';
 import {GrosseryItem} from '../../components/GrosseryItem';
+import {FocusContext} from '../../contexts/FocusContext';
 
 interface IProps {
   route: INavigationRoute;
@@ -191,7 +192,7 @@ export function GrosseryList({route}: IProps) {
   // };
 
   return (
-    <>
+    <FocusContext>
       {!listData && <Loader />}
       {listData && (
         <View style={styles.container}>
@@ -234,6 +235,6 @@ export function GrosseryList({route}: IProps) {
           )}
         </View>
       )}
-    </>
+    </FocusContext>
   );
 }
