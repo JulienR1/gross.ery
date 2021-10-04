@@ -3,7 +3,7 @@ import {
   removeListFromLocalStorage,
   saveListToLocalStorage,
 } from '../localstorage';
-import {IListData} from '../models/IListData';
+import {IItemData, IListData} from '../models/IListData';
 import {IRequestContent} from '../models/IRequestContent';
 import {RequestMethod} from '../models/RequestMethod';
 
@@ -15,6 +15,8 @@ const doRequest = (listId: string) => {
   return {
     getListData: () => getListData(listId),
     addNewItem: (itemName: string) => addNewItem(listId, itemName),
+    updateItem: (oldName: string, newValues: IItemData) =>
+      updateItem(listId, oldName, newValues),
     removeItem: (itemName: string) => removeItem(listId, itemName),
     removeList: () => removeList(listId),
   };
@@ -50,6 +52,24 @@ const addNewItem = async (listId: string, itemName: string): Promise<void> => {
     return;
   }
   throw new Error(`Could not add '${itemName}' to '${listId}'`);
+};
+
+const updateItem = async (
+  listId: string,
+  oldName: string,
+  newValues: IItemData,
+) => {
+  if (oldName && newValues) {
+    await executeRequestToList('update', listId, {
+      method: RequestMethod.POST,
+      body: {
+        itemName: oldName,
+        newValues,
+      },
+    });
+    return;
+  }
+  throw new Error(`Could not update item '${oldName}'`);
 };
 
 const removeItem = async (listId: string, itemName: string) => {
