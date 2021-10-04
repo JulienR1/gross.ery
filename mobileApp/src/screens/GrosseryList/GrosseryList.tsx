@@ -12,7 +12,6 @@ import {doRequest} from '../../services/requests';
 import {Loader} from '../../components/Loader';
 import {styles} from './styles';
 import {Icon} from 'react-native-elements';
-import {Colors} from '../../styles/colors';
 import {GrosseryItem} from '../../components/GrosseryItem';
 
 interface IProps {
@@ -24,45 +23,49 @@ interface INavigationRoute {
 }
 
 export function GrosseryList({route}: IProps) {
+  const listId = route.params.listId;
+
   const navigation = useNavigation();
   const isMounted = useRef<boolean>(true);
   const [listData, setListData] = useState<IListData | undefined>(undefined);
+
+  const [addingNewItem, setAddingNewItem] = useState<boolean>(false);
+  const [newItemText, setNewItemText] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     fetchListData();
     return () => {
       isMounted.current = false;
     };
-  });
+  }, []);
 
   const fetchListData = async () => {
-    const newListData = await doRequest(route.params.listId).getListData();
+    const newListData = await doRequest(listId).getListData();
     if (isMounted.current) {
       setListData(newListData);
     }
   };
 
-  const toggleItemCheck = async (item: IItemData) => {
-    item.checked = !item.checked;
+  const updateItemCheck = async (item: IItemData) => {
+    await doRequest(route.params.listId).updateItem(item.name, item);
+    fetchListData();
+  };
 
-    const updatedListData = listData;
-    const itemToReplaceIndex = updatedListData?.items.findIndex(
-      oldItem => oldItem === item,
-    );
-    if (updatedListData && itemToReplaceIndex && itemToReplaceIndex >= 0) {
-      updatedListData.items[itemToReplaceIndex] = item;
+  const removeItem = async (item: IItemData) => {
+    const itemIndex = listData?.items.indexOf(item);
+    const updatedListData: IListData = JSON.parse(JSON.stringify(listData));
+
+    if (updatedListData && itemIndex && itemIndex >= 0) {
+      updatedListData.items.splice(itemIndex, 1);
       setListData(updatedListData);
     }
-
-    await doRequest(route.params.listId).updateItem(item.name, item);
-    await fetchListData();
+    await new Promise(resolve => setTimeout(resolve, 2500));
+    await doRequest(route.params.listId).removeItem(item.name);
+    fetchListData();
   };
 
   // const isMounted = useRef<boolean>(true);
   // const [isLoading, setIsLoading] = useState<boolean>(true);
-
-  // const [addingNewItem, setAddingNewItem] = useState<boolean>(false);
-  // const [newItemText, setNewItemText] = useState<string | undefined>(undefined);
 
   // useEffect(() => {
   //   updateLists()
@@ -80,15 +83,15 @@ export function GrosseryList({route}: IProps) {
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, []);
 
-  // const saveNewItem = async () => {
-  //   if (newItemText) {
-  //     await doRequest(route.params.listId).addNewItem(newItemText);
-  //     await updateLists();
-  //   }
+  const saveNewItem = async () => {
+    if (newItemText) {
+      await doRequest(route.params.listId).addNewItem(newItemText);
+      await fetchListData();
+    }
 
-  //   setNewItemText(undefined);
-  //   setAddingNewItem(false);
-  // };
+    setNewItemText(undefined);
+    setAddingNewItem(false);
+  };
 
   // const removeItem = async (itemName: string) => {
   //   if (listData?.items.find(item => item.name === itemName)) {
@@ -191,12 +194,44 @@ export function GrosseryList({route}: IProps) {
     <>
       {!listData && <Loader />}
       {listData && (
-        <View>
+        <View style={styles.container}>
           <Text style={styles.title}>{listData.name}</Text>
           <FlatList
+            style={styles.itemList}
             data={listData.items}
-            renderItem={({item}) => <GrosseryItem itemData={item} />}
+            extraData={listData}
+            renderItem={({item}) => (
+              <GrosseryItem
+                initialItemData={item}
+                onItemUpdate={item => updateItemCheck(item)}
+                onDelete={() => removeItem(item)}
+              />
+            )}
           />
+
+          {!addingNewItem && (
+            <TouchableOpacity
+              onPress={() => setAddingNewItem(true)}
+              style={styles.newItemButton}>
+              <Icon name="add" size={30} />
+              <Text style={styles.newItemButtonText}>Ajouter un item</Text>
+            </TouchableOpacity>
+          )}
+
+          {/* TODO */}
+          {addingNewItem && (
+            <View>
+              <Text>Ajouter un nouvel item</Text>
+              <TextInput
+                placeholder="Nom.."
+                onChangeText={text => setNewItemText(text)}
+                onSubmitEditing={saveNewItem}
+              />
+              <TouchableOpacity onPress={saveNewItem}>
+                <Text>OK!</Text>
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
       )}
     </>
