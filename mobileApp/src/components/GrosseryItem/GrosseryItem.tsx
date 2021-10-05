@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {GestureResponderEvent, Text, View} from 'react-native';
+import React, {useEffect, useRef, useState} from 'react';
+import {Animated, GestureResponderEvent, Text, View} from 'react-native';
 import {Icon} from 'react-native-elements';
 import {TextInput, TouchableOpacity} from 'react-native-gesture-handler';
 import {useFocus} from '../../contexts/FocusContext/FocusContext';
@@ -22,6 +22,9 @@ export function GrosseryItem({
   const [itemData, setItemData] = useState<IItemData>(initialItemData);
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [newName, setNewName] = useState<string>(initialItemData.name);
+
+  const [borderSlideAnimationValue, setBorderSlideAnimationValue] =
+    useState<string>('0%');
 
   useEffect(() => {
     subscribe(stopEditing);
@@ -59,6 +62,21 @@ export function GrosseryItem({
     }
   };
 
+  const animateEditBorder = () => {
+    setBorderSlideAnimationValue('0%');
+
+    const percent = new Animated.Value(0);
+    Animated.timing(percent, {
+      toValue: 1,
+      useNativeDriver: true,
+      duration: 100,
+    }).start();
+
+    percent.addListener(({value}) =>
+      setBorderSlideAnimationValue(`${value * 100}%`),
+    );
+  };
+
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.checkboxContainer} onPress={toggleCheck}>
@@ -75,18 +93,29 @@ export function GrosseryItem({
       </TouchableOpacity>
 
       {isEditing && (
-        <TextInput
-          style={[styles.text, styles.textInput]}
-          onTouchStart={preventStopEditing}
-          defaultValue={itemData.name}
-          onChangeText={setNewName}
-          onSubmitEditing={onSaveUpdates}
-        />
+        <View style={styles.textInputContainer}>
+          <TextInput
+            style={[styles.text, styles.textInput]}
+            onTouchStart={preventStopEditing}
+            defaultValue={itemData.name}
+            onChangeText={setNewName}
+            onSubmitEditing={onSaveUpdates}
+          />
+          <View
+            style={[
+              styles.textInputBorder,
+              {maxWidth: borderSlideAnimationValue},
+            ]}></View>
+        </View>
       )}
 
       <View style={styles.endControls} onTouchStart={preventStopEditing}>
         {!isEditing && (
-          <TouchableOpacity onPress={() => setIsEditing(true)}>
+          <TouchableOpacity
+            onPress={() => {
+              animateEditBorder();
+              setIsEditing(true);
+            }}>
             <Icon name="edit" color={Colors.Main} size={22} />
           </TouchableOpacity>
         )}

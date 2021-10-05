@@ -36,13 +36,22 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
+  textInputContainer: {
+    position: 'relative',
+    flex: 1,
+  },
   textInput: {
     margin: 0,
     padding: 0,
     flex: 1,
     height: 18,
-    borderColor: Colors.Main,
-    borderBottomWidth: 2,
-    marginRight: '20%',
+  },
+  textInputBorder: {
+    backgroundColor: Colors.Main,
+    height: 2,
+    width: '80%',
+    position: 'absolute',
+    left: 0,
+    bottom: -2,
   },
 });
