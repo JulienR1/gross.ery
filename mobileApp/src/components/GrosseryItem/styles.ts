@@ -36,4 +36,13 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
+  textInput: {
+    margin: 0,
+    padding: 0,
+    flex: 1,
+    height: 18,
+    borderColor: Colors.Main,
+    borderBottomWidth: 2,
+    marginRight: '20%',
+  },
 });

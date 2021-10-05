@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import {Text, View} from 'react-native';
+import {GestureResponderEvent, Text, View} from 'react-native';
 import {Icon} from 'react-native-elements';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+import {TextInput, TouchableOpacity} from 'react-native-gesture-handler';
 import {useFocus} from '../../contexts/FocusContext/FocusContext';
 import {IItemData} from '../../models/IListData';
 import {Colors} from '../../styles/colors';
@@ -21,6 +21,7 @@ export function GrosseryItem({
   const {subscribe, unsubscribe} = useFocus();
   const [itemData, setItemData] = useState<IItemData>(initialItemData);
   const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [newName, setNewName] = useState<string>(initialItemData.name);
 
   useEffect(() => {
     subscribe(stopEditing);
@@ -30,13 +31,33 @@ export function GrosseryItem({
   }, []);
 
   const toggleCheck = () => {
-    const newItemData = JSON.parse(JSON.stringify(itemData));
+    const newItemData: IItemData = JSON.parse(JSON.stringify(itemData));
     newItemData.checked = !newItemData.checked;
     setItemData(newItemData);
     onItemUpdate(newItemData);
   };
 
-  const stopEditing = () => setIsEditing(false);
+  const preventStopEditing = (event: GestureResponderEvent) =>
+    event.stopPropagation();
+
+  const stopEditing = () => {
+    setNewName(itemData.name);
+    setIsEditing(false);
+  };
+
+  const onSaveUpdates = () => {
+    setIsEditing(false);
+
+    if (newName) {
+      const newItemData: IItemData = JSON.parse(JSON.stringify(itemData));
+      newItemData.name = newName;
+      setNewName(newName);
+      setItemData(newItemData);
+      onItemUpdate(newItemData);
+    } else {
+      setNewName(itemData.name);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -46,23 +67,38 @@ export function GrosseryItem({
             <Icon name="check" size={20} color={Colors.Green} />
           )}
         </View>
-        <Text style={[styles.text, itemData.checked && styles.textChecked]}>
-          {itemData.name}
-        </Text>
+        {!isEditing && (
+          <Text style={[styles.text, itemData.checked && styles.textChecked]}>
+            {itemData.name}
+          </Text>
+        )}
       </TouchableOpacity>
 
-      <View
-        style={styles.endControls}
-        onTouchStart={event => event.stopPropagation()}>
+      {isEditing && (
+        <TextInput
+          style={[styles.text, styles.textInput]}
+          onTouchStart={preventStopEditing}
+          defaultValue={itemData.name}
+          onChangeText={setNewName}
+          onSubmitEditing={onSaveUpdates}
+        />
+      )}
+
+      <View style={styles.endControls} onTouchStart={preventStopEditing}>
         {!isEditing && (
           <TouchableOpacity onPress={() => setIsEditing(true)}>
             <Icon name="edit" color={Colors.Main} size={22} />
           </TouchableOpacity>
         )}
         {isEditing && (
-          <TouchableOpacity onPress={onDelete}>
-            <Icon name="close" color={Colors.Red} size={22} />
-          </TouchableOpacity>
+          <>
+            <TouchableOpacity onPress={onSaveUpdates}>
+              <Icon name="save" color={Colors.Main} size={22} />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={onDelete}>
+              <Icon name="close" color={Colors.Red} size={22} />
+            </TouchableOpacity>
+          </>
         )}
       </View>
     </View>

@@ -47,9 +47,17 @@ export function GrosseryList({route}: IProps) {
     }
   };
 
-  const updateItemCheck = async (item: IItemData) => {
-    await doRequest(route.params.listId).updateItem(item.name, item);
-    fetchListData();
+  const updateItemCheck = async (
+    originalItem: IItemData,
+    updatedItem: IItemData,
+  ) => {
+    if (originalItem !== updatedItem) {
+      await doRequest(route.params.listId).updateItem(
+        originalItem.name,
+        updatedItem,
+      );
+      fetchListData();
+    }
   };
 
   const removeItem = async (item: IItemData) => {
@@ -204,7 +212,7 @@ export function GrosseryList({route}: IProps) {
             renderItem={({item}) => (
               <GrosseryItem
                 initialItemData={item}
-                onItemUpdate={item => updateItemCheck(item)}
+                onItemUpdate={updatedItem => updateItemCheck(item, updatedItem)}
                 onDelete={() => removeItem(item)}
               />
             )}
