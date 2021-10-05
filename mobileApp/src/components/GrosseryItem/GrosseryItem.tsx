@@ -80,13 +80,17 @@ export function GrosseryItem({
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.checkboxContainer} onPress={toggleCheck}>
-        <View style={styles.checkbox}>
+        <View style={[styles.checkbox, itemData.checked && styles.checked]}>
           {itemData.checked && (
             <Icon name="check" size={20} color={Colors.Green} />
           )}
         </View>
         {!isEditing && (
-          <Text style={[styles.text, itemData.checked && styles.textChecked]}>
+          <Text
+            style={[
+              styles.text,
+              itemData.checked && [styles.textChecked, styles.checked],
+            ]}>
             {itemData.name}
           </Text>
         )}

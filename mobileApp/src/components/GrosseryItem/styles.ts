@@ -54,4 +54,7 @@ export const styles = StyleSheet.create({
     left: 0,
     bottom: -2,
   },
+  checked: {
+    opacity: 0.4,
+  },
 });
