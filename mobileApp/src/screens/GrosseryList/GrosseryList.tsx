@@ -1,20 +1,15 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Text, View} from 'react-native';
-import {
-  FlatList,
-  TextInput,
-  TouchableOpacity,
-} from 'react-native-gesture-handler';
+import {Text, TouchableOpacity, View} from 'react-native';
+import {FlatList, TextInput} from 'react-native-gesture-handler';
 import {useNavigation} from '@react-navigation/core';
 import {IListParams} from '../../models/NavigationParams';
 import {IItemData, IListData} from '../../models/IListData';
 import {doRequest} from '../../services/requests';
 import {Loader} from '../../components/Loader';
-import {styles} from './styles';
+import {modalStyles, styles} from './styles';
 import {Icon} from 'react-native-elements';
 import {GrosseryItem} from '../../components/GrosseryItem';
-import {FocusContext} from '../../contexts/FocusContext';
-import {ModalContext} from '../../contexts/ModalContext';
+import {ModalContext, useModal} from '../../contexts/ModalContext';
 
 interface IProps {
   route: INavigationRoute;
@@ -28,6 +23,8 @@ export function GrosseryList({route}: IProps) {
   const listId = route.params.listId;
 
   const navigation = useNavigation();
+  const {setModal, setEnabled: setModalEnabled, closeModal} = useModal();
+
   const isMounted = useRef<boolean>(true);
   const [listData, setListData] = useState<IListData | undefined>(undefined);
   const [cannotFindList, setCannotFindList] = useState<boolean>(false);
@@ -88,28 +85,35 @@ export function GrosseryList({route}: IProps) {
     setAddingNewItem(false);
   };
 
-  return (
-    <FocusContext>
-      <ModalContext>
-        {cannotFindList && (
-          <View style={styles.container}>
-            <Text style={styles.title}>Impossible de trouver la liste</Text>
-            <Text style={styles.text}>
-              Elle a été retirée de vos sauvegardes.
-            </Text>
-            <TouchableOpacity
-              style={styles.cannotFindListButton}
-              onPress={() => navigation.goBack()}>
-              <Text style={styles.cannotFindListButtonText}>
-                Retour au menu
-              </Text>
-            </TouchableOpacity>
-          </View>
-        )}
+  const deleteList = async () => {
+    await doRequest(listId)
+      .removeList()
+      .then(() => {
+        navigation.goBack();
+      });
+  };
 
-        {!listData && !cannotFindList && <Loader />}
-        {listData && !cannotFindList && (
-          <View style={styles.container}>
+  return (
+    <ModalContext>
+      {!listData && !cannotFindList && <Loader />}
+
+      {cannotFindList && (
+        <View style={styles.container}>
+          <Text style={styles.title}>Impossible de trouver la liste</Text>
+          <Text style={styles.text}>
+            Elle a été retirée de vos sauvegardes.
+          </Text>
+          <TouchableOpacity
+            style={styles.cannotFindListButton}
+            onPress={() => navigation.goBack()}>
+            <Text style={styles.cannotFindListButtonText}>Retour au menu</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+
+      {listData && !cannotFindList && (
+        <View style={styles.globalContainer}>
+          <View style={[styles.container, styles.header]}>
             <Text style={styles.title}>{listData.name}</Text>
             <FlatList
               style={styles.itemList}
@@ -150,8 +154,67 @@ export function GrosseryList({route}: IProps) {
               </View>
             )}
           </View>
-        )}
-      </ModalContext>
-    </FocusContext>
+
+          <View style={[styles.container, styles.footer]}>
+            <TouchableOpacity
+              style={styles.cannotFindListButton}
+              onPress={() => {
+                const onClose = () => {
+                  closeModal();
+                };
+
+                setModal({
+                  onClose,
+                  children: (
+                    <View style={modalStyles.container}>
+                      <View style={modalStyles.container}>
+                        <Text style={modalStyles.title}>
+                          Suppression d'une liste
+                        </Text>
+                        <Text style={modalStyles.description}>
+                          Confirmer la suppression de '
+                          {
+                            <Text style={modalStyles.bold}>
+                              {listData.name}
+                            </Text>
+                          }
+                          '.
+                        </Text>
+                      </View>
+
+                      <View style={modalStyles.buttonContainer}>
+                        <TouchableOpacity
+                          onPress={onClose}
+                          style={[
+                            modalStyles.button,
+                            modalStyles.cancelButton,
+                          ]}>
+                          <Text style={modalStyles.buttonText}>Annuler</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                          onPress={() => {
+                            onClose();
+                            deleteList();
+                          }}
+                          style={[
+                            modalStyles.button,
+                            modalStyles.deleteButton,
+                          ]}>
+                          <Text style={modalStyles.buttonText}>Supprimer</Text>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                  ),
+                });
+                setModalEnabled(true);
+              }}>
+              <Text style={styles.cannotFindListButtonText}>
+                Supprimer la liste
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
+    </ModalContext>
   );
 }

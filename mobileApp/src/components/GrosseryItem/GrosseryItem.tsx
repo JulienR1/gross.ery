@@ -134,7 +134,7 @@ export function GrosseryItem({
             <TouchableOpacity
               onPress={() => {
                 const onClose = () => {
-                  setIsEditing(false);
+                  stopEditing();
                   closeModal();
                 };
 
@@ -166,7 +166,6 @@ export function GrosseryItem({
                         </TouchableOpacity>
                         <TouchableOpacity
                           onPress={() => {
-                            stopEditing();
                             onDelete();
                             onClose();
                           }}

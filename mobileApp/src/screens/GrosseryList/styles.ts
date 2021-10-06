@@ -3,8 +3,14 @@ import {Rubik} from '../../fonts/Rubik';
 import {Colors} from '../../styles/colors';
 
 export const styles = StyleSheet.create({
+  globalContainer: {
+    flex: 1,
+    justifyContent: 'space-between',
+  },
   container: {
     paddingHorizontal: 40,
+  },
+  header: {
     marginTop: 60,
   },
   title: {
@@ -45,5 +51,50 @@ export const styles = StyleSheet.create({
     fontFamily: Rubik.SemiBold,
     fontSize: 14,
     color: Colors.White,
+  },
+  footer: {
+    marginBottom: 60,
+    alignSelf: 'flex-end',
+  },
+});
+
+export const modalStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  title: {
+    fontFamily: Rubik.SemiBold,
+    fontSize: 20,
+    color: Colors.Black,
+    marginBottom: 8,
+  },
+  description: {
+    fontFamily: Rubik.Regular,
+    color: Colors.Black,
+    fontSize: 16,
+  },
+  bold: {
+    fontFamily: Rubik.Medium,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+  },
+  button: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 3,
+  },
+  cancelButton: {
+    backgroundColor: Colors.Main,
+  },
+  deleteButton: {
+    backgroundColor: Colors.Red,
+  },
+  buttonText: {
+    color: Colors.White,
+    fontFamily: Rubik.SemiBold,
+    fontSize: 14,
   },
 });
