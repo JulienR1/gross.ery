@@ -30,21 +30,26 @@ export function GrosseryList({route}: IProps) {
   const navigation = useNavigation();
   const isMounted = useRef<boolean>(true);
   const [listData, setListData] = useState<IListData | undefined>(undefined);
+  const [cannotFindList, setCannotFindList] = useState<boolean>(false);
 
   const [addingNewItem, setAddingNewItem] = useState<boolean>(false);
   const [newItemText, setNewItemText] = useState<string | undefined>(undefined);
 
   useEffect(() => {
-    fetchListData();
+    fetchListData().catch(err => setCannotFindList(true));
     return () => {
       isMounted.current = false;
     };
   }, []);
 
   const fetchListData = async () => {
-    const newListData = await doRequest(listId).getListData();
-    if (isMounted.current) {
-      setListData(newListData);
+    try {
+      const newListData = await doRequest(listId).getListData();
+      if (isMounted.current) {
+        setListData(newListData);
+      }
+    } catch (ex) {
+      throw new Error('Could not find the specified list.');
     }
   };
 
@@ -73,22 +78,6 @@ export function GrosseryList({route}: IProps) {
     fetchListData();
   };
 
-  // useEffect(() => {
-  //   updateLists()
-  //     .then(() => {
-  //       setIsLoading(false);
-  //     })
-  //     .catch(() => {
-  //       console.log('The requested list does not exist anymore.');
-  //       navigation.goBack();
-  //     });
-
-  //   return () => {
-  //     isMounted.current = false;
-  //   };
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
-
   const saveNewItem = async () => {
     if (newItemText) {
       await doRequest(route.params.listId).addNewItem(newItemText);
@@ -99,16 +88,27 @@ export function GrosseryList({route}: IProps) {
     setAddingNewItem(false);
   };
 
-  // const deleteList = async () => {
-  //   await doRequest(route.params.listId).removeList();
-  //   navigation.goBack();
-  // };
-
   return (
     <FocusContext>
       <ModalContext>
-        {!listData && <Loader />}
-        {listData && (
+        {cannotFindList && (
+          <View style={styles.container}>
+            <Text style={styles.title}>Impossible de trouver la liste</Text>
+            <Text style={styles.text}>
+              Elle a été retirée de vos sauvegardes.
+            </Text>
+            <TouchableOpacity
+              style={styles.cannotFindListButton}
+              onPress={() => navigation.goBack()}>
+              <Text style={styles.cannotFindListButtonText}>
+                Retour au menu
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
+        {!listData && !cannotFindList && <Loader />}
+        {listData && !cannotFindList && (
           <View style={styles.container}>
             <Text style={styles.title}>{listData.name}</Text>
             <FlatList

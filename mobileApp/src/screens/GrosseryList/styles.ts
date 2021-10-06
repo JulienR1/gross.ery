@@ -13,6 +13,12 @@ export const styles = StyleSheet.create({
     lineHeight: 33,
     color: Colors.Black,
   },
+  text: {
+    marginTop: 20,
+    fontFamily: Rubik.Regular,
+    fontSize: 18,
+    color: Colors.Black,
+  },
   newItemButton: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -26,5 +32,18 @@ export const styles = StyleSheet.create({
   },
   itemList: {
     marginVertical: 20,
+  },
+  cannotFindListButton: {
+    marginTop: 30,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    backgroundColor: Colors.Main,
+    borderRadius: 4,
+    alignSelf: 'flex-start',
+  },
+  cannotFindListButtonText: {
+    fontFamily: Rubik.SemiBold,
+    fontSize: 14,
+    color: Colors.White,
   },
 });
