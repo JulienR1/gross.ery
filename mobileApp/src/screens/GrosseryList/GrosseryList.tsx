@@ -9,7 +9,8 @@ import {Loader} from '../../components/Loader';
 import {modalStyles, styles} from './styles';
 import {Icon} from 'react-native-elements';
 import {GrosseryItem, NewGrosseryItem} from '../../components/GrosseryItem';
-import {ModalContext, useModal} from '../../contexts/ModalContext';
+import {useModal} from '../../contexts/ModalContext';
+import {useFocus} from '../../contexts/FocusContext';
 
 interface IProps {
   route: INavigationRoute;
@@ -23,6 +24,7 @@ export function GrosseryList({route}: IProps) {
   const listId = route.params.listId;
 
   const navigation = useNavigation();
+  const {subscribe, unsubscribe} = useFocus();
   const {setModal, setEnabled: setModalEnabled, closeModal} = useModal();
 
   const isMounted = useRef<boolean>(true);
@@ -32,8 +34,10 @@ export function GrosseryList({route}: IProps) {
 
   useEffect(() => {
     fetchListData().catch(err => setCannotFindList(true));
+    subscribe(stopAddingNewItem);
     return () => {
       isMounted.current = false;
+      unsubscribe(stopAddingNewItem);
     };
   }, []);
 
@@ -81,8 +85,10 @@ export function GrosseryList({route}: IProps) {
       });
   };
 
+  const stopAddingNewItem = () => setAddingNewItem(false);
+
   return (
-    <ModalContext>
+    <>
       {!listData && !cannotFindList && <Loader />}
 
       {cannotFindList && (
@@ -127,26 +133,14 @@ export function GrosseryList({route}: IProps) {
               </TouchableOpacity>
             )}
 
-            {/* TODO */}
             {addingNewItem && (
               <NewGrosseryItem
                 listId={listId}
                 onSave={() => {
-                  setAddingNewItem(false);
+                  stopAddingNewItem();
                   fetchListData();
                 }}
               />
-              // <View>
-              //   <Text>Ajouter un nouvel item</Text>
-              //   <TextInput
-              //     placeholder="Nom.."
-              //     onChangeText={text => setNewItemText(text)}
-              //     onSubmitEditing={saveNewItem}
-              //   />
-              //   <TouchableOpacity onPress={saveNewItem}>
-              //     <Text>OK!</Text>
-              //   </TouchableOpacity>
-              // </View>
             )}
           </View>
 
@@ -210,6 +204,6 @@ export function GrosseryList({route}: IProps) {
           </View>
         </View>
       )}
-    </ModalContext>
+    </>
   );
 }

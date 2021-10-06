@@ -8,6 +8,7 @@ import {NewList} from './screens/NewList';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {baseStyle} from './styles/base';
 import {ModalContext} from './contexts/ModalContext';
+import {FocusContext} from './contexts/FocusContext';
 
 const Stack = createStackNavigator();
 
@@ -16,17 +17,19 @@ const App = () => {
     // TODO: Require internet connection to function properly.
     // create custom hook
     <SafeAreaProvider style={baseStyle.body}>
-      <ModalContext>
-        <NavigationContainer>
-          <Stack.Navigator
-            initialRouteName={Routes.Home}
-            screenOptions={{headerShown: false}}>
-            <Stack.Screen name={Routes.Home} component={Home} />
-            <Stack.Screen name={Routes.NewList} component={NewList} />
-            <Stack.Screen name={Routes.List} component={GrosseryList} />
-          </Stack.Navigator>
-        </NavigationContainer>
-      </ModalContext>
+      <FocusContext>
+        <ModalContext>
+          <NavigationContainer>
+            <Stack.Navigator
+              initialRouteName={Routes.Home}
+              screenOptions={{headerShown: false}}>
+              <Stack.Screen name={Routes.Home} component={Home} />
+              <Stack.Screen name={Routes.NewList} component={NewList} />
+              <Stack.Screen name={Routes.List} component={GrosseryList} />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </ModalContext>
+      </FocusContext>
     </SafeAreaProvider>
   );
 };
