@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {Text, TouchableOpacity, View} from 'react-native';
-import {FlatList, TextInput} from 'react-native-gesture-handler';
+import {FlatList} from 'react-native-gesture-handler';
 import {useNavigation} from '@react-navigation/core';
 import {IListParams} from '../../models/NavigationParams';
 import {IItemData, IListData} from '../../models/IListData';
@@ -8,7 +8,7 @@ import {doRequest} from '../../services/requests';
 import {Loader} from '../../components/Loader';
 import {modalStyles, styles} from './styles';
 import {Icon} from 'react-native-elements';
-import {GrosseryItem} from '../../components/GrosseryItem';
+import {GrosseryItem, NewGrosseryItem} from '../../components/GrosseryItem';
 import {ModalContext, useModal} from '../../contexts/ModalContext';
 
 interface IProps {
@@ -28,9 +28,7 @@ export function GrosseryList({route}: IProps) {
   const isMounted = useRef<boolean>(true);
   const [listData, setListData] = useState<IListData | undefined>(undefined);
   const [cannotFindList, setCannotFindList] = useState<boolean>(false);
-
   const [addingNewItem, setAddingNewItem] = useState<boolean>(false);
-  const [newItemText, setNewItemText] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     fetchListData().catch(err => setCannotFindList(true));
@@ -73,16 +71,6 @@ export function GrosseryList({route}: IProps) {
     }
     await doRequest(route.params.listId).removeItem(item.name);
     fetchListData();
-  };
-
-  const saveNewItem = async () => {
-    if (newItemText) {
-      await doRequest(route.params.listId).addNewItem(newItemText);
-      await fetchListData();
-    }
-
-    setNewItemText(undefined);
-    setAddingNewItem(false);
   };
 
   const deleteList = async () => {
@@ -141,17 +129,24 @@ export function GrosseryList({route}: IProps) {
 
             {/* TODO */}
             {addingNewItem && (
-              <View>
-                <Text>Ajouter un nouvel item</Text>
-                <TextInput
-                  placeholder="Nom.."
-                  onChangeText={text => setNewItemText(text)}
-                  onSubmitEditing={saveNewItem}
-                />
-                <TouchableOpacity onPress={saveNewItem}>
-                  <Text>OK!</Text>
-                </TouchableOpacity>
-              </View>
+              <NewGrosseryItem
+                listId={listId}
+                onSave={() => {
+                  setAddingNewItem(false);
+                  fetchListData();
+                }}
+              />
+              // <View>
+              //   <Text>Ajouter un nouvel item</Text>
+              //   <TextInput
+              //     placeholder="Nom.."
+              //     onChangeText={text => setNewItemText(text)}
+              //     onSubmitEditing={saveNewItem}
+              //   />
+              //   <TouchableOpacity onPress={saveNewItem}>
+              //     <Text>OK!</Text>
+              //   </TouchableOpacity>
+              // </View>
             )}
           </View>
 

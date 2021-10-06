@@ -1,3 +1,4 @@
 import {GrosseryItem} from './GrosseryItem';
+import {NewGrosseryItem} from './NewGrosseryItem';
 
-export {GrosseryItem};
+export {GrosseryItem, NewGrosseryItem};
