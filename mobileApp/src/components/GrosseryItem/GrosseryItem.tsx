@@ -1,11 +1,12 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Animated, GestureResponderEvent, Text, View} from 'react-native';
 import {Icon} from 'react-native-elements';
 import {TextInput, TouchableOpacity} from 'react-native-gesture-handler';
-import {useFocus} from '../../contexts/FocusContext/FocusContext';
+import {useFocus} from '../../contexts/FocusContext';
+import {useModal} from '../../contexts/ModalContext';
 import {IItemData} from '../../models/IListData';
 import {Colors} from '../../styles/colors';
-import {styles} from './styles';
+import {modalStyles, styles} from './styles';
 
 interface IProps {
   initialItemData: IItemData;
@@ -19,6 +20,8 @@ export function GrosseryItem({
   onDelete,
 }: IProps) {
   const {subscribe, unsubscribe} = useFocus();
+  const {setModal, setEnabled: setModalEnabled, closeModal} = useModal();
+
   const [itemData, setItemData] = useState<IItemData>(initialItemData);
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [newName, setNewName] = useState<string>(initialItemData.name);
@@ -128,7 +131,57 @@ export function GrosseryItem({
             <TouchableOpacity onPress={onSaveUpdates}>
               <Icon name="save" color={Colors.Main} size={22} />
             </TouchableOpacity>
-            <TouchableOpacity onPress={onDelete}>
+            <TouchableOpacity
+              onPress={() => {
+                const onClose = () => {
+                  setIsEditing(false);
+                  closeModal();
+                };
+
+                setModal({
+                  onClose,
+                  children: (
+                    <View style={modalStyles.container}>
+                      <View style={modalStyles.container}>
+                        <Text style={modalStyles.title}>Suppression</Text>
+                        <Text style={modalStyles.description}>
+                          Voulez-vous vraiment supprimer '
+                          {
+                            <Text style={modalStyles.bold}>
+                              {itemData.name}
+                            </Text>
+                          }
+                          ' ?
+                        </Text>
+                      </View>
+
+                      <View style={modalStyles.buttonContainer}>
+                        <TouchableOpacity
+                          onPress={onClose}
+                          style={[
+                            modalStyles.button,
+                            modalStyles.cancelButton,
+                          ]}>
+                          <Text style={modalStyles.buttonText}>Annuler</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                          onPress={() => {
+                            stopEditing();
+                            onDelete();
+                            onClose();
+                          }}
+                          style={[
+                            modalStyles.button,
+                            modalStyles.deleteButton,
+                          ]}>
+                          <Text style={modalStyles.buttonText}>Supprimer</Text>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                  ),
+                });
+                setModalEnabled(true);
+              }}>
               <Icon name="close" color={Colors.Red} size={22} />
             </TouchableOpacity>
           </>

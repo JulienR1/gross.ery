@@ -58,3 +58,44 @@ export const styles = StyleSheet.create({
     opacity: 0.4,
   },
 });
+
+export const modalStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  title: {
+    fontFamily: Rubik.SemiBold,
+    fontSize: 20,
+    color: Colors.Black,
+    marginBottom: 8,
+  },
+  description: {
+    fontFamily: Rubik.Regular,
+    color: Colors.Black,
+    fontSize: 16,
+  },
+  bold: {
+    fontFamily: Rubik.Medium,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+  },
+  button: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 3,
+  },
+  cancelButton: {
+    backgroundColor: Colors.Main,
+  },
+  deleteButton: {
+    backgroundColor: Colors.Red,
+  },
+  buttonText: {
+    color: Colors.White,
+    fontFamily: Rubik.SemiBold,
+    fontSize: 14,
+  },
+});

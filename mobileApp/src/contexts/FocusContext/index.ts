@@ -1,3 +1,3 @@
-import {FocusContext} from './FocusContext';
+import {FocusContext, useFocus} from './FocusContext';
 
-export {FocusContext};
+export {FocusContext, useFocus};
