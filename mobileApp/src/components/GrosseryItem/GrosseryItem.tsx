@@ -1,7 +1,13 @@
 import React, {useEffect, useState} from 'react';
-import {Animated, GestureResponderEvent, Text, View} from 'react-native';
+import {
+  Animated,
+  GestureResponderEvent,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {Icon} from 'react-native-elements';
-import {TextInput, TouchableOpacity} from 'react-native-gesture-handler';
+import {TextInput} from 'react-native-gesture-handler';
 import {useFocus} from '../../contexts/FocusContext';
 import {useModal} from '../../contexts/ModalContext';
 import {IItemData} from '../../models/IListData';
