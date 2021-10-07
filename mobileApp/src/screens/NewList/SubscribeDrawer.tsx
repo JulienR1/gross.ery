@@ -1,8 +1,6 @@
-import {SERVER_ENDPOINT} from '@env';
 import React, {useEffect, useState} from 'react';
-import {Text, TextInput, View} from 'react-native';
+import {Text, TextInput, TouchableOpacity, View} from 'react-native';
 import {Icon} from 'react-native-elements';
-import {TouchableOpacity} from 'react-native-gesture-handler';
 import {OptionDrawer} from '../../components/OptionDrawer';
 import {IListData} from '../../models/IListData';
 import {fetchListData, recordList} from './service';

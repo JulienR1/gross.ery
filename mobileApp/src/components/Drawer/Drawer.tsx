@@ -1,4 +1,5 @@
-import React, {ReactNode, ReactNodeArray} from 'react';
+import {EventArg, useNavigation} from '@react-navigation/core';
+import React, {ReactNode, ReactNodeArray, useEffect} from 'react';
 import {View} from 'react-native';
 import {styles} from './styles';
 
@@ -8,6 +9,20 @@ interface IProps {
 }
 
 export function Drawer({children, onClose}: IProps) {
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    const closeDrawerBeforeRemove = (event: any) => {
+      event.preventDefault();
+      onClose();
+    };
+    navigation.addListener('beforeRemove', closeDrawerBeforeRemove);
+
+    return () => {
+      navigation.removeListener('beforeRemove', closeDrawerBeforeRemove);
+    };
+  }, [navigation]);
+
   return (
     <View style={styles.backdrop} onTouchStart={onClose}>
       <View

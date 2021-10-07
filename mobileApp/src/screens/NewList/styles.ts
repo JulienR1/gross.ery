@@ -74,7 +74,6 @@ const drawerStyles = StyleSheet.create({
     backgroundColor: Colors.Main,
     justifyContent: 'center',
     alignItems: 'center',
-    flex: 1,
     padding: 10,
     borderRadius: 8,
     marginLeft: 6,
