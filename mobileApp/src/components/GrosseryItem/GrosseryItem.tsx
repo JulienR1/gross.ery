@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   Animated,
   GestureResponderEvent,
@@ -27,6 +27,7 @@ export function GrosseryItem({
 }: IProps) {
   const {subscribe, unsubscribe} = useFocus();
   const {setModal, setEnabled: setModalEnabled, closeModal} = useModal();
+  const isMounted = useRef<boolean>(true);
 
   const [itemData, setItemData] = useState<IItemData>(initialItemData);
   const [isEditing, setIsEditing] = useState<boolean>(false);
@@ -38,6 +39,7 @@ export function GrosseryItem({
   useEffect(() => {
     subscribe(stopEditing);
     return () => {
+      isMounted.current = false;
       unsubscribe(stopEditing);
     };
   }, []);
@@ -53,8 +55,10 @@ export function GrosseryItem({
     event.stopPropagation();
 
   const stopEditing = () => {
-    setNewName(itemData.name);
-    setIsEditing(false);
+    if (isMounted.current) {
+      setNewName(itemData.name);
+      setIsEditing(false);
+    }
   };
 
   const onSaveUpdates = () => {

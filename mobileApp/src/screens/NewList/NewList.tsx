@@ -1,21 +1,15 @@
 import {Icon} from 'react-native-elements';
-import React, {useState} from 'react';
-import {Text, View} from 'react-native';
-import {TouchableOpacity} from 'react-native-gesture-handler';
-import {drawerStyles, styles} from './styles';
-import {OptionDrawer} from '../../components/OptionDrawer';
+import React, {useEffect, useState} from 'react';
+import {Text, TouchableOpacity, View} from 'react-native';
+import {styles} from './styles';
 import {NewListDrawer} from './NewListDrawer';
 import {SubscribeDrawer} from './SubscribeDrawer';
+import {useNavigation} from '@react-navigation/core';
 
 enum SubscribeState {
   None,
   Subscribing,
   CreatingNew,
-}
-
-interface ListData {
-  _id: string;
-  items: ItemData[];
 }
 
 // TODO: Sync w/ cloudservice models
@@ -25,12 +19,23 @@ interface ItemData {
 }
 
 function NewList() {
+  const navigation = useNavigation();
   const [subscribingState, setSubscribingState] = useState<SubscribeState>(
     SubscribeState.None,
   );
+  const [requestToMenu, setRequestToMenu] = useState<boolean>(false);
 
-  const onDrawerClose = () => {
+  useEffect(() => {
+    if (requestToMenu) {
+      navigation.goBack();
+    }
+  }, [requestToMenu]);
+
+  const onDrawerClose = (goToMenu?: boolean) => {
     setSubscribingState(SubscribeState.None);
+    if (goToMenu) {
+      setRequestToMenu(true);
+    }
   };
 
   return (

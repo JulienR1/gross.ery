@@ -7,7 +7,7 @@ import {fetchListData, recordList} from './service';
 import {drawerStyles} from './styles';
 
 interface IProps {
-  onClose: () => void;
+  onClose: (goToMenu?: boolean) => void;
 }
 
 enum ListDataSearchState {
@@ -41,7 +41,7 @@ export function SubscribeDrawer({onClose}: IProps) {
 
   return (
     <OptionDrawer
-      onClose={onClose}
+      onClose={() => onClose()}
       onSubmit={() => recordList(enteredId)}
       submitTitle="S'abonner"
       submitIsValid={Boolean(foundListData)}>
@@ -65,7 +65,12 @@ export function SubscribeDrawer({onClose}: IProps) {
             <Icon name="qr-code" />
           )}
           {listDataSearchState === ListDataSearchState.Found && (
-            <Icon name="done" />
+            <>
+              <Icon name="done" />
+              <TouchableOpacity onPress={() => onClose(true)}>
+                <Text style={drawerStyles.message}>Retour au menu</Text>
+              </TouchableOpacity>
+            </>
           )}
           {listDataSearchState === ListDataSearchState.Error && (
             <Icon name="close" />

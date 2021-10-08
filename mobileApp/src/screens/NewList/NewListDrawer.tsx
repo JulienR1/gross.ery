@@ -1,6 +1,6 @@
 import {SERVER_ENDPOINT} from '@env';
 import React, {useState} from 'react';
-import {View} from 'react-native';
+import {TouchableOpacity, View} from 'react-native';
 import {Icon, Text} from 'react-native-elements';
 import {TextInput} from 'react-native-gesture-handler';
 import {OptionDrawer} from '../../components/OptionDrawer';
@@ -9,7 +9,7 @@ import {recordList} from './service';
 import {drawerStyles} from './styles';
 
 interface IProps {
-  onClose: () => void;
+  onClose: (goToMenu?: boolean) => void;
 }
 
 enum RequestState {
@@ -48,7 +48,7 @@ export function NewListDrawer({onClose}: IProps) {
 
   return (
     <OptionDrawer
-      onClose={onClose}
+      onClose={() => onClose()}
       onSubmit={() => createNewList()}
       submitTitle="Créer"
       submitIsValid={Boolean(listName)}
@@ -69,6 +69,12 @@ export function NewListDrawer({onClose}: IProps) {
       {requestState === RequestState.Success && (
         <View style={drawerStyles.feedbackIcon}>
           <Icon name="check" color={Colors.Green} size={100} />
+          <TouchableOpacity
+            onPress={() => {
+              onClose(true);
+            }}>
+            <Text style={drawerStyles.message}>Retourner au menu</Text>
+          </TouchableOpacity>
         </View>
       )}
       {requestState === RequestState.Failed && (
