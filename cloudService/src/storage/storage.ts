@@ -1,11 +1,13 @@
+import { ObjectId } from "bson";
+
 import { SavedItem, SavedList } from "../models";
 import { executeOnDB } from "./database";
-import { ObjectId } from "bson";
 
 const collectionName = "listes";
 
 const readSavedFile = async (id: string): Promise<SavedList | undefined> => {
 	if (id) {
+		/* eslint-disable no-async-promise-executor */
 		return new Promise(async (resolve) => {
 			await executeOnDB(async ({ db }) => {
 				const foundDoc = (await db.collection(collectionName).findOne({ _id: new ObjectId(id) })) as SavedList;
@@ -18,6 +20,7 @@ const readSavedFile = async (id: string): Promise<SavedList | undefined> => {
 
 const createNewList = (listName: string): Promise<ObjectId> => {
 	if (listName) {
+		/* eslint-disable no-async-promise-executor */
 		return new Promise(async (resolve) => {
 			await executeOnDB(async ({ db }) => {
 				const emptyList: SavedList = { name: listName, items: [] };
@@ -79,4 +82,4 @@ const removeItemFromList = (id: string, itemName: string): Promise<void> => {
 	throw new Error("Could not remove item from list.");
 };
 
-export { readSavedFile, updateSavedFile, removeSavedFile, createNewList, addItemToList, removeItemFromList };
+export { addItemToList, createNewList, readSavedFile, removeItemFromList, removeSavedFile, updateSavedFile };

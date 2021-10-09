@@ -1,4 +1,7 @@
 import express, { Request, Response, Router } from "express";
+
+import { AddBody, RemoveBody, SavedItem, UpdateBody } from "../models";
+import { NewBody, RemoveItemBody } from "../models/savedList";
 import {
 	addItemToList,
 	createNewList,
@@ -7,9 +10,7 @@ import {
 	removeSavedFile,
 	updateSavedFile,
 } from "../storage";
-import { AddBody, UpdateBody, RemoveBody, SavedItem } from "../models";
 import { Routes } from "./routes";
-import { NewBody, RemoveItemBody } from "../models/savedList";
 
 const routes = (): Router => {
 	const router = express.Router();
@@ -33,7 +34,9 @@ const routes = (): Router => {
 			if (generatedId) {
 				return res.send(generatedId.toHexString()).status(200);
 			}
-		} catch (ex) {}
+		} catch (ex) {
+			console.error(ex);
+		}
 		return res.sendStatus(500);
 	});
 

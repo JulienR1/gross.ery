@@ -1,4 +1,4 @@
-import { MongoClient, Db } from "mongodb";
+import { Db, MongoClient } from "mongodb";
 
 const connectToDB = async (): Promise<MongoClient> => {
 	const client = new MongoClient(process.env.DB_URL as string);
@@ -11,7 +11,9 @@ const getDB = async (): Promise<{ client: MongoClient; db: Db }> => {
 	return { client, db };
 };
 
-const executeOnDB = async (commands: ({ client, db }: { client: MongoClient; db: Db }) => Promise<void>) => {
+const executeOnDB = async (
+	commands: ({ client, db }: { client: MongoClient; db: Db }) => Promise<void>
+): Promise<void> => {
 	const { client, db } = await getDB();
 	await commands({ client, db });
 	await client.close();
