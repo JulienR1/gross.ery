@@ -13,11 +13,16 @@ export const styles = StyleSheet.create({
   header: {
     marginTop: 60,
   },
+  titleContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
   title: {
     fontFamily: Rubik.SemiBold,
     fontSize: 28,
     lineHeight: 33,
     color: Colors.Black,
+    marginLeft: 8,
   },
   text: {
     marginTop: 20,
@@ -55,6 +60,11 @@ export const styles = StyleSheet.create({
   footer: {
     marginBottom: 60,
     alignSelf: 'flex-end',
+  },
+  qrContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 40,
   },
 });
 

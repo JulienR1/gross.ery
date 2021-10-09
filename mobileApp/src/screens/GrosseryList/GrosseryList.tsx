@@ -11,6 +11,7 @@ import {Icon} from 'react-native-elements';
 import {GrosseryItem, NewGrosseryItem} from '../../components/GrosseryItem';
 import {useModal} from '../../contexts/ModalContext';
 import {useFocus} from '../../contexts/FocusContext';
+import QRCode from 'react-native-qrcode-svg';
 
 interface IProps {
   route: INavigationRoute;
@@ -28,6 +29,7 @@ export function GrosseryList({route}: IProps) {
   const {setModal, setEnabled: setModalEnabled, closeModal} = useModal();
 
   const isMounted = useRef<boolean>(true);
+  const [renderQR, setRenderQR] = useState<boolean>(false);
   const [listData, setListData] = useState<IListData | undefined>(undefined);
   const [cannotFindList, setCannotFindList] = useState<boolean>(false);
   const [addingNewItem, setAddingNewItem] = useState<boolean>(false);
@@ -108,23 +110,40 @@ export function GrosseryList({route}: IProps) {
       {listData && !cannotFindList && (
         <View style={styles.globalContainer}>
           <View style={[styles.container, styles.header]}>
-            <Text style={styles.title}>{listData.name}</Text>
-            <FlatList
-              style={styles.itemList}
-              data={listData.items}
-              keyExtractor={item => item.name}
-              renderItem={({item}) => (
-                <GrosseryItem
-                  initialItemData={item}
-                  onItemUpdate={updatedItem =>
-                    updateItemCheck(item, updatedItem)
-                  }
-                  onDelete={() => removeItem(item)}
-                />
-              )}
-            />
+            <View style={styles.titleContainer}>
+              <TouchableOpacity onPress={() => setRenderQR(!renderQR)}>
+                <Icon name="qr-code" size={28} />
+              </TouchableOpacity>
+              <Text style={styles.title}>{listData.name}</Text>
+            </View>
 
-            {!addingNewItem && (
+            {renderQR && (
+              <View style={styles.qrContainer}>
+                <QRCode value={`gross.ery ${listId}`} size={225} />
+                <TouchableOpacity onPress={() => setRenderQR(false)}>
+                  <Text style={styles.text}>Retour</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+
+            {!renderQR && (
+              <FlatList
+                style={styles.itemList}
+                data={listData.items}
+                keyExtractor={item => item.name}
+                renderItem={({item}) => (
+                  <GrosseryItem
+                    initialItemData={item}
+                    onItemUpdate={updatedItem =>
+                      updateItemCheck(item, updatedItem)
+                    }
+                    onDelete={() => removeItem(item)}
+                  />
+                )}
+              />
+            )}
+
+            {!renderQR && !addingNewItem && (
               <TouchableOpacity
                 onPress={() => setAddingNewItem(true)}
                 style={styles.newItemButton}>
@@ -133,7 +152,7 @@ export function GrosseryList({route}: IProps) {
               </TouchableOpacity>
             )}
 
-            {addingNewItem && (
+            {!renderQR && addingNewItem && (
               <NewGrosseryItem
                 listId={listId}
                 onSave={() => {
@@ -145,62 +164,66 @@ export function GrosseryList({route}: IProps) {
           </View>
 
           <View style={[styles.container, styles.footer]}>
-            <TouchableOpacity
-              style={styles.cannotFindListButton}
-              onPress={() => {
-                const onClose = () => {
-                  closeModal();
-                };
+            {!renderQR && (
+              <TouchableOpacity
+                style={styles.cannotFindListButton}
+                onPress={() => {
+                  const onClose = () => {
+                    closeModal();
+                  };
 
-                setModal({
-                  onClose,
-                  children: (
-                    <View style={modalStyles.container}>
+                  setModal({
+                    onClose,
+                    children: (
                       <View style={modalStyles.container}>
-                        <Text style={modalStyles.title}>
-                          Suppression d'une liste
-                        </Text>
-                        <Text style={modalStyles.description}>
-                          Confirmer la suppression de '
-                          {
-                            <Text style={modalStyles.bold}>
-                              {listData.name}
-                            </Text>
-                          }
-                          '.
-                        </Text>
-                      </View>
+                        <View style={modalStyles.container}>
+                          <Text style={modalStyles.title}>
+                            Suppression d'une liste
+                          </Text>
+                          <Text style={modalStyles.description}>
+                            Confirmer la suppression de '
+                            {
+                              <Text style={modalStyles.bold}>
+                                {listData.name}
+                              </Text>
+                            }
+                            '.
+                          </Text>
+                        </View>
 
-                      <View style={modalStyles.buttonContainer}>
-                        <TouchableOpacity
-                          onPress={onClose}
-                          style={[
-                            modalStyles.button,
-                            modalStyles.cancelButton,
-                          ]}>
-                          <Text style={modalStyles.buttonText}>Annuler</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                          onPress={() => {
-                            onClose();
-                            deleteList();
-                          }}
-                          style={[
-                            modalStyles.button,
-                            modalStyles.deleteButton,
-                          ]}>
-                          <Text style={modalStyles.buttonText}>Supprimer</Text>
-                        </TouchableOpacity>
+                        <View style={modalStyles.buttonContainer}>
+                          <TouchableOpacity
+                            onPress={onClose}
+                            style={[
+                              modalStyles.button,
+                              modalStyles.cancelButton,
+                            ]}>
+                            <Text style={modalStyles.buttonText}>Annuler</Text>
+                          </TouchableOpacity>
+                          <TouchableOpacity
+                            onPress={() => {
+                              onClose();
+                              deleteList();
+                            }}
+                            style={[
+                              modalStyles.button,
+                              modalStyles.deleteButton,
+                            ]}>
+                            <Text style={modalStyles.buttonText}>
+                              Supprimer
+                            </Text>
+                          </TouchableOpacity>
+                        </View>
                       </View>
-                    </View>
-                  ),
-                });
-                setModalEnabled(true);
-              }}>
-              <Text style={styles.cannotFindListButtonText}>
-                Supprimer la liste
-              </Text>
-            </TouchableOpacity>
+                    ),
+                  });
+                  setModalEnabled(true);
+                }}>
+                <Text style={styles.cannotFindListButtonText}>
+                  Supprimer la liste
+                </Text>
+              </TouchableOpacity>
+            )}
           </View>
         </View>
       )}
