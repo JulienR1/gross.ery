@@ -1,7 +1,9 @@
+import {useNavigation} from '@react-navigation/core';
 import React, {useEffect, useState} from 'react';
 import {Text, TextInput, TouchableOpacity, View} from 'react-native';
 import {Icon} from 'react-native-elements';
 import {OptionDrawer} from '../../components/OptionDrawer';
+import {QrScanner} from '../../components/QrScanner';
 import {IListData} from '../../models/IListData';
 import {fetchListData, recordList} from './service';
 import {drawerStyles} from './styles';
@@ -17,13 +19,30 @@ enum ListDataSearchState {
 }
 
 export function SubscribeDrawer({onClose}: IProps) {
+  const navigation = useNavigation();
+
   const [enteredId, setEnteredId] = useState<string>('');
+  const [scanningCode, setScanningCode] = useState<boolean>(false);
 
   const [listDataSearchState, setListDataSearchState] =
     useState<ListDataSearchState>(ListDataSearchState.None);
   const [foundListData, setFoundListData] = useState<IListData | undefined>(
     undefined,
   );
+
+  useEffect(() => {
+    const stopQrBeforeRemove = (event: any) => {
+      event.preventDefault();
+      scanningCode
+        ? setScanningCode(false)
+        : navigation.dispatch(event.data.action);
+    };
+    navigation.addListener('beforeRemove', stopQrBeforeRemove);
+
+    return () => {
+      navigation.removeListener('beforeRemove', stopQrBeforeRemove);
+    };
+  }, [navigation, scanningCode]);
 
   useEffect(() => {
     if (enteredId.length === 24) {
@@ -40,68 +59,82 @@ export function SubscribeDrawer({onClose}: IProps) {
   }, [enteredId]);
 
   return (
-    <OptionDrawer
-      onClose={() => onClose()}
-      onSubmit={() => recordList(enteredId)}
-      submitTitle="S'abonner"
-      submitIsValid={Boolean(foundListData)}>
-      <Text style={drawerStyles.title}>S'abonner</Text>
-
-      <Text style={drawerStyles.message}>Identifiant de la liste</Text>
-      <View style={drawerStyles.flexContainer}>
-        <TextInput
-          style={[drawerStyles.inputField, drawerStyles.sharedInputField]}
-          onChangeText={text => setEnteredId(text)}
+    <>
+      {scanningCode && (
+        <QrScanner
+          onListIdFound={listId => {
+            setScanningCode(false);
+            setEnteredId(listId);
+          }}
+          onListNotFound={() => setScanningCode(false)}
         />
-        <TouchableOpacity
-          style={[
-            drawerStyles.iconButton,
-            listDataSearchState === ListDataSearchState.Found &&
-              drawerStyles.inputSuccess,
-            listDataSearchState === ListDataSearchState.Error &&
-              drawerStyles.inputError,
-          ]}>
-          {listDataSearchState === ListDataSearchState.None && (
-            <Icon name="qr-code" />
-          )}
-          {listDataSearchState === ListDataSearchState.Found && (
-            <>
-              <Icon name="done" />
-              <TouchableOpacity onPress={() => onClose(true)}>
-                <Text style={drawerStyles.message}>Retour au menu</Text>
-              </TouchableOpacity>
-            </>
-          )}
-          {listDataSearchState === ListDataSearchState.Error && (
-            <Icon name="close" />
-          )}
-        </TouchableOpacity>
-      </View>
-
-      {listDataSearchState !== ListDataSearchState.None && (
-        <View style={drawerStyles.detailsContainer}>
-          {listDataSearchState === ListDataSearchState.Found && foundListData && (
-            <>
-              <Text style={drawerStyles.detailsHeader}>
-                Informations générales
-              </Text>
-              <Text style={drawerStyles.detailsText}>{`Appelée '${
-                foundListData.name || 'undefined'
-              }'`}</Text>
-              <Text
-                style={
-                  drawerStyles.detailsText
-                }>{`${foundListData.items.length} items`}</Text>
-            </>
-          )}
-          {(listDataSearchState === ListDataSearchState.Error ||
-            !foundListData) && (
-            <Text style={drawerStyles.detailsHeader}>
-              Aucune liste trouvée pour la valeur saisie
-            </Text>
-          )}
-        </View>
       )}
-    </OptionDrawer>
+      {!scanningCode && (
+        <OptionDrawer
+          onClose={() => onClose()}
+          onSubmit={() => {
+            recordList(enteredId);
+            onClose(true);
+          }}
+          submitTitle="S'abonner"
+          submitIsValid={Boolean(foundListData)}>
+          <Text style={drawerStyles.title}>S'abonner</Text>
+
+          <Text style={drawerStyles.message}>Identifiant de la liste</Text>
+          <View style={drawerStyles.flexContainer}>
+            <TextInput
+              style={[drawerStyles.inputField, drawerStyles.sharedInputField]}
+              value={enteredId}
+              onChangeText={text => setEnteredId(text)}
+            />
+            <TouchableOpacity
+              onPress={() => setScanningCode(true)}
+              style={[
+                drawerStyles.iconButton,
+                listDataSearchState === ListDataSearchState.Found &&
+                  drawerStyles.inputSuccess,
+                listDataSearchState === ListDataSearchState.Error &&
+                  drawerStyles.inputError,
+              ]}>
+              {listDataSearchState === ListDataSearchState.None && (
+                <Icon name="qr-code" />
+              )}
+              {listDataSearchState === ListDataSearchState.Found && (
+                <Icon name="done" />
+              )}
+              {listDataSearchState === ListDataSearchState.Error && (
+                <Icon name="close" />
+              )}
+            </TouchableOpacity>
+          </View>
+
+          {listDataSearchState !== ListDataSearchState.None && (
+            <View style={drawerStyles.detailsContainer}>
+              {listDataSearchState === ListDataSearchState.Found &&
+                foundListData && (
+                  <>
+                    <Text style={drawerStyles.detailsHeader}>
+                      Informations générales
+                    </Text>
+                    <Text style={drawerStyles.detailsText}>{`Appelée '${
+                      foundListData.name || 'undefined'
+                    }'`}</Text>
+                    <Text
+                      style={
+                        drawerStyles.detailsText
+                      }>{`${foundListData.items.length} items`}</Text>
+                  </>
+                )}
+              {(listDataSearchState === ListDataSearchState.Error ||
+                !foundListData) && (
+                <Text style={drawerStyles.detailsHeader}>
+                  Aucune liste trouvée pour la valeur saisie
+                </Text>
+              )}
+            </View>
+          )}
+        </OptionDrawer>
+      )}
+    </>
   );
 }

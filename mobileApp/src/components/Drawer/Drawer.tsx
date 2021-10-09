@@ -1,4 +1,4 @@
-import {EventArg, useNavigation} from '@react-navigation/core';
+import {useNavigation} from '@react-navigation/core';
 import React, {ReactNode, ReactNodeArray, useEffect} from 'react';
 import {View} from 'react-native';
 import {styles} from './styles';
