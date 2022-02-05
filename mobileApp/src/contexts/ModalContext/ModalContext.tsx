@@ -30,24 +30,24 @@ const context = createContext<IModalContext>({
 const useModal = (): IModalContext => useContext(context);
 
 function ModalContext({children}: IProps) {
-  const isMounted = useRef<boolean>(true);
+  const [isMounted, setIsMounted] = useState<boolean>(true);
   const [modalProps, setModalProps] = useState<IModalProps>();
   const [isEnabled, setIsEnabled] = useState<boolean>(false);
 
   useEffect(() => {
     return () => {
-      isMounted.current = false;
+      setIsMounted(false);
     };
   }, []);
 
   const setModal = (modalProps: IModalProps) => {
-    if (isMounted.current) {
+    if (isMounted) {
       setModalProps(modalProps);
     }
   };
 
   const setEnabled = (enabled: boolean) => {
-    if (isMounted.current) {
+    if (isMounted) {
       setIsEnabled(enabled);
     }
   };
@@ -62,15 +62,18 @@ function ModalContext({children}: IProps) {
             style={[styles.container, styles.darkOverlay]}
             onTouchStart={event => {
               event.stopPropagation();
-              setEnabled(false);
-              modalProps.onClose();
+              if (!modalProps.disableManualClose) {
+                setEnabled(false);
+                modalProps.onClose();
+              }
             }}>
             <Modal
+              {...modalProps}
               onClose={() => {
                 setEnabled(false);
                 modalProps.onClose();
               }}>
-              {modalProps.children}
+              {isMounted && modalProps.children}
             </Modal>
           </View>
         )}
