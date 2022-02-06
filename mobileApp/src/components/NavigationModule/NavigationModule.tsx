@@ -6,11 +6,16 @@ import {Home} from '../../screens/Home';
 import {NewList} from '../../screens/NewList';
 import {Routes} from '../../navigation/routes';
 import {useConnectivityWarning} from '../../hooks/ConnectivityWarning';
+import {Loader} from '../Loader';
 
 const Stack = createStackNavigator();
 
 export function NavigationModule() {
-  useConnectivityWarning();
+  const isLoaded = useConnectivityWarning();
+
+  if (!isLoaded) {
+    return <Loader />;
+  }
 
   return (
     <NavigationContainer>
