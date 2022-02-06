@@ -4,13 +4,16 @@ import {baseStyle} from './styles/base';
 import {ModalContext} from './contexts/ModalContext';
 import {FocusContext} from './contexts/FocusContext';
 import {NavigationModule} from './components/NavigationModule';
+import {UpdateBanner} from './components/UpdateBanner';
 
 const App = () => {
   return (
     <SafeAreaProvider style={baseStyle.body}>
       <FocusContext>
         <ModalContext>
-          <NavigationModule />
+          <UpdateBanner>
+            <NavigationModule />
+          </UpdateBanner>
         </ModalContext>
       </FocusContext>
     </SafeAreaProvider>

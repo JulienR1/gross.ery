@@ -5,5 +5,6 @@ export const baseStyle = StyleSheet.create({
   body: {
     flex: 1,
     backgroundColor: Colors.White,
+    position: 'relative',
   },
 });
