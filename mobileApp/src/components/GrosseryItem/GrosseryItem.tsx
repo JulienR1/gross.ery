@@ -92,7 +92,9 @@ export function GrosseryItem({
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.checkboxContainer} onPress={toggleCheck}>
+      <TouchableOpacity
+        style={[styles.checkboxContainer, !isEditing && {flex: 1}]}
+        onPress={toggleCheck}>
         <View style={[styles.checkbox, itemData.checked && styles.checked]}>
           {itemData.checked && (
             <Icon name="check" size={20} color={Colors.Green} />
@@ -100,6 +102,7 @@ export function GrosseryItem({
         </View>
         {!isEditing && (
           <Text
+            numberOfLines={1}
             style={[
               styles.text,
               itemData.checked && [styles.textChecked, styles.checked],
@@ -139,7 +142,12 @@ export function GrosseryItem({
         {isEditing && (
           <>
             <TouchableOpacity onPress={onSaveUpdates}>
-              <Icon name="save" color={Colors.Main} size={22} />
+              <Icon
+                name="save"
+                color={Colors.Main}
+                size={26}
+                style={{paddingHorizontal: 2}}
+              />
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
@@ -191,7 +199,12 @@ export function GrosseryItem({
                 });
                 setModalEnabled(true);
               }}>
-              <Icon name="close" color={Colors.Red} size={22} />
+              <Icon
+                name="close"
+                color={Colors.Red}
+                size={26}
+                style={{paddingHorizontal: 2}}
+              />
             </TouchableOpacity>
           </>
         )}
