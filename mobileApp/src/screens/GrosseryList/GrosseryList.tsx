@@ -116,7 +116,9 @@ export function GrosseryList({route}: IProps) {
               </TouchableOpacity>
               <Text style={styles.title}>{listData.name}</Text>
             </View>
+          </View>
 
+          <View style={[styles.container, styles.listContainer]}>
             {renderQR && (
               <View style={styles.qrContainer}>
                 <QRCode value={`gross.ery ${listId}`} size={225} />
