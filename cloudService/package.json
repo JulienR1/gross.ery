@@ -9,7 +9,7 @@
 		"test": "",
 		"lint": "eslint . --ext .ts",
 		"lint:fix": "npm run lint -- --fix",
-		"build": "tsc",
+		"build": "tsc --build src",
 		"publish": "npm run lint:fix && npm run test && npm run build && publish.sh"
 	},
 	"author": "",
