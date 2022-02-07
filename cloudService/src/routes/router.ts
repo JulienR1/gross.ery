@@ -3,8 +3,8 @@ import express, { Request, Response, Router } from "express";
 import { AddBody, RemoveBody, SavedItem, UpdateBody } from "../models";
 import { NewBody, RemoveItemBody } from "../models/savedList";
 import { addItemToList, createNewList, readSavedFile, removeItemFromList, removeSavedFile, updateSavedFile } from "../storage";
-import { Routes } from "./routes";
 import { version as serverVersion } from "./../../package.json";
+import { Routes } from "./routes";
 
 const routes = (): Router => {
     const router = express.Router();
