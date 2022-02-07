@@ -5,6 +5,7 @@ import {styles} from './styles';
 import {NewListDrawer} from './NewListDrawer';
 import {SubscribeDrawer} from './SubscribeDrawer';
 import {useNavigation} from '@react-navigation/core';
+import {IListParams} from '../../models/NavigationParams';
 
 enum SubscribeState {
   None,
@@ -18,12 +19,31 @@ interface ItemData {
   checked: boolean;
 }
 
-function NewList() {
+interface IProps {
+  route: INavigationRoute;
+}
+
+interface INavigationRoute {
+  params: IListParams;
+}
+
+function NewList({route}: IProps) {
   const navigation = useNavigation();
   const [subscribingState, setSubscribingState] = useState<SubscribeState>(
     SubscribeState.None,
   );
+  const [initialSubscriptionId, setInitialSubscriptionId] = useState<
+    string | undefined
+  >(undefined);
   const [requestToMenu, setRequestToMenu] = useState<boolean>(false);
+
+  useEffect(() => {
+    const listId = route?.params?.listId;
+    if (listId) {
+      setInitialSubscriptionId(listId);
+      setSubscribingState(SubscribeState.Subscribing);
+    }
+  }, [route]);
 
   useEffect(() => {
     if (requestToMenu) {
@@ -32,6 +52,7 @@ function NewList() {
   }, [requestToMenu]);
 
   const onDrawerClose = (goToMenu?: boolean) => {
+    setInitialSubscriptionId(undefined);
     setSubscribingState(SubscribeState.None);
     if (goToMenu) {
       setRequestToMenu(true);
@@ -59,7 +80,10 @@ function NewList() {
       </View>
 
       {subscribingState === SubscribeState.Subscribing && (
-        <SubscribeDrawer onClose={onDrawerClose} />
+        <SubscribeDrawer
+          initialListId={initialSubscriptionId}
+          onClose={onDrawerClose}
+        />
       )}
 
       {subscribingState === SubscribeState.CreatingNew && (

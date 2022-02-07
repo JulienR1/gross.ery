@@ -1,6 +1,6 @@
 import {useFocusEffect, useNavigation} from '@react-navigation/core';
-import React, {useState} from 'react';
-import {SafeAreaView, Text, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {Linking, SafeAreaView, Text, View} from 'react-native';
 import {Icon} from 'react-native-elements';
 import {FlatList, TouchableOpacity} from 'react-native-gesture-handler';
 import {ListCard} from '../../components/ListCard';
@@ -16,6 +16,21 @@ export function Home() {
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [localLists, setLocalLists] = useState<ILocalList[]>([]);
+
+  useEffect(() => {
+    Linking.getInitialURL().then(initialUrl => {
+      if (initialUrl) {
+        const urlSections = initialUrl.split('/');
+        if (urlSections.length > 0) {
+          const potentialListId = urlSections[urlSections.length - 1];
+          if (potentialListId.length === 24) {
+            const navigationParams: IListParams = {listId: potentialListId};
+            navigation.navigate(Routes.NewList, navigationParams);
+          }
+        }
+      }
+    });
+  }, []);
 
   useFocusEffect(() => {
     let isMounted = true;

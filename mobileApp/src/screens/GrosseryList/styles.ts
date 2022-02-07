@@ -6,12 +6,14 @@ export const styles = StyleSheet.create({
   globalContainer: {
     flex: 1,
     justifyContent: 'space-between',
+    height: '100%',
   },
   container: {
     paddingHorizontal: 40,
   },
   header: {
-    marginTop: 60,
+    height: 90,
+    justifyContent: 'flex-end',
   },
   titleContainer: {
     alignItems: 'center',
@@ -30,6 +32,21 @@ export const styles = StyleSheet.create({
     fontSize: 18,
     color: Colors.Black,
   },
+  textCenter: {
+    textAlign: 'center',
+  },
+  linkContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginVertical: 12,
+  },
+  textLink: {
+    fontFamily: Rubik.Light,
+    color: Colors.Black,
+    fontSize: 14,
+    marginRight: 6,
+  },
   newItemButton: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -41,8 +58,14 @@ export const styles = StyleSheet.create({
     lineHeight: 19,
     marginLeft: 12,
   },
+  listContainer: {
+    flex: 1,
+    position: 'relative',
+  },
   itemList: {
     marginVertical: 20,
+    maxHeight: '85%',
+    flexGrow: 0,
   },
   cannotFindListButton: {
     marginTop: 30,
@@ -58,8 +81,8 @@ export const styles = StyleSheet.create({
     color: Colors.White,
   },
   footer: {
-    marginBottom: 60,
     alignSelf: 'flex-end',
+    height: 120,
   },
   qrContainer: {
     justifyContent: 'center',

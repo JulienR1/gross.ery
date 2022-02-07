@@ -9,6 +9,7 @@ import {fetchListData, recordList} from './service';
 import {drawerStyles} from './styles';
 
 interface IProps {
+  initialListId: string | undefined;
   onClose: (goToMenu?: boolean) => void;
 }
 
@@ -18,10 +19,10 @@ enum ListDataSearchState {
   None,
 }
 
-export function SubscribeDrawer({onClose}: IProps) {
+export function SubscribeDrawer({initialListId, onClose}: IProps) {
   const navigation = useNavigation();
 
-  const [enteredId, setEnteredId] = useState<string>('');
+  const [enteredId, setEnteredId] = useState<string>(initialListId ?? '');
   const [scanningCode, setScanningCode] = useState<boolean>(false);
 
   const [listDataSearchState, setListDataSearchState] =

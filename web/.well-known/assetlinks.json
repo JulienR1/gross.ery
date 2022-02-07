@@ -1,0 +1,12 @@
+[
+	{
+		"relation": ["delegate_permission/common.handle_all_urls"],
+		"target": {
+			"namespace": "android_app",
+			"package_name": "com.grossery",
+			"sha256_cert_fingerprints": [
+				"37:A9:93:19:C3:6F:B0:50:0B:DA:41:48:4C:52:A2:96:B8:ED:01:F7:D8:9F:74:D7:11:0E:01:42:75:6B:D2:76"
+			]
+		}
+	}
+]
