@@ -12,6 +12,8 @@ import {GrosseryItem, NewGrosseryItem} from '../../components/GrosseryItem';
 import {useModal} from '../../contexts/ModalContext';
 import {useFocus} from '../../contexts/FocusContext';
 import QRCode from 'react-native-qrcode-svg';
+import {QR_PREFIX} from '@env';
+import Clipboard from '@react-native-clipboard/clipboard';
 
 interface IProps {
   route: INavigationRoute;
@@ -89,6 +91,8 @@ export function GrosseryList({route}: IProps) {
 
   const stopAddingNewItem = () => setAddingNewItem(false);
 
+  const downloadListLink = `https://jrousseau.ca/grossery/${listId}`;
+
   return (
     <>
       {!listData && !cannotFindList && <Loader />}
@@ -111,7 +115,10 @@ export function GrosseryList({route}: IProps) {
         <View style={styles.globalContainer}>
           <View style={[styles.container, styles.header]}>
             <View style={styles.titleContainer}>
-              <TouchableOpacity onPress={() => setRenderQR(!renderQR)}>
+              <TouchableOpacity
+                onPress={() =>
+                  setRenderQR(previousRenderQr => !previousRenderQr)
+                }>
                 <Icon name="qr-code" size={28} />
               </TouchableOpacity>
               <Text style={styles.title}>{listData.name}</Text>
@@ -121,7 +128,22 @@ export function GrosseryList({route}: IProps) {
           <View style={[styles.container, styles.listContainer]}>
             {renderQR && (
               <View style={styles.qrContainer}>
-                <QRCode value={`gross.ery ${listId}`} size={225} />
+                <QRCode value={`${QR_PREFIX} ${listId}`} size={225} />
+                <View>
+                  <Text style={[styles.text, styles.textCenter]}>
+                    Ou partager ce lien:
+                  </Text>
+                  <TouchableOpacity
+                    onPress={() => Clipboard.setString(downloadListLink)}>
+                    <View style={styles.linkContainer}>
+                      <Text style={[styles.textLink, styles.textCenter]}>
+                        {downloadListLink}
+                      </Text>
+                      <Icon name="content-copy" />
+                    </View>
+                  </TouchableOpacity>
+                </View>
+
                 <TouchableOpacity onPress={() => setRenderQR(false)}>
                   <Text style={styles.text}>Retour</Text>
                 </TouchableOpacity>
