@@ -32,6 +32,21 @@ export const styles = StyleSheet.create({
     fontSize: 18,
     color: Colors.Black,
   },
+  textCenter: {
+    textAlign: 'center',
+  },
+  linkContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginVertical: 12,
+  },
+  textLink: {
+    fontFamily: Rubik.Light,
+    color: Colors.Black,
+    fontSize: 14,
+    marginRight: 6,
+  },
   newItemButton: {
     flexDirection: 'row',
     alignItems: 'center',
