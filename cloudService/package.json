@@ -1,11 +1,11 @@
 {
 	"name": "cloudservice",
-	"version": "1.2.4",
+	"version": "1.2.5",
 	"description": "",
 	"main": "index.js",
 	"scripts": {
 		"dev": "nodemon --watch ./src ./src/index.ts",
-		"start": "cd ./out/src && node ./index.js",
+		"start": "cd ./out && node ./index.js",
 		"test": "",
 		"lint": "eslint . --ext .ts",
 		"lint:fix": "npm run lint -- --fix",
