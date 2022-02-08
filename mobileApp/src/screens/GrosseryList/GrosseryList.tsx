@@ -14,6 +14,7 @@ import {useFocus} from '../../contexts/FocusContext';
 import QRCode from 'react-native-qrcode-svg';
 import {QR_PREFIX} from '@env';
 import Clipboard from '@react-native-clipboard/clipboard';
+import {useNotification} from '../../contexts/NotificationContext';
 
 interface IProps {
   route: INavigationRoute;
@@ -26,6 +27,7 @@ interface INavigationRoute {
 export function GrosseryList({route}: IProps) {
   const listId = route.params.listId;
 
+  const notify = useNotification();
   const navigation = useNavigation();
   const {subscribe, unsubscribe} = useFocus();
   const {setModal, setEnabled: setModalEnabled, closeModal} = useModal();
@@ -134,7 +136,10 @@ export function GrosseryList({route}: IProps) {
                     Ou partager ce lien:
                   </Text>
                   <TouchableOpacity
-                    onPress={() => Clipboard.setString(downloadListLink)}>
+                    onPress={() => {
+                      Clipboard.setString(downloadListLink);
+                      notify('Copié!');
+                    }}>
                     <View style={styles.linkContainer}>
                       <Text style={[styles.textLink, styles.textCenter]}>
                         {downloadListLink}
