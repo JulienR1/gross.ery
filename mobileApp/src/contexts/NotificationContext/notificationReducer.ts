@@ -1,10 +1,10 @@
 import {ICurrentNotification, IPendingNotification} from './INotification';
-import {INotificationAction, NotificationType} from './notificationActions';
+import {NotificationAction, NotificationType} from './notificationActions';
 import {initialState, INotificationState} from './notificationState';
 
 function notificationReducer(
   state = initialState,
-  action: INotificationAction,
+  action: NotificationAction,
 ): INotificationState {
   switch (action.type) {
     case NotificationType.APPEND:

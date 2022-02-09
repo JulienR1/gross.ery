@@ -7,6 +7,7 @@ import React, {
   useReducer,
 } from 'react';
 import {Text, View} from 'react-native';
+import {IPendingNotification} from './INotification';
 import {
   appendNotification as appendNotificationAction,
   dismountNotification,
@@ -15,14 +16,14 @@ import {
 import {notificationReducer} from './notificationReducer';
 import {initialState} from './notificationState';
 
-interface IProps {
-  children: ReactNode | ReactNodeArray;
-}
-
 export type AppendNotificationFct = (
   content: string,
   renderTime?: number,
 ) => void;
+
+interface IProps {
+  children: ReactNode | ReactNodeArray;
+}
 
 const NotificationContext = createContext<AppendNotificationFct>(() => {
   throw Error('The context is improperly set.');
@@ -42,13 +43,12 @@ function NotificationProvider({children}: IProps) {
   }, []);
 
   const appendNotification = (content: string, renderTime = 600) => {
-    dispatch(
-      appendNotificationAction({
-        content,
-        renderTime,
-        onComplete: () => dispatch(removeNotification()),
-      }),
-    );
+    const notificationToAppend: IPendingNotification = {
+      content,
+      renderTime,
+      onComplete: () => dispatch(removeNotification()),
+    };
+    dispatch(appendNotificationAction(notificationToAppend));
   };
 
   return (

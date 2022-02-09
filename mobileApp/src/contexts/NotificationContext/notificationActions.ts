@@ -1,3 +1,4 @@
+import {Action} from '../../models/Action';
 import {IPendingNotification} from './INotification';
 
 export enum NotificationType {
@@ -5,22 +6,37 @@ export enum NotificationType {
   REMOVE = '[NOTIFICATION] REMOVE',
   DISMOUNT = '[NOTIFICATION] DISMOUNT',
 }
+export interface NotificationAppendAction
+  extends Action<NotificationType, IPendingNotification> {
+  type: NotificationType.APPEND;
+  payload: IPendingNotification;
+}
 
-export interface INotificationAction {
-  type: NotificationType;
-  payload: any; //TODO: specify type based on notification type
+export interface NotificationRemoveAction
+  extends Action<NotificationType, IPendingNotification> {
+  type: NotificationType.REMOVE;
+}
+
+export interface NotificationDismountAction
+  extends Action<NotificationType, IPendingNotification> {
+  type: NotificationType.DISMOUNT;
 }
 
 export function appendNotification(
   payload: IPendingNotification,
-): INotificationAction {
+): NotificationAppendAction {
   return {type: NotificationType.APPEND, payload};
 }
 
-export function removeNotification(): INotificationAction {
-  return {type: NotificationType.REMOVE, payload: undefined};
+export function removeNotification(): NotificationRemoveAction {
+  return {type: NotificationType.REMOVE};
 }
 
-export function dismountNotification(): INotificationAction {
-  return {type: NotificationType.DISMOUNT, payload: undefined};
+export function dismountNotification(): NotificationDismountAction {
+  return {type: NotificationType.DISMOUNT};
 }
+
+export type NotificationAction =
+  | NotificationAppendAction
+  | NotificationRemoveAction
+  | NotificationDismountAction;
