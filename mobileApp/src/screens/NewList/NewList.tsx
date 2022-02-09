@@ -49,7 +49,7 @@ function NewList({route}: IProps) {
     if (requestToMenu) {
       navigation.goBack();
     }
-  }, [requestToMenu]);
+  }, [requestToMenu, navigation]);
 
   const onDrawerClose = (goToMenu?: boolean) => {
     setInitialSubscriptionId(undefined);

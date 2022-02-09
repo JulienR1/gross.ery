@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
   Animated,
   GestureResponderEvent,
@@ -36,13 +36,20 @@ export function GrosseryItem({
   const [borderSlideAnimationValue, setBorderSlideAnimationValue] =
     useState<string>('0%');
 
+  const stopEditing = useCallback(() => {
+    if (isMounted.current) {
+      setNewName(itemData.name);
+      setIsEditing(false);
+    }
+  }, [setNewName, setIsEditing, itemData]);
+
   useEffect(() => {
     subscribe(stopEditing);
     return () => {
       isMounted.current = false;
       unsubscribe(stopEditing);
     };
-  }, []);
+  }, [stopEditing, subscribe, unsubscribe]);
 
   const toggleCheck = () => {
     const newItemData: IItemData = JSON.parse(JSON.stringify(itemData));
@@ -53,13 +60,6 @@ export function GrosseryItem({
 
   const preventStopEditing = (event: GestureResponderEvent) =>
     event.stopPropagation();
-
-  const stopEditing = () => {
-    if (isMounted.current) {
-      setNewName(itemData.name);
-      setIsEditing(false);
-    }
-  };
 
   const onSaveUpdates = () => {
     setIsEditing(false);
@@ -93,7 +93,7 @@ export function GrosseryItem({
   return (
     <View style={styles.container}>
       <TouchableOpacity
-        style={[styles.checkboxContainer, !isEditing && {flex: 1}]}
+        style={[styles.checkboxContainer, !isEditing && styles.container]}
         onPress={toggleCheck}>
         <View style={[styles.checkbox, itemData.checked && styles.checked]}>
           {itemData.checked && (
@@ -146,8 +146,8 @@ export function GrosseryItem({
               <Icon
                 name="save"
                 color={Colors.Main}
+                style={styles.icon}
                 size={26}
-                style={{paddingHorizontal: 2}}
               />
             </TouchableOpacity>
             <TouchableOpacity
@@ -203,8 +203,8 @@ export function GrosseryItem({
               <Icon
                 name="close"
                 color={Colors.Red}
+                style={styles.icon}
                 size={26}
-                style={{paddingHorizontal: 2}}
               />
             </TouchableOpacity>
           </>

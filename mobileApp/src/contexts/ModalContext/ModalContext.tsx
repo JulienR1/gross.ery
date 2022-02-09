@@ -4,7 +4,6 @@ import React, {
   ReactNodeArray,
   useContext,
   useEffect,
-  useRef,
   useState,
 } from 'react';
 import {View} from 'react-native';
@@ -40,9 +39,9 @@ function ModalContext({children}: IProps) {
     };
   }, []);
 
-  const setModal = (modalProps: IModalProps) => {
+  const setModal = (newModalProps: IModalProps) => {
     if (isMounted) {
-      setModalProps(modalProps);
+      setModalProps(newModalProps);
     }
   };
 

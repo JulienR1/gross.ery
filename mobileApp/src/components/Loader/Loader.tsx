@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View} from 'react-native';
 import {Dot} from './Dot';
 import {styles} from './styles';
@@ -23,7 +23,7 @@ export function Loader({dotCount, dotSize, growFactor}: IProps) {
     return () => {
       clearInterval(interval);
     };
-  }, []);
+  }, [dotCount]);
 
   return (
     <View style={styles.loader}>

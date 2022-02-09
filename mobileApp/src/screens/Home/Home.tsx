@@ -30,7 +30,7 @@ export function Home() {
         }
       }
     });
-  }, []);
+  }, [navigation]);
 
   useFocusEffect(() => {
     let isMounted = true;

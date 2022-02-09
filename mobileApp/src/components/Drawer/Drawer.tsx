@@ -21,7 +21,7 @@ export function Drawer({children, onClose}: IProps) {
     return () => {
       navigation.removeListener('beforeRemove', closeDrawerBeforeRemove);
     };
-  }, [navigation]);
+  }, [navigation, onClose]);
 
   return (
     <View style={styles.backdrop} onTouchStart={onClose}>

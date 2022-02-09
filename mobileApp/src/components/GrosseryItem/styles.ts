@@ -57,6 +57,9 @@ export const styles = StyleSheet.create({
   checked: {
     opacity: 0.4,
   },
+  icon: {
+    paddingHorizontal: 2,
+  },
 });
 
 export const modalStyles = StyleSheet.create({

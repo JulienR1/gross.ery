@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {Text, TouchableOpacity, View} from 'react-native';
 import {FlatList} from 'react-native-gesture-handler';
 import {useNavigation} from '@react-navigation/core';
@@ -38,16 +38,7 @@ export function GrosseryList({route}: IProps) {
   const [cannotFindList, setCannotFindList] = useState<boolean>(false);
   const [addingNewItem, setAddingNewItem] = useState<boolean>(false);
 
-  useEffect(() => {
-    fetchListData().catch(err => setCannotFindList(true));
-    subscribe(stopAddingNewItem);
-    return () => {
-      isMounted.current = false;
-      unsubscribe(stopAddingNewItem);
-    };
-  }, []);
-
-  const fetchListData = async () => {
+  const fetchListData = useCallback(async () => {
     try {
       const newListData = await doRequest(listId).getListData();
       if (isMounted.current) {
@@ -56,7 +47,16 @@ export function GrosseryList({route}: IProps) {
     } catch (ex) {
       throw new Error('Could not find the specified list.');
     }
-  };
+  }, [listId]);
+
+  useEffect(() => {
+    fetchListData().catch(_ => setCannotFindList(true));
+    subscribe(stopAddingNewItem);
+    return () => {
+      isMounted.current = false;
+      unsubscribe(stopAddingNewItem);
+    };
+  }, [fetchListData, subscribe, unsubscribe]);
 
   const updateItemCheck = async (
     originalItem: IItemData,

@@ -30,7 +30,7 @@ export function Dot({size, growFactor, animationDuration, isActive}: IProps) {
         setCurrentScaleFactor((growFactor - 1) * animationPercent + 1);
       }
     }).start();
-  }, [isActive]);
+  }, [isActive, animationDuration, growFactor]);
 
   const scaledSize = currentScaleFactor * size;
   const style = {
