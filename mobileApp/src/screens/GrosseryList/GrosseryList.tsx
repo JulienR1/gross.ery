@@ -138,7 +138,7 @@ export function GrosseryList({route}: IProps) {
                   <TouchableOpacity
                     onPress={() => {
                       Clipboard.setString(downloadListLink);
-                      notify('Copié!');
+                      notify('Lien copié', 800);
                     }}>
                     <View style={styles.linkContainer}>
                       <Text style={[styles.textLink, styles.textCenter]}>
