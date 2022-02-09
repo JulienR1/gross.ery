@@ -39,7 +39,7 @@ export function NewGrosseryItem({listId, onSave}: IProps) {
           onTouchStart={preventStopEditing}
           onChangeText={text => setItemName(text)}
         />
-        <View style={styles.textInputBorder}></View>
+        <View style={styles.textInputBorder} />
       </View>
 
       <View style={styles.endControls} onTouchStart={preventStopEditing}>

@@ -125,7 +125,8 @@ export function GrosseryItem({
             style={[
               styles.textInputBorder,
               {maxWidth: borderSlideAnimationValue},
-            ]}></View>
+            ]}
+          />
         </View>
       )}
 
