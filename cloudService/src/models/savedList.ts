@@ -34,3 +34,12 @@ export interface RemoveItemBody {
 	id: string;
 	itemName: string;
 }
+
+export interface ValidateCodeQuery {
+	[key: string]: string;
+}
+
+export interface InvitationCode {
+	_id: ObjectId;
+	code: string;
+}

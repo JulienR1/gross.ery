@@ -1,9 +1,10 @@
 import { ObjectId } from "bson";
 
-import { SavedItem, SavedList } from "../models";
+import { InvitationCode, SavedItem, SavedList } from "../models";
 import { executeOnDB } from "./database";
 
 const collectionName = "listes";
+const invitationCodeCollectionName = "codes";
 
 const readSavedFile = async (id: string): Promise<SavedList | undefined> => {
 	if (id) {
@@ -82,4 +83,26 @@ const removeItemFromList = (id: string, itemName: string): Promise<void> => {
 	throw new Error("Could not remove item from list.");
 };
 
-export { addItemToList, createNewList, readSavedFile, removeItemFromList, removeSavedFile, updateSavedFile };
+const isInvitationCodeValid = async (code: string): Promise<boolean> => {
+	if (code && /[a-zA-Z0-9_-]{5}/.test(code)) {
+		/* eslint-disable no-async-promise-executor */
+		return new Promise(async (resolve) => {
+			executeOnDB(async ({ db }) => {
+				const foundCode = (await db.collection(invitationCodeCollectionName).findOne({ code })) as InvitationCode;
+				await db.collection(invitationCodeCollectionName).deleteOne({ _id: foundCode._id });
+				return resolve(foundCode?.code === code);
+			});
+		});
+	}
+	return false;
+};
+
+export {
+	addItemToList,
+	createNewList,
+	readSavedFile,
+	removeItemFromList,
+	removeSavedFile,
+	updateSavedFile,
+	isInvitationCodeValid,
+};
