@@ -89,7 +89,9 @@ const isInvitationCodeValid = async (code: string): Promise<boolean> => {
 		return new Promise(async (resolve) => {
 			executeOnDB(async ({ db }) => {
 				const foundCode = (await db.collection(invitationCodeCollectionName).findOne({ code })) as InvitationCode;
-				await db.collection(invitationCodeCollectionName).deleteOne({ _id: foundCode._id });
+				if (foundCode) {
+					await db.collection(invitationCodeCollectionName).deleteOne({ _id: foundCode._id });
+				}
 				return resolve(foundCode?.code === code);
 			});
 		});

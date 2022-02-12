@@ -1,0 +1,16 @@
+{
+	"name": "codes",
+	"version": "1.0.0",
+	"description": "",
+	"main": "codeGenerator.js",
+	"scripts": {
+		"start": "node codeGenerator.js"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"dotenv": "^16.0.0",
+		"mongodb": "^4.3.1"
+	}
+}
