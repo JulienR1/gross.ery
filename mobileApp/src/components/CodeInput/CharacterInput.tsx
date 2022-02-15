@@ -6,6 +6,7 @@ interface IProps {
   children: ReactNode | ReactNodeArray;
   hasFocus: boolean;
   disabled: boolean;
+  width: string;
   onPress: () => void;
 }
 
@@ -13,6 +14,7 @@ export function CharacterInput({
   children,
   hasFocus,
   disabled,
+  width,
   onPress,
 }: IProps) {
   const animationPercent = useRef(new Animated.Value(1)).current;
@@ -47,6 +49,7 @@ export function CharacterInput({
     <View
       style={[
         styles.codeInput,
+        {width},
         hasFocus && styles.codeInputFocus,
         disabled && styles.codeInputDisabled,
       ]}>

@@ -24,7 +24,6 @@ export const styles = StyleSheet.create({
     shadowRadius: 4,
     borderWidth: 1,
     elevation: 5,
-    width: '16%',
     aspectRatio: 1,
   },
   codeInputFocus: {

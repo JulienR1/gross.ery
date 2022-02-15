@@ -71,6 +71,7 @@ export function CodeInput({characterCount, enabled, onCode}: IProps) {
             key={`code-${index}`}
             hasFocus={index === focusIndex}
             disabled={!enabled}
+            width={`${100 / (characterCount * 1.25)}%`}
             onPress={() => onSelectPosition(index)}>
             <Text style={styles.character}>{codeCharacters[index] ?? ''}</Text>
           </CharacterInput>
