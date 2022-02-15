@@ -31,7 +31,7 @@ const withDB = async (process) => {
 };
 
 const generateToken = () => {
-	return crypto.randomBytes(6).toString("base64").replace("/", "_").replace("+", "-");
+	return crypto.randomBytes(6).toString("base64").replace("/", "_").replace("+", "-").substring(0, 5);
 };
 
 const tokenExists = async (db, tokenToValidate) => {
