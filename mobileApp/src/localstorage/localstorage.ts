@@ -3,6 +3,7 @@ import {IListData} from '../models/IListData';
 import {ILocalList} from '../models/ILocalList';
 
 const localListPrefix = '@list_';
+const invitationPrefix = '@invitation_';
 
 const saveListToLocalStorage = async (listToSave: IListData) => {
   const dataToSave: ILocalList = {
@@ -48,8 +49,16 @@ const removeListFromLocalStorage = async (id: string): Promise<void> => {
   return AsyncStorage.removeItem(`${localListPrefix}${id}`);
 };
 
+const saveInvitationStatus = async (status = true) =>
+  AsyncStorage.setItem(`${invitationPrefix}_approved`, status.toString());
+
+const getInvitationStatus = async () =>
+  AsyncStorage.getItem(`${invitationPrefix}_approved`);
+
 export {
   saveListToLocalStorage,
   getAllLocalListData,
   removeListFromLocalStorage,
+  saveInvitationStatus,
+  getInvitationStatus,
 };

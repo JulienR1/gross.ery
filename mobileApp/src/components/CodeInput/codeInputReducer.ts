@@ -50,7 +50,8 @@ function onSelectCharacter(
   state: ICodeInputState,
   payload: number | undefined,
 ): ICodeInputState {
-  const focusIndex = payload ? clampFocusIndex(state, payload) : undefined;
+  const focusIndex =
+    payload !== undefined ? clampFocusIndex(state, payload) : undefined;
   return {...state, focusIndex};
 }
 

@@ -6,6 +6,7 @@ import {FocusContext} from './contexts/FocusContext';
 import {NavigationModule} from './components/NavigationModule';
 import {UpdateBanner} from './components/UpdateBanner';
 import {NotificationProvider} from './contexts/NotificationContext';
+import {InvitationGuard} from './components/InvitationGuard';
 
 const App = () => {
   return (
@@ -13,9 +14,11 @@ const App = () => {
       <FocusContext>
         <NotificationProvider>
           <ModalContext>
-            <UpdateBanner>
-              <NavigationModule />
-            </UpdateBanner>
+            <InvitationGuard>
+              <UpdateBanner>
+                <NavigationModule />
+              </UpdateBanner>
+            </InvitationGuard>
           </ModalContext>
         </NotificationProvider>
       </FocusContext>
