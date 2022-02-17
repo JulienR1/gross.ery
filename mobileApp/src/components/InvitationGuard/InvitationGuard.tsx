@@ -9,6 +9,7 @@ import React, {
 import {Text, View, Image} from 'react-native';
 import {getInvitationStatus, saveInvitationStatus} from '../../localstorage';
 import {CodeInput} from '../CodeInput';
+import {Loader} from '../Loader';
 import {validateCode} from './service';
 import {styles} from './styles';
 
@@ -17,15 +18,20 @@ interface IProps {
 }
 
 export function InvitationGuard({children}: IProps) {
+  const [isLoaded, setIsLoaded] = useState(false);
   const [hasBeenInvited, setHasBeenInvited] = useState(false);
   const [isValidatingCode, setIsValidatingCode] = useState(false);
   const [renderInvalid, setRenderInvalid] = useState(false);
   const errorTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const updateGuardStatus = useCallback(() => {
-    getInvitationStatus().then(storedStatus => {
-      setHasBeenInvited(storedStatus === 'true');
-    });
+    getInvitationStatus()
+      .then(storedStatus => {
+        setHasBeenInvited(storedStatus === 'true');
+      })
+      .finally(() => {
+        setIsLoaded(true);
+      });
   }, []);
 
   useEffect(() => {
@@ -63,7 +69,8 @@ export function InvitationGuard({children}: IProps) {
 
   return (
     <>
-      {!hasBeenInvited && (
+      {!isLoaded && <Loader />}
+      {isLoaded && !hasBeenInvited && (
         <View style={styles.container}>
           <Image
             style={styles.logo}
