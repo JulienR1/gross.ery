@@ -11,7 +11,11 @@ import {Loader} from '../Loader';
 const Stack = createStackNavigator();
 
 export function NavigationModule() {
-  const isLoaded = useConnectivityWarning();
+  const {isLoaded, preventNavigation} = useConnectivityWarning();
+
+  const screenNavigationEvents = {
+    beforeRemove: (e: any) => preventNavigation && e.preventDefault(),
+  };
 
   if (!isLoaded) {
     return <Loader />;
@@ -20,6 +24,7 @@ export function NavigationModule() {
   return (
     <NavigationContainer>
       <Stack.Navigator
+        screenListeners={screenNavigationEvents}
         initialRouteName={Routes.Home}
         screenOptions={{headerShown: false}}>
         <Stack.Screen name={Routes.Home} component={Home} />

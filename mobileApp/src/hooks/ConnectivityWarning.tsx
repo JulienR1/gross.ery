@@ -7,6 +7,7 @@ export function useConnectivityWarning() {
   const netinfo = useNetInfo();
   const {setEnabled, setModal} = useModal();
   const [isLoaded, setIsLoaded] = useState(false);
+  const [preventNavigation, setPreventNavigation] = useState(false);
 
   useEffect(() => {
     if (
@@ -33,7 +34,8 @@ export function useConnectivityWarning() {
       });
     }
     setEnabled(isDisconnectedFromInternet);
+    setPreventNavigation(isDisconnectedFromInternet);
   }, [netinfo]);
 
-  return isLoaded;
+  return {isLoaded, preventNavigation};
 }
