@@ -4,7 +4,7 @@ import {Colors} from '../../styles/colors';
 
 export const styles = StyleSheet.create({
   container: {
-    marginVertical: 7,
+    marginVertical: 5,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',

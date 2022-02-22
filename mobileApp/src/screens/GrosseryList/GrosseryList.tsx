@@ -93,7 +93,7 @@ export function GrosseryList({route}: IProps) {
 
   const stopAddingNewItem = () => setAddingNewItem(false);
 
-  const downloadListLink = `https://jrousseau.ca/grossery/${listId}`;
+  const downloadListLink = `https://jrousseau.ca/grossery/?${listId}`;
 
   return (
     <>
