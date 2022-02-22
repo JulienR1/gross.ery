@@ -9,27 +9,40 @@ import React, {
 import {Text, View, Image} from 'react-native';
 import {getInvitationStatus, saveInvitationStatus} from '../../localstorage';
 import {CodeInput} from '../CodeInput';
+import {Loader} from '../Loader';
 import {validateCode} from './service';
 import {styles} from './styles';
+
+enum GuardState {
+  Idle = 'idle',
+  Loading = 'loading',
+  Validating = 'validating',
+  Allowed = 'allowed',
+  Blocked = 'blocked',
+}
 
 interface IProps {
   children: ReactNode | ReactNodeArray;
 }
 
 export function InvitationGuard({children}: IProps) {
-  const [hasBeenInvited, setHasBeenInvited] = useState(false);
-  const [isValidatingCode, setIsValidatingCode] = useState(false);
-  const [renderInvalid, setRenderInvalid] = useState(false);
+  const [guardState, setGuardState] = useState<GuardState>(GuardState.Loading);
   const errorTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const updateGuardStatus = useCallback(() => {
+  const updateGuardStatus = useCallback((isInitialRequest = false) => {
     getInvitationStatus().then(storedStatus => {
-      setHasBeenInvited(storedStatus === 'true');
+      setGuardState(
+        storedStatus === 'true'
+          ? GuardState.Allowed
+          : isInitialRequest
+          ? GuardState.Idle
+          : GuardState.Blocked,
+      );
     });
   }, []);
 
   useEffect(() => {
-    updateGuardStatus();
+    updateGuardStatus(true);
   }, [updateGuardStatus]);
 
   useEffect(() => {
@@ -40,30 +53,30 @@ export function InvitationGuard({children}: IProps) {
     };
 
     clear();
-    errorTimeoutRef.current = setTimeout(() => setRenderInvalid(false), 4000);
+    if (guardState === GuardState.Blocked) {
+      errorTimeoutRef.current = setTimeout(
+        () => setGuardState(GuardState.Idle),
+        4000,
+      );
+    }
     return () => {
       clear();
     };
-  }, [renderInvalid]);
+  }, [guardState]);
 
-  const onCode = (code: string) => {
-    setIsValidatingCode(true);
-    validateCode(code)
-      .then(codeIsValid => {
-        saveInvitationStatus(codeIsValid);
-        if (!codeIsValid) {
-          setRenderInvalid(true);
-        }
-      })
-      .then(() => {
-        updateGuardStatus();
-        setIsValidatingCode(false);
-      });
+  const onCode = async (code: string) => {
+    setGuardState(GuardState.Validating);
+    const codeIsValid = await validateCode(code);
+    await saveInvitationStatus(codeIsValid);
+    updateGuardStatus();
   };
 
   return (
     <>
-      {!hasBeenInvited && (
+      {guardState === GuardState.Loading && <Loader />}
+      {[GuardState.Idle, GuardState.Validating, GuardState.Blocked].includes(
+        guardState,
+      ) && (
         <View style={styles.container}>
           <Image
             style={styles.logo}
@@ -74,22 +87,22 @@ export function InvitationGuard({children}: IProps) {
           </View>
           <CodeInput
             characterCount={5}
-            enabled={!isValidatingCode}
+            enabled={guardState !== GuardState.Validating}
             onCode={code => onCode(code)}
           />
 
           <View>
-            {isValidatingCode && (
+            {guardState === GuardState.Validating && (
               <Text style={styles.feedback}>Vérification en cours</Text>
             )}
-            {renderInvalid && (
+            {guardState === GuardState.Blocked && (
               <Text style={styles.feedback}>Code invalide</Text>
             )}
           </View>
         </View>
       )}
 
-      {hasBeenInvited && children}
+      {guardState === GuardState.Allowed && children}
     </>
   );
 }
