@@ -64,16 +64,11 @@ export function InvitationGuard({children}: IProps) {
     };
   }, [guardState]);
 
-  const onCode = (code: string) => {
+  const onCode = async (code: string) => {
     setGuardState(GuardState.Validating);
-    validateCode(code)
-      .then(async codeIsValid => {
-        await saveInvitationStatus(codeIsValid);
-        if (!codeIsValid) {
-          setGuardState(GuardState.Blocked);
-        }
-      })
-      .then(() => updateGuardStatus());
+    const codeIsValid = await validateCode(code);
+    await saveInvitationStatus(codeIsValid);
+    updateGuardStatus();
   };
 
   return (
