@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   NavigationContainer,
   useNavigationContainerRef,
@@ -16,13 +16,16 @@ const Stack = createStackNavigator();
 
 export function NavigationModule() {
   const navigationRef = useNavigationContainerRef();
+  const [screenNavigationEvents, setScreenNavigationEvents] = useState({});
 
   const {isLoaded, preventNavigation} = useConnectivityWarning();
   useAutomaticSubscriber({navigationRef});
 
-  const screenNavigationEvents = {
-    beforeRemove: (e: any) => preventNavigation && e.preventDefault(),
-  };
+  useEffect(() => {
+    setScreenNavigationEvents({
+      beforeRemove: (e: any) => preventNavigation && e.preventDefault(),
+    });
+  }, [preventNavigation]);
 
   if (!isLoaded) {
     return <Loader />;

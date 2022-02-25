@@ -102,9 +102,9 @@ const isInvitationCodeValid = async (code: string): Promise<boolean> => {
 export {
 	addItemToList,
 	createNewList,
-	isInvitationCodeValid,
 	readSavedFile,
 	removeItemFromList,
 	removeSavedFile,
 	updateSavedFile,
+	isInvitationCodeValid,
 };

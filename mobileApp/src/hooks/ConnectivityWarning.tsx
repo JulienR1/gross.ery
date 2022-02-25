@@ -1,6 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {useNetInfo} from '@react-native-community/netinfo';
+import {AppState} from 'react-native';
 import {useModal} from '../contexts/ModalContext';
+import {
+  NetInfoState,
+  useNetInfo,
+  fetch as fetchNetInfo,
+} from '@react-native-community/netinfo';
 import {ConnectivityModal} from '../components/ConnectivityModal';
 
 export function useConnectivityWarning() {
@@ -9,7 +14,7 @@ export function useConnectivityWarning() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [preventNavigation, setPreventNavigation] = useState(false);
 
-  useEffect(() => {
+  const updateConnectityWarning = (netinfo: NetInfoState) => {
     if (
       netinfo.details === null &&
       netinfo.isConnected === null &&
@@ -35,6 +40,24 @@ export function useConnectivityWarning() {
     }
     setEnabled(isDisconnectedFromInternet);
     setPreventNavigation(isDisconnectedFromInternet);
+  };
+
+  useEffect(() => {
+    const onAppFocus = async () => {
+      if (AppState.currentState === 'active') {
+        const currentNetInfo = await fetchNetInfo();
+        updateConnectityWarning(currentNetInfo);
+      }
+    };
+
+    AppState.addEventListener('change', onAppFocus);
+    return () => {
+      AppState.removeEventListener('change', onAppFocus);
+    };
+  }, []);
+
+  useEffect(() => {
+    updateConnectityWarning(netinfo);
   }, [netinfo]);
 
   return {isLoaded, preventNavigation};

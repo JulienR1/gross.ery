@@ -87,8 +87,7 @@ const routes = (): Router => {
 	router.get(Routes.VERSION, async (req: Request, res: Response) => {
 		const versions = {
 			server: serverVersion,
-			app: process.env.APP_VERSION ?? "",
-			downloadLink: process.env.APP_DOWNLOAD_LINK ?? "",
+			appVersion: process.env.APP_VERSION ?? "",
 		};
 		res.json({ ...versions }).status(200);
 	});
