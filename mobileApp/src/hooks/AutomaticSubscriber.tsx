@@ -1,25 +1,17 @@
 import {useEffect} from 'react';
-import {Linking, AppState} from 'react-native';
 import {NavigationContainerRefWithCurrent} from '@react-navigation/native';
-import {IListParams} from '../../models/NavigationParams';
-import {Routes} from '../../navigation/routes';
+import {IListParams} from '../models/NavigationParams';
+import {Routes} from '../navigation/routes';
+import {useUrl} from './url';
 
 interface IProps {
   navigationRef: NavigationContainerRefWithCurrent<ReactNavigation.RootParamList>;
 }
 
 export function useAutomaticSubscriber({navigationRef}: IProps) {
-  const onAppStateChange = async () => {
-    if (AppState.currentState === 'active') {
-      const listId = await getListIdFromUrl();
-      if (listId) {
-        navigateToList(listId);
-      }
-    }
-  };
+  const url = useUrl();
 
   const getListIdFromUrl = async () => {
-    const url = await Linking.getInitialURL();
     if (url) {
       const potentialListId = url.split('?').reverse()?.[0];
       if (potentialListId.length === 24) {
@@ -41,8 +33,10 @@ export function useAutomaticSubscriber({navigationRef}: IProps) {
       return;
     }
 
-    onAppStateChange();
-    AppState.addEventListener('change', onAppStateChange);
-    return () => AppState.removeEventListener('change', onAppStateChange);
-  }, [onAppStateChange, navigationRef]);
+    getListIdFromUrl().then(listId => {
+      if (listId) {
+        navigateToList(listId);
+      }
+    });
+  }, [url, navigationRef]);
 }

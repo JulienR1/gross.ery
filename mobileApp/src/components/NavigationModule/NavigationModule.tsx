@@ -9,8 +9,8 @@ import {Home} from '../../screens/Home';
 import {NewList} from '../../screens/NewList';
 import {Routes} from '../../navigation/routes';
 import {useConnectivityWarning} from '../../hooks/ConnectivityWarning';
+import {useAutomaticSubscriber} from '../../hooks/AutomaticSubscriber';
 import {Loader} from '../Loader';
-import {useAutomaticSubscriber} from '../AutomaticSubscriber/AutomaticSubscriber';
 
 const Stack = createStackNavigator();
 
