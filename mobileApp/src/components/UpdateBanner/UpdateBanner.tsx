@@ -19,7 +19,11 @@ export function UpdateBanner({children}: IProps) {
     if (netinfo.details && netinfo.isInternetReachable) {
       getVersion()
         .then(appVersion => {
-          const versionHasChanged = appVersion.localeCompare(version) > 0;
+          const versionHasChanged =
+            appVersion.localeCompare(version, undefined, {
+              numeric: true,
+              sensitivity: 'base',
+            }) > 0;
           setIsOpen(versionHasChanged);
         })
         .catch(() => setIsOpen(false));
