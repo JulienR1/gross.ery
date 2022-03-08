@@ -49,11 +49,12 @@ const removeListFromLocalStorage = async (id: string): Promise<void> => {
   return AsyncStorage.removeItem(`${localListPrefix}${id}`);
 };
 
-const saveInvitationStatus = async (status = true) =>
-  AsyncStorage.setItem(`${invitationPrefix}_approved`, status.toString());
-
-const getInvitationStatus = async () =>
-  AsyncStorage.getItem(`${invitationPrefix}_approved`);
+const saveInvitationStatus = async (status = true) => {
+  return AsyncStorage.setItem(`${invitationPrefix}approved`, status.toString());
+};
+const getInvitationStatus = async () => {
+  return AsyncStorage.getItem(`${invitationPrefix}approved`);
+};
 
 export {
   saveListToLocalStorage,

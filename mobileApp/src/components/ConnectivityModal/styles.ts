@@ -21,4 +21,13 @@ export const modalStyles = StyleSheet.create({
   bold: {
     fontFamily: Rubik.Medium,
   },
+  manualCheckContainer: {
+    position: 'absolute',
+    width: '100%',
+    bottom: 0,
+  },
+  manualCheck: {
+    textAlign: 'center',
+    fontSize: 14,
+  },
 });

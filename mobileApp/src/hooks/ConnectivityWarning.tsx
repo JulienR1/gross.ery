@@ -14,6 +14,11 @@ export function useConnectivityWarning() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [preventNavigation, setPreventNavigation] = useState(false);
 
+  const updateConnectityWarningManually = async () => {
+    const currentNetInfo = await fetchNetInfo();
+    updateConnectityWarning(currentNetInfo);
+  };
+
   const updateConnectityWarning = (netinfo: NetInfoState) => {
     if (
       netinfo.details === null &&
@@ -33,7 +38,9 @@ export function useConnectivityWarning() {
 
     if (isDisconnectedFromInternet) {
       setModal({
-        children: <ConnectivityModal />,
+        children: (
+          <ConnectivityModal onManualCheck={updateConnectityWarningManually} />
+        ),
         disableManualClose: true,
         onClose: () => {},
       });
@@ -45,14 +52,13 @@ export function useConnectivityWarning() {
   useEffect(() => {
     const onAppFocus = async () => {
       if (AppState.currentState === 'active') {
-        const currentNetInfo = await fetchNetInfo();
-        updateConnectityWarning(currentNetInfo);
+        updateConnectityWarningManually();
       }
     };
 
-    AppState.addEventListener('change', onAppFocus);
+    const listener = AppState.addEventListener('change', onAppFocus) as any;
     return () => {
-      AppState.removeEventListener('change', onAppFocus);
+      listener.remove();
     };
   }, []);
 
