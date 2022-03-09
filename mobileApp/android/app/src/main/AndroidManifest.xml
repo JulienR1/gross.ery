@@ -34,7 +34,12 @@
             <data android:scheme="https"/>
             <data android:host="jrousseau.ca"/>
             <data android:pathPrefix="/grossery"/>
-        </intent-filter>        
+        </intent-filter>
+        <intent-filter>
+          <action android:name="android.intent.action.VIEW" />
+          <category android:name="android.intent.category.DEFAULT" />
+          <data android:scheme="grossery" />
+        </intent-filter>
       </activity>
     </application>
 </manifest>
