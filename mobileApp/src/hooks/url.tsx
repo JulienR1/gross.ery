@@ -25,9 +25,5 @@ export function useUrl() {
     return () => listener.remove();
   }, []);
 
-  useEffect(() => {
-    console.log(url);
-  }, [url]);
-
   return url;
 }
