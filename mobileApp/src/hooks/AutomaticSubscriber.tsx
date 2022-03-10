@@ -2,15 +2,18 @@ import {useEffect} from 'react';
 import {NavigationContainerRefWithCurrent} from '@react-navigation/native';
 import {IListParams} from '../models/NavigationParams';
 import {Routes} from '../navigation/routes';
-import {useUrl} from './url';
 
 interface IProps {
+  url: string | undefined;
+  canNavigate: boolean;
   navigationRef: NavigationContainerRefWithCurrent<ReactNavigation.RootParamList>;
 }
 
-export function useAutomaticSubscriber({navigationRef}: IProps) {
-  const url = useUrl();
-
+export function useAutomaticSubscriber({
+  url,
+  canNavigate,
+  navigationRef,
+}: IProps) {
   const getListIdFromUrl = async () => {
     if (url) {
       const potentialListId = url.split('?').reverse()?.[0];
@@ -29,7 +32,7 @@ export function useAutomaticSubscriber({navigationRef}: IProps) {
   };
 
   useEffect(() => {
-    if (!navigationRef?.isReady()) {
+    if (!canNavigate) {
       return;
     }
 
@@ -38,5 +41,5 @@ export function useAutomaticSubscriber({navigationRef}: IProps) {
         navigateToList(listId);
       }
     });
-  }, [url, navigationRef]);
+  }, [url, canNavigate]);
 }

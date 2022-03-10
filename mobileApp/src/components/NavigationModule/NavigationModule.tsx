@@ -14,12 +14,22 @@ import {Loader} from '../Loader';
 
 const Stack = createStackNavigator();
 
-export function NavigationModule() {
+interface IProps {
+  url: string | undefined;
+}
+
+export function NavigationModule({url}: IProps) {
   const navigationRef = useNavigationContainerRef();
+  const [navigationIsLoaded, setNavigationIsLoaded] = useState(false);
   const [screenNavigationEvents, setScreenNavigationEvents] = useState({});
 
   const {isLoaded, preventNavigation} = useConnectivityWarning();
-  useAutomaticSubscriber({navigationRef});
+
+  useAutomaticSubscriber({
+    url,
+    navigationRef,
+    canNavigate: navigationIsLoaded && !preventNavigation,
+  });
 
   useEffect(() => {
     setScreenNavigationEvents({
@@ -32,7 +42,9 @@ export function NavigationModule() {
   }
 
   return (
-    <NavigationContainer ref={navigationRef}>
+    <NavigationContainer
+      ref={navigationRef}
+      onReady={() => setNavigationIsLoaded(true)}>
       <Stack.Navigator
         screenListeners={screenNavigationEvents}
         initialRouteName={Routes.Home}

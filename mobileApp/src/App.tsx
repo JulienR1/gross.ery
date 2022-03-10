@@ -8,8 +8,11 @@ import {UpdateBanner} from './components/UpdateBanner';
 import {NotificationProvider} from './contexts/NotificationContext';
 import {InvitationGuard} from './components/InvitationGuard';
 import {Footer} from './components/Footer';
+import {useUrl} from './hooks/url';
 
 const App = () => {
+  const url = useUrl();
+
   return (
     <SafeAreaProvider style={baseStyle.body}>
       <Footer>
@@ -18,7 +21,7 @@ const App = () => {
             <ModalContext>
               <InvitationGuard>
                 <UpdateBanner>
-                  <NavigationModule />
+                  <NavigationModule url={url} />
                 </UpdateBanner>
               </InvitationGuard>
             </ModalContext>
