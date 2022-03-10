@@ -7,21 +7,27 @@ import {NavigationModule} from './components/NavigationModule';
 import {UpdateBanner} from './components/UpdateBanner';
 import {NotificationProvider} from './contexts/NotificationContext';
 import {InvitationGuard} from './components/InvitationGuard';
+import {Footer} from './components/Footer';
+import {useUrl} from './hooks/url';
 
 const App = () => {
+  const url = useUrl();
+
   return (
     <SafeAreaProvider style={baseStyle.body}>
-      <FocusContext>
-        <NotificationProvider>
-          <ModalContext>
-            <InvitationGuard>
-              <UpdateBanner>
-                <NavigationModule />
-              </UpdateBanner>
-            </InvitationGuard>
-          </ModalContext>
-        </NotificationProvider>
-      </FocusContext>
+      <Footer>
+        <FocusContext>
+          <NotificationProvider>
+            <ModalContext>
+              <InvitationGuard>
+                <UpdateBanner>
+                  <NavigationModule url={url} />
+                </UpdateBanner>
+              </InvitationGuard>
+            </ModalContext>
+          </NotificationProvider>
+        </FocusContext>
+      </Footer>
     </SafeAreaProvider>
   );
 };
