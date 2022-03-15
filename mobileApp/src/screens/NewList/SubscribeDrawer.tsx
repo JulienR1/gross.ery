@@ -99,6 +99,7 @@ export function SubscribeDrawer({initialListId, onClose}: IProps) {
             />
             <TouchableOpacity
               onPress={() => setScanningCode(true)}
+              disabled={listDataSearchState !== ListDataSearchState.None}
               style={[
                 drawerStyles.iconButton,
                 listDataSearchState === ListDataSearchState.Found &&
@@ -129,10 +130,9 @@ export function SubscribeDrawer({initialListId, onClose}: IProps) {
                     <Text style={drawerStyles.detailsText}>{`Appelée '${
                       foundListData.name || 'undefined'
                     }'`}</Text>
-                    <Text
-                      style={
-                        drawerStyles.detailsText
-                      }>{`${foundListData.items.length} items`}</Text>
+                    <Text style={drawerStyles.detailsText}>{`${
+                      foundListData.items.length
+                    } item${foundListData.items.length > 1 ? 's' : ''}`}</Text>
                   </>
                 )}
               {(listDataSearchState === ListDataSearchState.Error ||
