@@ -11,8 +11,12 @@ const readSavedFile = async (id: string): Promise<SavedList | undefined> => {
 		/* eslint-disable no-async-promise-executor */
 		return new Promise(async (resolve) => {
 			await executeOnDB(async ({ db }) => {
-				const foundDoc = (await db.collection(collectionName).findOne({ _id: new ObjectId(id) })) as SavedList;
-				return resolve(foundDoc);
+				try {
+					const foundDoc = (await db.collection(collectionName).findOne({ _id: new ObjectId(id) })) as SavedList;
+					return resolve(foundDoc);
+				} catch {
+					return resolve(undefined);
+				}
 			});
 		});
 	}
