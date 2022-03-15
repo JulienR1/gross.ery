@@ -1,5 +1,6 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
+  TextInput,
   Animated,
   GestureResponderEvent,
   Text,
@@ -7,7 +8,6 @@ import {
   View,
 } from 'react-native';
 import {Icon} from 'react-native-elements';
-import {TextInput} from 'react-native-gesture-handler';
 import {useFocus} from '../../contexts/FocusContext';
 import {useModal} from '../../contexts/ModalContext';
 import {IItemData} from '../../models/IListData';
