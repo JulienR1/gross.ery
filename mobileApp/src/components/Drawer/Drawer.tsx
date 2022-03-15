@@ -10,6 +10,7 @@ interface IProps {
 
 export function Drawer({children, onClose}: IProps) {
   const navigation = useNavigation();
+  const [isMounted, setIsMounted] = useState(true);
   const [animationPercent, setAnimationPercent] = useState(0);
 
   useEffect(() => {
@@ -19,7 +20,13 @@ export function Drawer({children, onClose}: IProps) {
       duration: 200,
       useNativeDriver: true,
     }).start();
-    animation.addListener(({value}) => setAnimationPercent(value));
+    animation.addListener(({value}) => {
+      if (isMounted) {
+        setAnimationPercent(value);
+      }
+    });
+
+    return () => setIsMounted(false);
   }, []);
 
   useEffect(() => {
