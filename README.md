@@ -9,9 +9,13 @@ APP_VERSION=
 APP_DOWNLOAD_LINK=
 ```
 
-## MobileApp .env
+## MobileApp environment
+
+Copy `env.template.ts` and replace the appropriate values.
+
+Required files:
 
 ```
-SERVER_ENDPOINT=
-QR_PREFIX=
+env.dev.ts
+env.prod.ts
 ```

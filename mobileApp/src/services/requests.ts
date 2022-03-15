@@ -1,4 +1,4 @@
-import {SERVER_ENDPOINT} from '@env';
+import config from '../config';
 import {
   removeListFromLocalStorage,
   saveListToLocalStorage,
@@ -32,7 +32,7 @@ const jsonHeaders = () => {
 const getListData = (listId: string): Promise<IListData> => {
   return new Promise(async (resolve, reject) => {
     try {
-      const rawListData = await fetch(`${SERVER_ENDPOINT}?${listId}`);
+      const rawListData = await fetch(`${config.SERVER_URL}?${listId}`);
       const listData = await rawListData.json();
       await saveListToLocalStorage(listData);
       return resolve(listData);
@@ -93,7 +93,7 @@ const executeRequestToList = (
   id: string,
   {method, body}: IRequestContent,
 ) => {
-  return fetch(`${SERVER_ENDPOINT}/${route}`, {
+  return fetch(`${config.SERVER_URL}/${route}`, {
     method,
     body: JSON.stringify(body ? {...body, id} : {id}),
     headers: jsonHeaders(),

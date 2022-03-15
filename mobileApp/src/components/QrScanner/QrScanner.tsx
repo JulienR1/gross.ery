@@ -1,4 +1,4 @@
-import {QR_PREFIX} from '@env';
+import config from './../../config';
 import React from 'react';
 import {TouchableOpacity, View} from 'react-native';
 import {RNCamera, BarCodeReadEvent} from 'react-native-camera';
@@ -15,8 +15,8 @@ export function QrScanner({onListIdFound, onListNotFound}: IProps) {
   const onQrRead = (event: BarCodeReadEvent) => {
     const {data} = event;
 
-    if (data.toLowerCase().startsWith(QR_PREFIX)) {
-      const listId = data.toLowerCase().replace(QR_PREFIX, '').trim();
+    if (data.toLowerCase().startsWith(config.QR_PREFIX)) {
+      const listId = data.toLowerCase().replace(config.QR_PREFIX, '').trim();
       onListIdFound(listId);
     }
   };

@@ -1,4 +1,4 @@
-import {SERVER_ENDPOINT} from '@env';
+import config from './../../config';
 import React, {useState} from 'react';
 import {TouchableOpacity, View} from 'react-native';
 import {Icon, Text} from 'react-native-elements';
@@ -29,7 +29,7 @@ export function NewListDrawer({onClose}: IProps) {
     setRequestState(RequestState.Processing);
 
     try {
-      const response = await fetch(`${SERVER_ENDPOINT}/new`, {
+      const response = await fetch(`${config.SERVER_URL}/new`, {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
