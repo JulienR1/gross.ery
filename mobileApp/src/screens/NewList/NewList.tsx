@@ -40,7 +40,10 @@ function NewList() {
   }, [requestToMenu, navigation]);
 
   const onDrawerClose = (goToMenu?: boolean) => {
-    onListProcessed();
+    if (subscribingState === SubscribeState.Subscribing) {
+      onListProcessed();
+    }
+
     setSubscribingState(SubscribeState.None);
     if (goToMenu) {
       setRequestToMenu(true);
