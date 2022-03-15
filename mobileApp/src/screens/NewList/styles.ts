@@ -86,6 +86,18 @@ const drawerStyles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  exitButton: {
+    backgroundColor: Colors.Main,
+    paddingVertical: 6,
+    paddingHorizontal: 18,
+    borderRadius: 4,
+    marginTop: 6,
+  },
+  exitMessage: {
+    color: Colors.White,
+    fontSize: 14,
+    marginBottom: 0,
+  },
   detailsContainer: {
     flex: 1,
     justifyContent: 'center',
