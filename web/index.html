@@ -78,7 +78,7 @@
 		<a href="https://play.google.com/store/apps/details?id=com.grossery">Télécharger l'application</a>
 
 		<script>
-			const listId = window.location.search.replace("?", "");
+			const listId = window.location.search.replace("?", "").split("&")[0];
 			if (listId.length === 24) {
 				const anchor = document.getElementById("open-app");
 				anchor.href = `grossery://?${listId}`;
