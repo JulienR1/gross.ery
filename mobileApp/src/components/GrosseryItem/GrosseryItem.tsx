@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   TextInput,
   Animated,
@@ -27,7 +27,7 @@ export function GrosseryItem({
 }: IProps) {
   const {subscribe, unsubscribe} = useFocus();
   const {setModal, setEnabled: setModalEnabled, closeModal} = useModal();
-  const isMounted = useRef<boolean>(true);
+  const [isMounted, setIsMounted] = useState(true);
 
   const [itemData, setItemData] = useState<IItemData>(initialItemData);
   const [isEditing, setIsEditing] = useState<boolean>(false);
@@ -37,7 +37,7 @@ export function GrosseryItem({
     useState<string>('0%');
 
   const stopEditing = useCallback(() => {
-    if (isMounted.current) {
+    if (isMounted) {
       setNewName(itemData.name);
       setIsEditing(false);
     }
@@ -46,7 +46,7 @@ export function GrosseryItem({
   useEffect(() => {
     subscribe(stopEditing);
     return () => {
-      isMounted.current = false;
+      setIsMounted(false);
       unsubscribe(stopEditing);
     };
   }, [stopEditing, subscribe, unsubscribe]);

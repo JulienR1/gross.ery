@@ -96,6 +96,7 @@ export function SubscribeDrawer({initialListId, onClose}: IProps) {
               style={[drawerStyles.inputField, drawerStyles.sharedInputField]}
               value={enteredId}
               onChangeText={text => setEnteredId(text)}
+              placeholder={'Généré automatiquement'}
             />
             <TouchableOpacity
               onPress={() => setScanningCode(true)}
