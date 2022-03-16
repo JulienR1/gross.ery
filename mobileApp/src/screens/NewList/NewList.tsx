@@ -6,6 +6,7 @@ import {NewListDrawer} from './NewListDrawer';
 import {SubscribeDrawer} from './SubscribeDrawer';
 import {useNavigation} from '@react-navigation/core';
 import {useAutomaticSubscription} from '../../contexts/SubscriptionContext';
+import {GoBack} from '../../components/GoBack';
 
 enum SubscribeState {
   None,
@@ -52,6 +53,7 @@ function NewList() {
 
   return (
     <>
+      <GoBack />
       <View style={styles.subscribeMenu}>
         <Text style={styles.title}>Nouvelle liste</Text>
 

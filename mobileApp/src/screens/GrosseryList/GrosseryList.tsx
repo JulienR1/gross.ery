@@ -15,6 +15,7 @@ import {useFocus} from '../../contexts/FocusContext';
 import QRCode from 'react-native-qrcode-svg';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {useNotification} from '../../contexts/NotificationContext';
+import {GoBack} from '../../components/GoBack';
 
 interface IProps {
   route: INavigationRoute;
@@ -97,6 +98,8 @@ export function GrosseryList({route}: IProps) {
 
   return (
     <>
+      <GoBack />
+
       {!listData && !cannotFindList && <Loader />}
 
       {cannotFindList && (
