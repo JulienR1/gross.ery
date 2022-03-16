@@ -9,6 +9,7 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     position: 'relative',
+    maxWidth: '100%',
   },
   checkboxContainer: {
     flexDirection: 'row',
@@ -27,6 +28,7 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 18,
     color: Colors.Black,
+    flexWrap: 'nowrap',
   },
   textChecked: {
     textDecorationLine: 'line-through',

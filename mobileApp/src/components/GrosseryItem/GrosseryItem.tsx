@@ -103,6 +103,7 @@ export function GrosseryItem({
         {!isEditing && (
           <Text
             numberOfLines={1}
+            ellipsizeMode={'tail'}
             style={[
               styles.text,
               itemData.checked && [styles.textChecked, styles.checked],
