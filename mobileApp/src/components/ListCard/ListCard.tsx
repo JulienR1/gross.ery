@@ -25,7 +25,7 @@ export function ListCard({localList}: IProps) {
       </View>
       <Text style={styles.title}>{localList.name}</Text>
       <Text style={styles.itemText}>
-        {localList.itemCount} {localList.itemCount === 1 ? 'item' : 'items'}
+        {localList.itemCount} {localList.itemCount <= 1 ? 'item' : 'items'}
       </Text>
     </View>
   );

@@ -1,5 +1,6 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
+  TextInput,
   Animated,
   GestureResponderEvent,
   Text,
@@ -7,7 +8,6 @@ import {
   View,
 } from 'react-native';
 import {Icon} from 'react-native-elements';
-import {TextInput} from 'react-native-gesture-handler';
 import {useFocus} from '../../contexts/FocusContext';
 import {useModal} from '../../contexts/ModalContext';
 import {IItemData} from '../../models/IListData';
@@ -27,7 +27,7 @@ export function GrosseryItem({
 }: IProps) {
   const {subscribe, unsubscribe} = useFocus();
   const {setModal, setEnabled: setModalEnabled, closeModal} = useModal();
-  const isMounted = useRef<boolean>(true);
+  const [isMounted, setIsMounted] = useState(true);
 
   const [itemData, setItemData] = useState<IItemData>(initialItemData);
   const [isEditing, setIsEditing] = useState<boolean>(false);
@@ -37,7 +37,7 @@ export function GrosseryItem({
     useState<string>('0%');
 
   const stopEditing = useCallback(() => {
-    if (isMounted.current) {
+    if (isMounted) {
       setNewName(itemData.name);
       setIsEditing(false);
     }
@@ -46,7 +46,7 @@ export function GrosseryItem({
   useEffect(() => {
     subscribe(stopEditing);
     return () => {
-      isMounted.current = false;
+      setIsMounted(false);
       unsubscribe(stopEditing);
     };
   }, [stopEditing, subscribe, unsubscribe]);
@@ -91,9 +91,13 @@ export function GrosseryItem({
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, isEditing && styles.editingContainer]}>
       <TouchableOpacity
-        style={[styles.checkboxContainer, !isEditing && styles.container]}
+        style={[
+          styles.checkboxContainer,
+          !isEditing && styles.container,
+          isEditing && styles.editingCheckboxContainer,
+        ]}
         onPress={toggleCheck}>
         <View style={[styles.checkbox, itemData.checked && styles.checked]}>
           {itemData.checked && (
@@ -103,6 +107,7 @@ export function GrosseryItem({
         {!isEditing && (
           <Text
             numberOfLines={1}
+            ellipsizeMode={'tail'}
             style={[
               styles.text,
               itemData.checked && [styles.textChecked, styles.checked],
@@ -136,8 +141,14 @@ export function GrosseryItem({
             onPress={() => {
               animateEditBorder();
               setIsEditing(true);
-            }}>
-            <Icon name="edit" color={Colors.Main} size={22} />
+            }}
+            style={styles.endControlButton}>
+            <Icon
+              name="edit"
+              color={Colors.Main}
+              style={styles.icon}
+              size={25}
+            />
           </TouchableOpacity>
         )}
         {isEditing && (

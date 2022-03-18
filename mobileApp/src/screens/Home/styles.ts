@@ -22,7 +22,7 @@ export const styles = StyleSheet.create({
     marginVertical: 8,
   },
   emptyContainer: {
-    flex: 0.7,
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -30,5 +30,23 @@ export const styles = StyleSheet.create({
     fontFamily: Rubik.Regular,
     fontSize: 16,
     color: Colors.Black,
+    transform: [{translateY: -45}],
+  },
+  footer: {
+    alignSelf: 'flex-end',
+    height: 120,
+  },
+  createListButton: {
+    marginTop: 30,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    backgroundColor: Colors.Main,
+    borderRadius: 4,
+    alignSelf: 'flex-start',
+  },
+  createListText: {
+    fontFamily: Rubik.Medium,
+    fontSize: 14,
+    color: Colors.White,
   },
 });

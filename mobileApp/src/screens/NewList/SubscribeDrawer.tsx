@@ -22,6 +22,7 @@ enum ListDataSearchState {
 export function SubscribeDrawer({initialListId, onClose}: IProps) {
   const navigation = useNavigation();
 
+  const [isMounted, setIsMounted] = useState<boolean>(true);
   const [enteredId, setEnteredId] = useState<string>(initialListId ?? '');
   const [scanningCode, setScanningCode] = useState<boolean>(false);
 
@@ -30,6 +31,10 @@ export function SubscribeDrawer({initialListId, onClose}: IProps) {
   const [foundListData, setFoundListData] = useState<IListData | undefined>(
     undefined,
   );
+
+  useEffect(() => {
+    return () => setIsMounted(false);
+  }, []);
 
   useEffect(() => {
     const stopQrBeforeRemove = (event: any) => {
@@ -49,12 +54,16 @@ export function SubscribeDrawer({initialListId, onClose}: IProps) {
     if (enteredId.length === 24) {
       fetchListData(enteredId)
         .then(listData => {
-          setFoundListData(listData);
-          setListDataSearchState(ListDataSearchState.Found);
+          if (isMounted) {
+            setFoundListData(listData);
+            setListDataSearchState(ListDataSearchState.Found);
+          }
         })
         .catch(() => {
-          setFoundListData(undefined);
-          setListDataSearchState(ListDataSearchState.Error);
+          if (isMounted) {
+            setFoundListData(undefined);
+            setListDataSearchState(ListDataSearchState.Error);
+          }
         });
     }
   }, [enteredId]);
@@ -87,9 +96,11 @@ export function SubscribeDrawer({initialListId, onClose}: IProps) {
               style={[drawerStyles.inputField, drawerStyles.sharedInputField]}
               value={enteredId}
               onChangeText={text => setEnteredId(text)}
+              placeholder={'Généré automatiquement'}
             />
             <TouchableOpacity
               onPress={() => setScanningCode(true)}
+              disabled={listDataSearchState !== ListDataSearchState.None}
               style={[
                 drawerStyles.iconButton,
                 listDataSearchState === ListDataSearchState.Found &&
@@ -120,10 +131,9 @@ export function SubscribeDrawer({initialListId, onClose}: IProps) {
                     <Text style={drawerStyles.detailsText}>{`Appelée '${
                       foundListData.name || 'undefined'
                     }'`}</Text>
-                    <Text
-                      style={
-                        drawerStyles.detailsText
-                      }>{`${foundListData.items.length} items`}</Text>
+                    <Text style={drawerStyles.detailsText}>{`${
+                      foundListData.items.length
+                    } item${foundListData.items.length > 1 ? 's' : ''}`}</Text>
                   </>
                 )}
               {(listDataSearchState === ListDataSearchState.Error ||

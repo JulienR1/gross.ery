@@ -1,29 +1,30 @@
 import {useEffect, useState} from 'react';
 import {Linking} from 'react-native';
 
-export function useUrl() {
-  const CUSTOM_SCHEME = 'grossery://';
-  const [url, setUrl] = useState<string | undefined>(undefined);
+const CUSTOM_SCHEME = 'grossery://';
 
-  const updateUrl = (url: string | null) => {
+export function useUrl() {
+  const [urlObj, setUrlObj] = useState<{url: string | undefined}>({
+    url: undefined,
+  });
+
+  const parseUrl = (newUrl: string | null): string | undefined => {
     const fromSchemeUrlStart = `${CUSTOM_SCHEME}?target_url=`;
-    if (url?.startsWith(fromSchemeUrlStart)) {
-      const parsedRegularUrl = url.replace(fromSchemeUrlStart, '');
-      const regularUrl = decodeURIComponent(parsedRegularUrl);
-      setUrl(regularUrl);
-    } else {
-      setUrl(url ?? undefined);
+    if (newUrl?.startsWith(fromSchemeUrlStart)) {
+      const parsedRegularUrl = newUrl.replace(fromSchemeUrlStart, '');
+      return decodeURIComponent(parsedRegularUrl);
     }
+    return newUrl ?? undefined;
   };
 
   useEffect(() => {
-    Linking.getInitialURL().then(url => updateUrl(url));
-    const listener = Linking.addEventListener('url', ({url}) =>
-      updateUrl(url),
-    ) as any;
+    const listener = Linking.addEventListener('url', ({url}) => {
+      const parsedUrl = parseUrl(url);
+      setUrlObj({url: parsedUrl});
+    }) as any;
 
     return () => listener.remove();
   }, []);
 
-  return url;
+  return urlObj;
 }

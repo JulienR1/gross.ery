@@ -1,4 +1,4 @@
-import {SERVER_ENDPOINT} from '@env';
+import config from './../../config';
 import {saveListToLocalStorage} from '../../localstorage';
 import {IListData} from '../../models/IListData';
 
@@ -16,7 +16,7 @@ export const recordList = async (idToRecord: string) => {
 export const fetchListData = (listId: string): Promise<IListData> => {
   return new Promise(async (resolve, reject) => {
     try {
-      const response = await fetch(`${SERVER_ENDPOINT}?${listId}`);
+      const response = await fetch(`${config.SERVER_URL}?${listId}`);
       const jsonData = await response.json();
       return resolve(jsonData);
     } catch (exception) {

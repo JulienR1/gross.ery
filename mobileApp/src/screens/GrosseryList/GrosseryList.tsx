@@ -1,3 +1,4 @@
+import config from '../../config';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {Text, TouchableOpacity, View} from 'react-native';
 import {FlatList} from 'react-native-gesture-handler';
@@ -12,9 +13,9 @@ import {GrosseryItem, NewGrosseryItem} from '../../components/GrosseryItem';
 import {useModal} from '../../contexts/ModalContext';
 import {useFocus} from '../../contexts/FocusContext';
 import QRCode from 'react-native-qrcode-svg';
-import {QR_PREFIX} from '@env';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {useNotification} from '../../contexts/NotificationContext';
+import {GoBack} from '../../components/GoBack';
 
 interface IProps {
   route: INavigationRoute;
@@ -97,6 +98,8 @@ export function GrosseryList({route}: IProps) {
 
   return (
     <>
+      <GoBack />
+
       {!listData && !cannotFindList && <Loader />}
 
       {cannotFindList && (
@@ -130,7 +133,7 @@ export function GrosseryList({route}: IProps) {
           <View style={[styles.container, styles.listContainer]}>
             {renderQR && (
               <View style={styles.qrContainer}>
-                <QRCode value={`${QR_PREFIX} ${listId}`} size={225} />
+                <QRCode value={`${config.QR_PREFIX} ${listId}`} size={225} />
                 <View>
                   <Text style={[styles.text, styles.textCenter]}>
                     Ou partager ce lien:

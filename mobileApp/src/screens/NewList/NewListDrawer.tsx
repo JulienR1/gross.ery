@@ -1,8 +1,7 @@
-import {SERVER_ENDPOINT} from '@env';
-import React, {useState} from 'react';
-import {TouchableOpacity, View} from 'react-native';
+import config from './../../config';
+import React, {useEffect, useRef, useState} from 'react';
+import {TextInput, TouchableOpacity, View} from 'react-native';
 import {Icon, Text} from 'react-native-elements';
-import {TextInput} from 'react-native-gesture-handler';
 import {OptionDrawer} from '../../components/OptionDrawer';
 import {Colors} from '../../styles/colors';
 import {recordList} from './service';
@@ -20,6 +19,7 @@ enum RequestState {
 }
 
 export function NewListDrawer({onClose}: IProps) {
+  const titleFieldRef = useRef<TextInput | null>(null);
   const [listName, setListName] = useState<string>('');
   const [requestState, setRequestState] = useState<RequestState>(
     RequestState.None,
@@ -29,7 +29,7 @@ export function NewListDrawer({onClose}: IProps) {
     setRequestState(RequestState.Processing);
 
     try {
-      const response = await fetch(`${SERVER_ENDPOINT}/new`, {
+      const response = await fetch(`${config.SERVER_URL}/new`, {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
@@ -46,6 +46,16 @@ export function NewListDrawer({onClose}: IProps) {
     }
   };
 
+  useEffect(() => {
+    if (!titleFieldRef.current) {
+      return;
+    }
+
+    if (requestState !== RequestState.None) {
+      titleFieldRef.current.blur();
+    }
+  }, [requestState]);
+
   return (
     <OptionDrawer
       onClose={() => onClose()}
@@ -56,9 +66,11 @@ export function NewListDrawer({onClose}: IProps) {
       <Text style={drawerStyles.title}>Créer une liste</Text>
       <Text style={drawerStyles.message}>Nom de la liste</Text>
       <TextInput
+        ref={titleFieldRef}
         style={drawerStyles.inputField}
         onChangeText={text => setListName(text)}
-        enabled={requestState === RequestState.None}
+        editable={requestState === RequestState.None}
+        onSubmitEditing={createNewList}
       />
 
       {requestState === RequestState.Processing && (
@@ -69,12 +81,16 @@ export function NewListDrawer({onClose}: IProps) {
       {requestState === RequestState.Success && (
         <View style={drawerStyles.feedbackIcon}>
           <Icon name="check" color={Colors.Green} size={100} />
-          <TouchableOpacity
-            onPress={() => {
-              onClose(true);
-            }}>
-            <Text style={drawerStyles.message}>Retourner au menu</Text>
-          </TouchableOpacity>
+          <View style={drawerStyles.exitButton}>
+            <TouchableOpacity
+              onPress={() => {
+                onClose(true);
+              }}>
+              <Text style={[drawerStyles.message, drawerStyles.exitMessage]}>
+                Retourner au menu
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
       )}
       {requestState === RequestState.Failed && (
