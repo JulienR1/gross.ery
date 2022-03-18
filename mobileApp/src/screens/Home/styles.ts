@@ -31,4 +31,21 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     color: Colors.Black,
   },
+  footer: {
+    alignSelf: 'flex-end',
+    height: 120,
+  },
+  createListButton: {
+    marginTop: 30,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    backgroundColor: Colors.Main,
+    borderRadius: 4,
+    alignSelf: 'flex-start',
+  },
+  createListText: {
+    fontFamily: Rubik.Medium,
+    fontSize: 14,
+    color: Colors.White,
+  },
 });
