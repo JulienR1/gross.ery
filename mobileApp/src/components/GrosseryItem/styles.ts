@@ -4,16 +4,22 @@ import {Colors} from '../../styles/colors';
 
 export const styles = StyleSheet.create({
   container: {
-    marginVertical: 5,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     position: 'relative',
     maxWidth: '100%',
   },
+  editingContainer: {
+    marginVertical: 5,
+  },
   checkboxContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    paddingVertical: 10,
+  },
+  editingCheckboxContainer: {
+    paddingVertical: 5,
   },
   checkbox: {
     width: 24,
@@ -36,6 +42,11 @@ export const styles = StyleSheet.create({
   },
   endControls: {
     flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '100%',
+  },
+  endControlButton: {
     alignItems: 'center',
   },
   textInputContainer: {
