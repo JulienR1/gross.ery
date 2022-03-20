@@ -59,6 +59,7 @@ const drawerStyles = StyleSheet.create({
     borderRadius: 8,
     borderWidth: 2,
     borderColor: Colors.Main,
+    color: Colors.Black,
     fontFamily: Rubik.Light,
     fontSize: 14,
     lineHeight: 17,

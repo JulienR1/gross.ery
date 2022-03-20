@@ -1,7 +1,6 @@
 import config from '../../config';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {Text, TouchableOpacity, View} from 'react-native';
-import {FlatList} from 'react-native-gesture-handler';
+import {Text, TouchableOpacity, View, FlatList} from 'react-native';
 import {useNavigation} from '@react-navigation/core';
 import {IListParams} from '../../models/NavigationParams';
 import {IItemData, IListData} from '../../models/IListData';

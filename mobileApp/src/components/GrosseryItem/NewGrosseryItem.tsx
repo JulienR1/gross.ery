@@ -36,6 +36,7 @@ export function NewGrosseryItem({listId, onSave}: IProps) {
           style={[styles.text, styles.textInput]}
           onSubmitEditing={saveItem}
           placeholder={"Nom de l'item"}
+          placeholderTextColor={Colors.BlackTransparent}
           onTouchStart={preventStopEditing}
           onChangeText={text => setItemName(text)}
         />
