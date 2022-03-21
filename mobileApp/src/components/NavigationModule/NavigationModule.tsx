@@ -11,6 +11,7 @@ import {Routes} from '../../navigation/routes';
 import {useConnectivityWarning} from '../../hooks/ConnectivityWarning';
 import {Loader} from '../Loader';
 import {SubscriptionProvider} from '../../contexts/SubscriptionContext';
+import {SocketProvider} from '../../contexts/SocketContext';
 
 const Stack = createStackNavigator();
 
@@ -38,17 +39,19 @@ export function NavigationModule() {
   }
 
   return (
-    <SubscriptionProvider openSubscription={goToSubscription}>
-      <NavigationContainer ref={navigationRef}>
-        <Stack.Navigator
-          screenListeners={screenNavigationEvents}
-          initialRouteName={Routes.Home}
-          screenOptions={{headerShown: false}}>
-          <Stack.Screen name={Routes.Home} component={Home} />
-          <Stack.Screen name={Routes.NewList} component={NewList} />
-          <Stack.Screen name={Routes.List} component={GrosseryList} />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </SubscriptionProvider>
+    <SocketProvider>
+      <SubscriptionProvider openSubscription={goToSubscription}>
+        <NavigationContainer ref={navigationRef}>
+          <Stack.Navigator
+            screenListeners={screenNavigationEvents}
+            initialRouteName={Routes.Home}
+            screenOptions={{headerShown: false}}>
+            <Stack.Screen name={Routes.Home} component={Home} />
+            <Stack.Screen name={Routes.NewList} component={NewList} />
+            <Stack.Screen name={Routes.List} component={GrosseryList} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </SubscriptionProvider>
+    </SocketProvider>
   );
 }

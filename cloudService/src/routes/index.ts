@@ -1,3 +1,4 @@
 import routes from "./router";
+import * as sockets from "./sockets";
 
-export default routes;
+export { routes, sockets };

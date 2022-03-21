@@ -15,6 +15,7 @@ import QRCode from 'react-native-qrcode-svg';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {useNotification} from '../../contexts/NotificationContext';
 import {GoBack} from '../../components/GoBack';
+import {useSocket} from '../../contexts/SocketContext';
 
 interface IProps {
   route: INavigationRoute;
@@ -27,6 +28,7 @@ interface INavigationRoute {
 export function GrosseryList({route}: IProps) {
   const listId = route.params.listId;
 
+  const socket = useSocket();
   const notify = useNotification();
   const navigation = useNavigation();
   const {subscribe, unsubscribe} = useFocus();
@@ -48,6 +50,15 @@ export function GrosseryList({route}: IProps) {
       throw new Error('Could not find the specified list.');
     }
   }, [listId]);
+
+  useEffect(() => {
+    if (!socket?.connected) {
+      return () => {};
+    }
+
+    socket.emit('subscribeToList', listId);
+    return () => socket.emit('unsubscribeFromList', listId);
+  }, [socket, listId]);
 
   useEffect(() => {
     fetchListData().catch(_ => setCannotFindList(true));
