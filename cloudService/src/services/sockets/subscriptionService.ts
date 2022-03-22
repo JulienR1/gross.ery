@@ -1,4 +1,5 @@
 import { Socket } from "socket.io";
+
 import { ListId, SocketId, SubscriptionRegistry } from "../../models/socketSubscription";
 
 const subscriptions: SubscriptionRegistry = {};
