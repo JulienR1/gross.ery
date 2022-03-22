@@ -51,23 +51,28 @@ export function GrosseryList({route}: IProps) {
     }
   }, [listId]);
 
+  const testListExists = () =>
+    fetchListData().catch(_ => setCannotFindList(true));
+
   useEffect(() => {
     if (!socket?.connected) {
       return () => {};
     }
 
     socket.emit('subscribeToList', listId);
+    socket.on('list_update', () => fetchListData());
+    socket.on('list_delete', () => testListExists());
     return () => socket.emit('unsubscribeFromList', listId);
   }, [socket, listId]);
 
   useEffect(() => {
-    fetchListData().catch(_ => setCannotFindList(true));
+    testListExists();
     subscribe(stopAddingNewItem);
     return () => {
       isMounted.current = false;
       unsubscribe(stopAddingNewItem);
     };
-  }, [fetchListData, subscribe, unsubscribe]);
+  }, [fetchListData, subscribe, unsubscribe, testListExists]);
 
   const updateItemCheck = async (
     originalItem: IItemData,

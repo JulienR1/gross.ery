@@ -1,29 +1,31 @@
 import { Server as HttpServer } from "http";
 import { Server } from "socket.io";
+import { ListId, SocketNotifier } from "../models/socketSubscription";
+import {
+	getAllSubscribersForList,
+	onConnect,
+	onDisconnect,
+	onSubscribeToList,
+	onUnsubscribeFromList,
+} from "../services/sockets";
 
-type SocketId = string;
-type ListId = string;
-
-export const init = (server: HttpServer) => {
+export const init = (server: HttpServer): { sendNotification: SocketNotifier } => {
 	const io = new Server(server);
 
-	const subscriptions: { [key: SocketId]: Set<ListId> } = {};
-
 	io.on("connection", (socket) => {
-		subscriptions[socket.id] = new Set();
-
-		socket.on("disconnect", () => {
-			if (subscriptions[socket.id]) {
-				delete subscriptions[socket.id];
-			}
-		});
-
-		socket.on("subscribeToList", (listId) => {
-			subscriptions[socket.id].add(listId);
-		});
-
-		socket.on("unsubscribeFromList", (listId) => {
-			subscriptions[socket.id].delete(listId);
-		});
+		onConnect(socket);
+		socket.on("disconnect", () => onDisconnect(socket));
+		socket.on("subscribeToList", (listId) => onSubscribeToList(socket, listId));
+		socket.on("unsubscribeFromList", (listId) => onUnsubscribeFromList(socket, listId));
 	});
+
+	const sendNotification = (listId: ListId, socketChannel: string, payload?: object) => {
+		const socketIds = getAllSubscribersForList(listId);
+		const sockets = socketIds.map((socketId) => io.sockets.sockets.get(socketId));
+		sockets.forEach((socket) => {
+			socket?.emit(socketChannel, payload);
+		});
+	};
+
+	return { sendNotification };
 };
