@@ -2,6 +2,8 @@ import express, { Request, Response, Router } from "express";
 
 import { AddBody, RemoveBody, SavedItem, UpdateBody, ValidateCodeQuery } from "../models";
 import { NewBody, RemoveItemBody } from "../models/savedList";
+import { SocketNotifier } from "../models/socketSubscription";
+import { SocketChannel } from "../services/sockets";
 import {
 	addItemToList,
 	createNewList,
@@ -14,7 +16,7 @@ import {
 import { version as serverVersion } from "./../../package.json";
 import { Routes } from "./routes";
 
-const routes = (): Router => {
+const routes = (sendNotification: SocketNotifier): Router => {
 	const router = express.Router();
 
 	router.get(Routes.READ, async (req: Request, res: Response) => {
@@ -51,6 +53,7 @@ const routes = (): Router => {
 			};
 
 			await addItemToList(id, itemToAdd);
+			sendNotification(id, SocketChannel.LIST_UPDATE);
 			return res.sendStatus(200);
 		}
 		return res.sendStatus(400);
@@ -61,6 +64,7 @@ const routes = (): Router => {
 
 		if (id && itemName && newValues) {
 			await updateSavedFile(id, itemName, newValues);
+			sendNotification(id, SocketChannel.LIST_UPDATE);
 			return res.sendStatus(200);
 		}
 		return res.sendStatus(400);
@@ -70,6 +74,7 @@ const routes = (): Router => {
 		const { id } = req.body as RemoveBody;
 		if (id) {
 			await removeSavedFile(id);
+			sendNotification(id, SocketChannel.LIST_DELETE);
 			return res.sendStatus(200);
 		}
 		return res.sendStatus(400);
@@ -79,6 +84,7 @@ const routes = (): Router => {
 		const { id, itemName } = req.body as RemoveItemBody;
 		if (id && itemName) {
 			await removeItemFromList(id, itemName);
+			sendNotification(id, SocketChannel.LIST_UPDATE);
 			return res.sendStatus(200);
 		}
 		return res.sendStatus(400);

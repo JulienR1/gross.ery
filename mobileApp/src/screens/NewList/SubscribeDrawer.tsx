@@ -5,6 +5,7 @@ import {Icon} from 'react-native-elements';
 import {OptionDrawer} from '../../components/OptionDrawer';
 import {QrScanner} from '../../components/QrScanner';
 import {IListData} from '../../models/IListData';
+import {Colors} from '../../styles/colors';
 import {fetchListData, recordList} from './service';
 import {drawerStyles} from './styles';
 
@@ -97,6 +98,7 @@ export function SubscribeDrawer({initialListId, onClose}: IProps) {
               value={enteredId}
               onChangeText={text => setEnteredId(text)}
               placeholder={'Généré automatiquement'}
+              placeholderTextColor={Colors.BlackTransparent}
             />
             <TouchableOpacity
               onPress={() => setScanningCode(true)}

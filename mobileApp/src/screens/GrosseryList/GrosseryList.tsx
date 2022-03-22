@@ -1,7 +1,6 @@
 import config from '../../config';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {Text, TouchableOpacity, View} from 'react-native';
-import {FlatList} from 'react-native-gesture-handler';
+import {Text, TouchableOpacity, View, FlatList} from 'react-native';
 import {useNavigation} from '@react-navigation/core';
 import {IListParams} from '../../models/NavigationParams';
 import {IItemData, IListData} from '../../models/IListData';
@@ -16,6 +15,7 @@ import QRCode from 'react-native-qrcode-svg';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {useNotification} from '../../contexts/NotificationContext';
 import {GoBack} from '../../components/GoBack';
+import {useSocket} from '../../contexts/SocketContext';
 
 interface IProps {
   route: INavigationRoute;
@@ -28,6 +28,7 @@ interface INavigationRoute {
 export function GrosseryList({route}: IProps) {
   const listId = route.params.listId;
 
+  const socket = useSocket();
   const notify = useNotification();
   const navigation = useNavigation();
   const {subscribe, unsubscribe} = useFocus();
@@ -50,14 +51,28 @@ export function GrosseryList({route}: IProps) {
     }
   }, [listId]);
 
-  useEffect(() => {
+  const testListExists = () =>
     fetchListData().catch(_ => setCannotFindList(true));
+
+  useEffect(() => {
+    if (!socket?.connected) {
+      return () => {};
+    }
+
+    socket.emit('subscribeToList', listId);
+    socket.on('list_update', () => fetchListData());
+    socket.on('list_delete', () => testListExists());
+    return () => socket.emit('unsubscribeFromList', listId);
+  }, [socket, listId]);
+
+  useEffect(() => {
+    testListExists();
     subscribe(stopAddingNewItem);
     return () => {
       isMounted.current = false;
       unsubscribe(stopAddingNewItem);
     };
-  }, [fetchListData, subscribe, unsubscribe]);
+  }, [fetchListData, subscribe, unsubscribe, testListExists]);
 
   const updateItemCheck = async (
     originalItem: IItemData,

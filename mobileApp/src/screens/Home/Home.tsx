@@ -1,7 +1,12 @@
 import {useFocusEffect, useNavigation} from '@react-navigation/core';
 import React, {useState} from 'react';
-import {SafeAreaView, Text, View} from 'react-native';
-import {FlatList, TouchableOpacity} from 'react-native-gesture-handler';
+import {
+  SafeAreaView,
+  Text,
+  View,
+  FlatList,
+  TouchableOpacity,
+} from 'react-native';
 import {ListCard} from '../../components/ListCard';
 import {Loader} from '../../components/Loader';
 import {getAllLocalListData} from '../../localstorage';
