@@ -20,12 +20,10 @@ export const init = (server: HttpServer): { sendNotification: SocketNotifier } =
 		socket.on("unsubscribeFromList", (listId) => onUnsubscribeFromList(socket, listId));
 	});
 
-	const sendNotification = (listId: ListId, socketChannel: string, payload?: object) => {
+	const sendNotification = (listId: ListId, socketChannel: string) => {
 		const socketIds = getAllSubscribersForList(listId);
 		const sockets = socketIds.map((socketId) => io.sockets.sockets.get(socketId));
-		sockets.forEach((socket) => {
-			socket?.emit(socketChannel, payload);
-		});
+		sockets.forEach((socket) => socket?.emit(socketChannel));
 	};
 
 	return { sendNotification };
