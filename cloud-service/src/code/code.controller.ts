@@ -1,9 +1,10 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, ValidationPipe } from '@nestjs/common';
+import { CodeValidationDto } from './dto';
 
 @Controller('code')
 export class CodeController {
   @Get(':code')
-  validate(@Param('code') code: string) {
-    return code;
+  validate(@Param() params: CodeValidationDto) {
+    return params.code;
   }
 }
