@@ -1,5 +1,5 @@
-import { Body, Controller, Put, Post } from '@nestjs/common';
-import { CreateItemDto, UpdateItemDto } from './dto';
+import { Body, Controller, Put, Post, Delete } from '@nestjs/common';
+import { CreateItemDto, DeleteItemDto, UpdateItemDto } from './dto';
 
 @Controller('list/item')
 export class ItemController {
@@ -11,5 +11,10 @@ export class ItemController {
   @Post()
   updateItem(@Body() updateItemDto: UpdateItemDto) {
     return updateItemDto;
+  }
+
+  @Delete()
+  removeItem(@Body() deleteItemDto: DeleteItemDto) {
+    return deleteItemDto;
   }
 }
