@@ -1,10 +1,13 @@
 import { Controller, Get, Param, ValidationPipe } from '@nestjs/common';
+import { CodeService } from './code.service';
 import { CodeValidationDto } from './dto';
 
 @Controller('code')
 export class CodeController {
+  constructor(private codeService: CodeService) {}
+
   @Get(':code')
   validate(@Param() params: CodeValidationDto) {
-    return params.code;
+    return this.codeService.validateCode(params.code);
   }
 }

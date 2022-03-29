@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsEnum, IsPort, Matches } from 'class-validator';
+import { IsEnum, IsPort, IsString, Matches } from 'class-validator';
 
 export enum Environment {
   Development = 'development',
@@ -17,4 +17,7 @@ export class EnvironmentVariables {
 
   @Matches(/^\d+\.\d+\.\d+$/g)
   APP_VERSION: string;
+
+  @IsString()
+  DB_URL: string;
 }
