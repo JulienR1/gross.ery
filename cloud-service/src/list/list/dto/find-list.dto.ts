@@ -1,6 +1,6 @@
 import { IsMongoId } from 'class-validator';
 
-export class DeleteListDto {
+export class FindListDto {
   @IsMongoId()
   listId: string;
 }
