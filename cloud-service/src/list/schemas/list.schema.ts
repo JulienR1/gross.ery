@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Item } from './item.schema';
+import { Item, ItemSchema } from './item.schema';
 
 export type ListDocument = List & Document;
 
@@ -8,7 +8,7 @@ export class List {
   @Prop()
   name: string;
 
-  @Prop()
+  @Prop({ type: [ItemSchema] })
   items: Item[];
 }
 

@@ -5,5 +5,5 @@ export class DeleteItemDto {
   listId: string;
 
   @IsMongoId()
-  id: string;
+  itemId: string;
 }

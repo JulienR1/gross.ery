@@ -1,10 +1,16 @@
-import { Prop, Schema } from '@nestjs/mongoose';
+import { Types } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-@Schema({ _id: false })
+@Schema()
 export class Item {
+  @Prop()
+  _id: Types.ObjectId;
+
   @Prop()
   name: string;
 
   @Prop({ default: false })
   checked: boolean;
 }
+
+export const ItemSchema = SchemaFactory.createForClass(Item);
