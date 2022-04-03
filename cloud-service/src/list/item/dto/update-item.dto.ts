@@ -1,6 +1,4 @@
-import { Types } from 'mongoose';
 import { IsBoolean, IsMongoId, IsString, MinLength } from 'class-validator';
-import { Type } from 'class-transformer';
 
 export class UpdateItemDto {
   @IsMongoId()

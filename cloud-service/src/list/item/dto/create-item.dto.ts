@@ -1,4 +1,3 @@
-import { Types } from 'mongoose';
 import { IsMongoId, IsString, MinLength } from 'class-validator';
 
 export class CreateItemDto {
