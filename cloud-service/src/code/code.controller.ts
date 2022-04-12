@@ -1,6 +1,7 @@
 import { Controller, Get, Param } from '@nestjs/common';
 import { CodeService } from './code.service';
-import { CodeValidationDto } from './dto';
+
+import { CodeValidationDto } from 'shared';
 
 @Controller('code')
 export class CodeController {

@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Put } from '@nestjs/common';
-import { CreateListDto, DeleteListDto, FindListDto } from './dto';
+import { CreateListDto, DeleteListDto, FindListDto } from 'shared';
 import { ListService } from './list.service';
 
 @Controller('list')

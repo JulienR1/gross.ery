@@ -1,7 +1,7 @@
 import { Body, Controller, Put, Post, Delete } from '@nestjs/common';
-import { CreateItemDto, DeleteItemDto, UpdateItemDto } from './dto';
 import { ItemService } from './item.service';
 import { Types } from 'mongoose';
+import { CreateItemDto, DeleteItemDto, UpdateItemDto } from 'shared';
 
 @Controller('list/item')
 export class ItemController {

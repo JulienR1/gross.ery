@@ -1,4 +1,4 @@
-import { Length } from 'class-validator';
+import { Length } from "class-validator";
 
 export class CodeValidationDto {
   @Length(5, 5)
