@@ -2,8 +2,8 @@ import { Model, Types } from 'mongoose';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { List, ListDocument } from '../schemas/list.schema';
-import { Item } from '../schemas/item.schema';
 import { ListService } from '../list';
+import { Item } from '../schemas/item.schema';
 
 @Injectable()
 export class ItemService {

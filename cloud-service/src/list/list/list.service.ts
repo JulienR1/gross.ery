@@ -7,7 +7,7 @@ import { List, ListDocument } from '../schemas/list.schema';
 export class ListService {
   constructor(@InjectModel(List.name) private listModel: Model<ListDocument>) {}
 
-  async findListById(id: string) {
+  async findListById(id: string): Promise<ListDocument> {
     const list = await this.listModel.findById(id);
     if (!list) {
       throw new NotFoundException('No list found');
@@ -21,7 +21,7 @@ export class ListService {
     return { id: inserted._id.toString() };
   }
 
-  async removeList(id: string) {
+  async removeList(id: string): Promise<ListDocument> {
     const deletedList = await this.listModel.findByIdAndDelete(id);
     if (!deletedList) {
       throw new NotFoundException('No list to delete');
