@@ -1,14 +1,13 @@
-import config from '../../config';
+import {CodeValidationEntity} from 'shared';
+import {api} from '../../services/api';
 
-const validateCode = async (code: string): Promise<boolean> => {
+const validateCode = async (code: string) => {
   try {
-    const response = await fetch(`${config.SERVER_URL}/code?${code}`);
-    if (response.ok) {
-      const {valid} = await response.json();
-      return valid;
-    }
-  } catch {}
-  return false;
+    const response = await api<CodeValidationEntity>(`code/${code}`);
+    return response?.isValid ?? false;
+  } catch {
+    return false;
+  }
 };
 
 export {validateCode};
