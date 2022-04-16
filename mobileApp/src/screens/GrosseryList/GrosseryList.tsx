@@ -3,7 +3,6 @@ import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {Text, TouchableOpacity, View, FlatList} from 'react-native';
 import {useNavigation} from '@react-navigation/core';
 import {IListParams} from '../../models/NavigationParams';
-import {IItemData, IListData} from '../../models/IListData';
 import {doRequest} from '../../services/requests';
 import {Loader} from '../../components/Loader';
 import {modalStyles, styles} from './styles';
@@ -11,11 +10,12 @@ import {Icon} from 'react-native-elements';
 import {GrosseryItem, NewGrosseryItem} from '../../components/GrosseryItem';
 import {useModal} from '../../contexts/ModalContext';
 import {useFocus} from '../../contexts/FocusContext';
-import QRCode from 'react-native-qrcode-svg';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {useNotification} from '../../contexts/NotificationContext';
 import {GoBack} from '../../components/GoBack';
 import {useSocket} from '../../contexts/SocketContext';
+import {ItemEntity, ListEntity} from 'shared';
+import QRCode from 'react-native-qrcode-svg';
 
 interface IProps {
   route: INavigationRoute;
@@ -28,7 +28,7 @@ interface INavigationRoute {
 export function GrosseryList({route}: IProps) {
   const listId = route.params.listId;
 
-  const socket = useSocket();
+  // const socket = useSocket();
   const notify = useNotification();
   const navigation = useNavigation();
   const {subscribe, unsubscribe} = useFocus();
@@ -36,7 +36,7 @@ export function GrosseryList({route}: IProps) {
 
   const isMounted = useRef<boolean>(true);
   const [renderQR, setRenderQR] = useState<boolean>(false);
-  const [listData, setListData] = useState<IListData | undefined>(undefined);
+  const [listData, setListData] = useState<ListEntity | undefined>(undefined);
   const [cannotFindList, setCannotFindList] = useState<boolean>(false);
   const [addingNewItem, setAddingNewItem] = useState<boolean>(false);
 
@@ -54,16 +54,16 @@ export function GrosseryList({route}: IProps) {
   const testListExists = () =>
     fetchListData().catch(_ => setCannotFindList(true));
 
-  useEffect(() => {
-    if (!socket?.connected) {
-      return () => {};
-    }
+  // useEffect(() => {
+  //   if (!socket?.connected) {
+  //     return () => {};
+  //   }
 
-    socket.emit('subscribeToList', listId);
-    socket.on('list_update', () => fetchListData());
-    socket.on('list_delete', () => testListExists());
-    return () => socket.emit('unsubscribeFromList', listId);
-  }, [socket, listId]);
+  //   socket.emit('subscribeToList', listId);
+  //   socket.on('list_update', () => fetchListData());
+  //   socket.on('list_delete', () => testListExists());
+  //   return () => socket.emit('unsubscribeFromList', listId);
+  // }, [socket, listId]);
 
   useEffect(() => {
     testListExists();
@@ -72,31 +72,42 @@ export function GrosseryList({route}: IProps) {
       isMounted.current = false;
       unsubscribe(stopAddingNewItem);
     };
-  }, [fetchListData, subscribe, unsubscribe, testListExists]);
+  }, [fetchListData, subscribe, unsubscribe /*, testListExists*/]);
 
   const updateItemCheck = async (
-    originalItem: IItemData,
-    updatedItem: IItemData,
+    originalItem: ItemEntity,
+    updatedItem: ItemEntity,
   ) => {
     if (originalItem !== updatedItem) {
-      await doRequest(route.params.listId).updateItem(
-        originalItem.name,
-        updatedItem,
-      );
-      fetchListData();
+      try {
+        await doRequest(route.params.listId).updateItem(
+          originalItem.id,
+          updatedItem,
+        );
+      } catch (err) {
+        notify('Une erreur est survenue.', 2000);
+      } finally {
+        fetchListData();
+      }
     }
   };
 
-  const removeItem = async (item: IItemData) => {
+  const removeItem = async (item: ItemEntity) => {
     const itemIndex = listData?.items.indexOf(item);
-    const updatedListData: IListData = JSON.parse(JSON.stringify(listData));
+    const updatedListData: ListEntity = JSON.parse(JSON.stringify(listData));
 
     if (updatedListData && itemIndex && itemIndex >= 0) {
       updatedListData.items.splice(itemIndex, 1);
       setListData(updatedListData);
     }
-    await doRequest(route.params.listId).removeItem(item.name);
-    fetchListData();
+
+    try {
+      await doRequest(route.params.listId).removeItem(item.id);
+    } catch {
+      notify('Une erreur est survenue.', 2000);
+    } finally {
+      fetchListData();
+    }
   };
 
   const deleteList = async () => {

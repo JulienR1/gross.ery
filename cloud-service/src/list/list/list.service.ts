@@ -1,4 +1,4 @@
-import { Model } from 'mongoose';
+import { Types, Model } from 'mongoose';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { List, ListDocument } from '../schemas/list.schema';
@@ -7,11 +7,12 @@ import { List, ListDocument } from '../schemas/list.schema';
 export class ListService {
   constructor(@InjectModel(List.name) private listModel: Model<ListDocument>) {}
 
-  async findListById(id: string): Promise<ListDocument> {
-    const list = await this.listModel.findById(id);
+  async findListById(id: string) {
+    const list = await this.listModel.findById(new Types.ObjectId(id));
     if (!list) {
       throw new NotFoundException('No list found');
     }
+
     return list;
   }
 
@@ -21,11 +22,12 @@ export class ListService {
     return { id: inserted._id.toString() };
   }
 
-  async removeList(id: string): Promise<ListDocument> {
+  async removeList(id: string) {
     const deletedList = await this.listModel.findByIdAndDelete(id);
     if (!deletedList) {
       throw new NotFoundException('No list to delete');
     }
+
     return deletedList;
   }
 }

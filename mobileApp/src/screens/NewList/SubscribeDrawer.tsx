@@ -2,9 +2,9 @@ import {useNavigation} from '@react-navigation/core';
 import React, {useEffect, useState} from 'react';
 import {Text, TextInput, TouchableOpacity, View} from 'react-native';
 import {Icon} from 'react-native-elements';
+import {ListEntity} from 'shared';
 import {OptionDrawer} from '../../components/OptionDrawer';
 import {QrScanner} from '../../components/QrScanner';
-import {IListData} from '../../models/IListData';
 import {Colors} from '../../styles/colors';
 import {fetchListData, recordList} from './service';
 import {drawerStyles} from './styles';
@@ -29,7 +29,7 @@ export function SubscribeDrawer({initialListId, onClose}: IProps) {
 
   const [listDataSearchState, setListDataSearchState] =
     useState<ListDataSearchState>(ListDataSearchState.None);
-  const [foundListData, setFoundListData] = useState<IListData | undefined>(
+  const [foundListData, setFoundListData] = useState<ListEntity | undefined>(
     undefined,
   );
 

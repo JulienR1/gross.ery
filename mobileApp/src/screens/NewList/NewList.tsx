@@ -14,12 +14,6 @@ enum SubscribeState {
   CreatingNew,
 }
 
-// TODO: Sync w/ cloudservice models
-interface ItemData {
-  name: string;
-  checked: boolean;
-}
-
 function NewList() {
   const navigation = useNavigation();
   const [subscribingState, setSubscribingState] = useState<SubscribeState>(

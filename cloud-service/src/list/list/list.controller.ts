@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import {
   CreateListDto,
   CreateListEntity,
@@ -14,17 +14,36 @@ export class ListController {
   constructor(private listService: ListService) {}
 
   @Get(':listId')
-  find(@Param() { listId }: FindListDto): Promise<ListEntity> {
-    return this.listService.findListById(listId);
+  async find(@Param() { listId }: FindListDto): Promise<ListEntity> {
+    const { _id, items, name } = await this.listService.findListById(listId);
+
+    return {
+      id: _id.toString(),
+      items: items.map(({ _id, name, checked }) => ({
+        id: _id.toString(),
+        checked,
+        name,
+      })),
+      name,
+    };
   }
 
-  @Put()
+  @Post()
   createNew(@Body() { name }: CreateListDto): Promise<CreateListEntity> {
     return this.listService.insertList(name);
   }
 
   @Delete()
-  remove(@Body() { listId }: DeleteListDto): Promise<ListEntity> {
-    return this.listService.removeList(listId);
+  async remove(@Body() { listId }: DeleteListDto): Promise<ListEntity> {
+    const { _id, items, name } = await this.listService.removeList(listId);
+    return {
+      id: _id.toString(),
+      items: items.map(({ _id, name, checked }) => ({
+        id: _id.toString(),
+        checked,
+        name,
+      })),
+      name,
+    };
   }
 }

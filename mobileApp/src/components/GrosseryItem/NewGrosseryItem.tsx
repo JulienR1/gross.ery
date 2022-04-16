@@ -6,6 +6,7 @@ import {
   View,
 } from 'react-native';
 import {Icon} from 'react-native-elements';
+import {useNotification} from '../../contexts/NotificationContext';
 import {doRequest} from '../../services/requests';
 import {Colors} from '../../styles/colors';
 import {styles} from './styles';
@@ -16,17 +17,23 @@ interface IProps {
 }
 
 export function NewGrosseryItem({listId, onSave}: IProps) {
+  const notify = useNotification();
   const [itemName, setItemName] = useState<string>('');
 
   const preventStopEditing = (event: GestureResponderEvent) =>
     event.stopPropagation();
 
   const saveItem = async () => {
-    if (itemName) {
-      await doRequest(listId).addNewItem(itemName);
+    try {
+      if (itemName) {
+        await doRequest(listId).addNewItem(itemName);
+      }
+    } catch {
+      notify('Une erreur est survenue.', 2000);
+    } finally {
+      setItemName('');
+      onSave();
     }
-    setItemName('');
-    onSave();
   };
 
   return (

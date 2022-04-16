@@ -1,13 +1,13 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {IListData} from '../models/IListData';
+import {ListEntity} from 'shared';
 import {ILocalList} from '../models/ILocalList';
 
 const localListPrefix = '@list_';
 const invitationPrefix = '@invitation_';
 
-const saveListToLocalStorage = async (listToSave: IListData) => {
+const saveListToLocalStorage = async (listToSave: ListEntity) => {
   const dataToSave: ILocalList = {
-    id: listToSave._id,
+    id: listToSave.id,
     name: listToSave.name,
     itemCount: listToSave.items.length,
     lastUpdateTime: new Date(),
@@ -52,6 +52,7 @@ const removeListFromLocalStorage = async (id: string): Promise<void> => {
 const saveInvitationStatus = async (status = true) => {
   return AsyncStorage.setItem(`${invitationPrefix}approved`, status.toString());
 };
+
 const getInvitationStatus = async () => {
   return AsyncStorage.getItem(`${invitationPrefix}approved`);
 };

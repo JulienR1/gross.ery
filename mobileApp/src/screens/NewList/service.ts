@@ -1,11 +1,12 @@
-import config from './../../config';
 import {saveListToLocalStorage} from '../../localstorage';
-import {IListData} from '../../models/IListData';
+import {api} from '../../services/api';
+import {ListEntity} from 'shared';
+import {RequestMethod} from '../../models/RequestMethod';
 
 export const recordList = async (idToRecord: string) => {
   if (idToRecord) {
     try {
-      const listData: IListData = await fetchListData(idToRecord);
+      const listData = await fetchListData(idToRecord);
       await saveListToLocalStorage(listData);
     } catch (exception) {
       console.log('The provided id does not exist.');
@@ -13,14 +14,29 @@ export const recordList = async (idToRecord: string) => {
   }
 };
 
-export const fetchListData = (listId: string): Promise<IListData> => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const response = await fetch(`${config.SERVER_URL}?${listId}`);
-      const jsonData = await response.json();
-      return resolve(jsonData);
-    } catch (exception) {
-      return reject();
+export const fetchListData = async (listId: string) => {
+  try {
+    const list = await api<ListEntity>(`list/${listId}`);
+    if (!list) {
+      throw new Error('Could not find list.');
     }
+    return list;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+};
+
+export const createList = async (listName: string) => {
+  const payload = {name: listName};
+
+  const createdList = await api<ListEntity>('list', {
+    method: RequestMethod.POST,
+    body: JSON.stringify(payload),
   });
+  if (!createdList) {
+    throw new Error('Could not create list.');
+  }
+
+  return createdList.id;
 };

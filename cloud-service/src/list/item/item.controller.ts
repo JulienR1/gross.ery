@@ -7,21 +7,24 @@ import { CreateItemDto, DeleteItemDto, UpdateItemDto } from 'shared';
 export class ItemController {
   constructor(private itemService: ItemService) {}
 
-  @Put()
+  @Post()
   createNewItem(@Body() { listId, itemName }: CreateItemDto) {
-    return this.itemService.withList(listId).createItem(itemName);
+    this.itemService.withList(listId).createItem(itemName);
+    return { success: true };
   }
 
-  @Post()
+  @Put()
   updateItem(@Body() { listId, item }: UpdateItemDto) {
     const { id, ...itemData } = item;
     const _id = new Types.ObjectId(id);
-    return this.itemService.withList(listId).updateItem({ _id, ...itemData });
+    this.itemService.withList(listId).updateItem({ _id, ...itemData });
+    return { success: true };
   }
 
   @Delete()
   removeItem(@Body() { listId, itemId }: DeleteItemDto) {
     const _id = new Types.ObjectId(itemId);
-    return this.itemService.withList(listId).deleteItem(_id);
+    this.itemService.withList(listId).deleteItem(_id);
+    return { success: true };
   }
 }
