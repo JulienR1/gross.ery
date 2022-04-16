@@ -25,7 +25,7 @@ export function SubscribeDrawer({initialListId, onClose}: IProps) {
 
   const [isMounted, setIsMounted] = useState<boolean>(true);
   const [enteredId, setEnteredId] = useState<string>(initialListId ?? '');
-  const [scanningCode, setScanningCode] = useState<boolean>(false);
+  const [scanningCode, setScanningCode] = useState<boolean>(true);
 
   const [listDataSearchState, setListDataSearchState] =
     useState<ListDataSearchState>(ListDataSearchState.None);
@@ -87,9 +87,9 @@ export function SubscribeDrawer({initialListId, onClose}: IProps) {
             recordList(enteredId);
             onClose(true);
           }}
-          submitTitle="S'abonner"
+          submitTitle="Ajouter"
           submitIsValid={Boolean(foundListData)}>
-          <Text style={drawerStyles.title}>S'abonner</Text>
+          <Text style={drawerStyles.title}>Scanner un code</Text>
 
           <Text style={drawerStyles.message}>Identifiant de la liste</Text>
           <View style={drawerStyles.flexContainer}>
