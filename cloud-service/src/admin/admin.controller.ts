@@ -1,0 +1,12 @@
+import { Controller, Post } from '@nestjs/common';
+import { AdminService } from './admin.service';
+
+@Controller('admin')
+export class AdminController {
+  constructor(private adminService: AdminService) {}
+
+  @Post('item-ids')
+  addMissingItemIds() {
+    return this.adminService.addMissingItemIds();
+  }
+}

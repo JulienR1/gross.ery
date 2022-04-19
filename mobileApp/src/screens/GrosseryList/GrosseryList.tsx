@@ -72,7 +72,7 @@ export function GrosseryList({route}: IProps) {
       isMounted.current = false;
       unsubscribe(stopAddingNewItem);
     };
-  }, [fetchListData, subscribe, unsubscribe /*, testListExists*/]);
+  }, [fetchListData, subscribe, unsubscribe, testListExists]);
 
   const updateItemCheck = async (
     originalItem: ItemEntity,
