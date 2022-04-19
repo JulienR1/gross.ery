@@ -5,6 +5,7 @@ import { CodeModule } from './code/code.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { validate } from './config/configuration';
 import { MongooseModule } from '@nestjs/mongoose';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { MongooseModule } from '@nestjs/mongoose';
     ListModule,
     InfoModule,
     CodeModule,
+    AdminModule,
   ],
 })
 export class AppModule {}
