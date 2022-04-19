@@ -47,7 +47,6 @@ export const executeManyCommands = async ({
                   console.log(stdout);
                 }
               }
-              console.log(command);
               return resolve();
             }
           )
