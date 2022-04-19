@@ -6,7 +6,8 @@ import React, {
   useCallback,
   useRef,
 } from 'react';
-import {Text, View, Image} from 'react-native';
+import {Text, View, Image, TouchableOpacity} from 'react-native';
+import config from '../../config';
 import {getInvitationStatus, saveInvitationStatus} from '../../localstorage';
 import {CodeInput} from '../CodeInput';
 import {Loader} from '../Loader';
@@ -103,6 +104,23 @@ export function InvitationGuard({children}: IProps) {
       )}
 
       {guardState === GuardState.Allowed && children}
+
+      {!config.IS_PROD && (
+        <TouchableOpacity
+          style={{
+            paddingVertical: 8,
+            position: 'absolute',
+            bottom: 0,
+            height: 40,
+            backgroundColor: 'pink',
+          }}
+          onPress={() => {
+            saveInvitationStatus(false);
+            updateGuardStatus();
+          }}>
+          <Text>Clear invitation</Text>
+        </TouchableOpacity>
+      )}
     </>
   );
 }

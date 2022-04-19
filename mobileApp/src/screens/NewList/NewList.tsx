@@ -14,12 +14,6 @@ enum SubscribeState {
   CreatingNew,
 }
 
-// TODO: Sync w/ cloudservice models
-interface ItemData {
-  name: string;
-  checked: boolean;
-}
-
 function NewList() {
   const navigation = useNavigation();
   const [subscribingState, setSubscribingState] = useState<SubscribeState>(
@@ -60,8 +54,8 @@ function NewList() {
         <TouchableOpacity
           style={styles.button}
           onPress={() => setSubscribingState(SubscribeState.Subscribing)}>
-          <Icon name="notifications" />
-          <Text style={styles.buttonText}>S'abonner</Text>
+          <Icon name="qr-code" />
+          <Text style={styles.buttonText}>Scanner un code</Text>
         </TouchableOpacity>
 
         <TouchableOpacity

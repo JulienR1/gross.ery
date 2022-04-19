@@ -1,10 +1,9 @@
-import config from './../../config';
 import React, {useEffect, useRef, useState} from 'react';
 import {TextInput, TouchableOpacity, View} from 'react-native';
 import {Icon, Text} from 'react-native-elements';
 import {OptionDrawer} from '../../components/OptionDrawer';
 import {Colors} from '../../styles/colors';
-import {recordList} from './service';
+import {createList, recordList} from './service';
 import {drawerStyles} from './styles';
 
 interface IProps {
@@ -29,16 +28,7 @@ export function NewListDrawer({onClose}: IProps) {
     setRequestState(RequestState.Processing);
 
     try {
-      const response = await fetch(`${config.SERVER_URL}/new`, {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        method: 'PUT',
-        body: JSON.stringify({listName}),
-      });
-      const listId = await response.text();
-
+      const listId = await createList(listName);
       setRequestState(RequestState.Success);
       await recordList(listId);
     } catch (ex) {

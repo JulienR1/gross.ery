@@ -18,17 +18,19 @@ export function UpdateBanner({children}: IProps) {
   useEffect(() => {
     if (netinfo.details && netinfo.isInternetReachable) {
       getVersion()
-        .then(appVersion => {
-          const versionHasChanged =
-            appVersion.localeCompare(version, undefined, {
-              numeric: true,
-              sensitivity: 'base',
-            }) > 0;
-          setIsOpen(versionHasChanged);
-        })
+        .then(handleAppVersion)
         .catch(() => setIsOpen(false));
     }
   }, [netinfo]);
+
+  const handleAppVersion = (appVersion: string) => {
+    const versionHasChanged =
+      appVersion.localeCompare(version, undefined, {
+        numeric: true,
+        sensitivity: 'base',
+      }) > 0;
+    setIsOpen(versionHasChanged);
+  };
 
   return (
     <>

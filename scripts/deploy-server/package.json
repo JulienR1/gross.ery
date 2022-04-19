@@ -1,0 +1,21 @@
+{
+  "name": "deploy-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.mjs",
+  "type": "module",
+  "scripts": {
+    "start": "node ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "cli-spinners": "^2.6.1",
+    "dotenv": "^16.0.0",
+    "fs-extra": "^10.1.0",
+    "inquirer": "^8.2.2",
+    "log-update": "^5.0.0",
+    "rimraf": "^3.0.2"
+  }
+}

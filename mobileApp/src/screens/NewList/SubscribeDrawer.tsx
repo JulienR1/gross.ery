@@ -2,9 +2,9 @@ import {useNavigation} from '@react-navigation/core';
 import React, {useEffect, useState} from 'react';
 import {Text, TextInput, TouchableOpacity, View} from 'react-native';
 import {Icon} from 'react-native-elements';
+import {ListEntity} from 'shared';
 import {OptionDrawer} from '../../components/OptionDrawer';
 import {QrScanner} from '../../components/QrScanner';
-import {IListData} from '../../models/IListData';
 import {Colors} from '../../styles/colors';
 import {fetchListData, recordList} from './service';
 import {drawerStyles} from './styles';
@@ -25,11 +25,11 @@ export function SubscribeDrawer({initialListId, onClose}: IProps) {
 
   const [isMounted, setIsMounted] = useState<boolean>(true);
   const [enteredId, setEnteredId] = useState<string>(initialListId ?? '');
-  const [scanningCode, setScanningCode] = useState<boolean>(false);
+  const [scanningCode, setScanningCode] = useState<boolean>(true);
 
   const [listDataSearchState, setListDataSearchState] =
     useState<ListDataSearchState>(ListDataSearchState.None);
-  const [foundListData, setFoundListData] = useState<IListData | undefined>(
+  const [foundListData, setFoundListData] = useState<ListEntity | undefined>(
     undefined,
   );
 
@@ -87,9 +87,9 @@ export function SubscribeDrawer({initialListId, onClose}: IProps) {
             recordList(enteredId);
             onClose(true);
           }}
-          submitTitle="S'abonner"
+          submitTitle="Ajouter"
           submitIsValid={Boolean(foundListData)}>
-          <Text style={drawerStyles.title}>S'abonner</Text>
+          <Text style={drawerStyles.title}>Scanner un code</Text>
 
           <Text style={drawerStyles.message}>Identifiant de la liste</Text>
           <View style={drawerStyles.flexContainer}>
