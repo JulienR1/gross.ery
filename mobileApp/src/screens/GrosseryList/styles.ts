@@ -82,7 +82,7 @@ export const styles = StyleSheet.create({
   },
   footer: {
     alignSelf: 'flex-end',
-    height: 120,
+    height: 150,
   },
   qrContainer: {
     justifyContent: 'center',

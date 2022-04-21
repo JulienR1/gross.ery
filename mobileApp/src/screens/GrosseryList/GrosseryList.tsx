@@ -14,8 +14,8 @@ import Clipboard from '@react-native-clipboard/clipboard';
 import {useNotification} from '../../contexts/NotificationContext';
 import {GoBack} from '../../components/GoBack';
 import {useSocket} from '../../contexts/SocketContext';
-import {ItemEntity, ListEntity} from 'shared';
 import QRCode from 'react-native-qrcode-svg';
+import {ItemEntity, ListEntity} from 'shared';
 
 interface IProps {
   route: INavigationRoute;
@@ -34,25 +34,22 @@ export function GrosseryList({route}: IProps) {
   const {subscribe, unsubscribe} = useFocus();
   const {setModal, setEnabled: setModalEnabled, closeModal} = useModal();
 
-  const isMounted = useRef<boolean>(true);
+  const [isMounted, setIsMounted] = useState(true);
   const [renderQR, setRenderQR] = useState<boolean>(false);
   const [listData, setListData] = useState<ListEntity | undefined>(undefined);
   const [cannotFindList, setCannotFindList] = useState<boolean>(false);
   const [addingNewItem, setAddingNewItem] = useState<boolean>(false);
 
-  const fetchListData = useCallback(async () => {
+  const fetchListData = async () => {
     try {
       const newListData = await doRequest(listId).getListData();
-      if (isMounted.current) {
+      if (isMounted) {
         setListData(newListData);
       }
     } catch (ex) {
       throw new Error('Could not find the specified list.');
     }
-  }, [listId]);
-
-  const testListExists = () =>
-    fetchListData().catch(_ => setCannotFindList(true));
+  };
 
   // useEffect(() => {
   //   if (!socket?.connected) {
@@ -66,13 +63,16 @@ export function GrosseryList({route}: IProps) {
   // }, [socket, listId]);
 
   useEffect(() => {
-    testListExists();
+    fetchListData().catch(_ => setCannotFindList(true));
+    return () => setIsMounted(false);
+  }, []);
+
+  useEffect(() => {
     subscribe(stopAddingNewItem);
     return () => {
-      isMounted.current = false;
       unsubscribe(stopAddingNewItem);
     };
-  }, [fetchListData, subscribe, unsubscribe, testListExists]);
+  }, [subscribe, unsubscribe]);
 
   const updateItemCheck = async (
     originalItem: ItemEntity,
@@ -106,7 +106,7 @@ export function GrosseryList({route}: IProps) {
     } catch {
       notify('Une erreur est survenue.', 2000);
     } finally {
-      fetchListData();
+      await fetchListData();
     }
   };
 
@@ -116,6 +116,16 @@ export function GrosseryList({route}: IProps) {
       .then(() => {
         navigation.goBack();
       });
+  };
+
+  const deleteAllChecked = async () => {
+    try {
+      await doRequest(listId).removeCheckedItems();
+    } catch {
+      notify('Une erreur est survenue.', 2000);
+    } finally {
+      await fetchListData();
+    }
   };
 
   const stopAddingNewItem = () => setAddingNewItem(false);
@@ -223,64 +233,124 @@ export function GrosseryList({route}: IProps) {
 
           <View style={[styles.container, styles.footer]}>
             {!renderQR && (
-              <TouchableOpacity
-                style={styles.cannotFindListButton}
-                onPress={() => {
-                  const onClose = () => {
-                    closeModal();
-                  };
+              <View>
+                <TouchableOpacity
+                  style={[styles.cannotFindListButton, {alignSelf: 'flex-end'}]}
+                  onPress={() => {
+                    const onClose = () => {
+                      closeModal();
+                    };
 
-                  setModal({
-                    onClose,
-                    children: (
-                      <View style={modalStyles.container}>
+                    setModal({
+                      onClose,
+                      children: (
                         <View style={modalStyles.container}>
-                          <Text style={modalStyles.title}>
-                            Suppression d'une liste
-                          </Text>
-                          <Text style={modalStyles.description}>
-                            Confirmer la suppression de '
-                            {
-                              <Text style={modalStyles.bold}>
-                                {listData.name}
-                              </Text>
-                            }
-                            '.
-                          </Text>
-                        </View>
-
-                        <View style={modalStyles.buttonContainer}>
-                          <TouchableOpacity
-                            onPress={onClose}
-                            style={[
-                              modalStyles.button,
-                              modalStyles.cancelButton,
-                            ]}>
-                            <Text style={modalStyles.buttonText}>Annuler</Text>
-                          </TouchableOpacity>
-                          <TouchableOpacity
-                            onPress={() => {
-                              onClose();
-                              deleteList();
-                            }}
-                            style={[
-                              modalStyles.button,
-                              modalStyles.deleteButton,
-                            ]}>
-                            <Text style={modalStyles.buttonText}>
-                              Supprimer
+                          <View style={modalStyles.container}>
+                            <Text style={modalStyles.title}>
+                              Suppression d'une liste
                             </Text>
-                          </TouchableOpacity>
+                            <Text style={modalStyles.description}>
+                              Confirmer la suppression de '
+                              {
+                                <Text style={modalStyles.bold}>
+                                  {listData.name}
+                                </Text>
+                              }
+                              '.
+                            </Text>
+                          </View>
+
+                          <View style={modalStyles.buttonContainer}>
+                            <TouchableOpacity
+                              onPress={onClose}
+                              style={[
+                                modalStyles.button,
+                                modalStyles.cancelButton,
+                              ]}>
+                              <Text style={modalStyles.buttonText}>
+                                Annuler
+                              </Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                              onPress={() => {
+                                onClose();
+                                deleteList();
+                              }}
+                              style={[
+                                modalStyles.button,
+                                modalStyles.deleteButton,
+                              ]}>
+                              <Text style={modalStyles.buttonText}>
+                                Supprimer
+                              </Text>
+                            </TouchableOpacity>
+                          </View>
                         </View>
-                      </View>
-                    ),
-                  });
-                  setModalEnabled(true);
-                }}>
-                <Text style={styles.cannotFindListButtonText}>
-                  Supprimer la liste
-                </Text>
-              </TouchableOpacity>
+                      ),
+                    });
+                    setModalEnabled(true);
+                  }}>
+                  <Text style={styles.cannotFindListButtonText}>
+                    Supprimer la liste
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={[styles.cannotFindListButton, {marginTop: 5}]}
+                  onPress={() => {
+                    const onClose = () => {
+                      closeModal();
+                    };
+
+                    setModal({
+                      onClose,
+                      children: (
+                        <View style={modalStyles.container}>
+                          <View style={modalStyles.container}>
+                            <Text style={modalStyles.title}>
+                              Retrait de la sélection
+                            </Text>
+                            <Text style={modalStyles.description}>
+                              Confirmer le retrait de tous les items
+                              sélectionnés dans la liste.
+                            </Text>
+                          </View>
+
+                          <View style={modalStyles.buttonContainer}>
+                            <TouchableOpacity
+                              onPress={onClose}
+                              style={[
+                                modalStyles.button,
+                                modalStyles.cancelButton,
+                              ]}>
+                              <Text style={modalStyles.buttonText}>
+                                Annuler
+                              </Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                              onPress={() => {
+                                onClose();
+                                deleteAllChecked();
+                              }}
+                              style={[
+                                modalStyles.button,
+                                modalStyles.deleteButton,
+                              ]}>
+                              <Text style={modalStyles.buttonText}>
+                                Retirer
+                              </Text>
+                            </TouchableOpacity>
+                          </View>
+                        </View>
+                      ),
+                    });
+                    setModalEnabled(true);
+                  }}>
+                  <Text style={styles.cannotFindListButtonText}>
+                    Retirer les items cochés
+                  </Text>
+                </TouchableOpacity>
+              </View>
             )}
           </View>
         </View>

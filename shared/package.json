@@ -2,7 +2,7 @@
   "name": "shared",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/bundle.js",
+  "main": "dist",
   "scripts": {
     "build": "webpack",
     "build:watch": "npm run build -- --watch"
