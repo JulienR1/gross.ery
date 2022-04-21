@@ -48,6 +48,12 @@ export class ItemService {
           { $pull: { items: { _id: itemId } } },
         );
       },
+      deleteChecked: async () => {
+        await this.listModel.updateOne(
+          { _id: listId },
+          { $pull: { items: { checked: true } } },
+        );
+      },
     };
   }
 }

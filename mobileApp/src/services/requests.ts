@@ -1,5 +1,6 @@
 import {
   CreateItemDto,
+  DeleteCheckedItemsDto,
   DeleteItemDto,
   DeleteListDto,
   ItemEntity,
@@ -24,6 +25,7 @@ const doRequest = (listId: string) => {
     updateItem: (itemId: string, newValues: ItemEntity) =>
       updateItem(listId, itemId, newValues),
     removeItem: (itemName: string) => removeItem(listId, itemName),
+    removeCheckedItems: () => removeCheckedItems(listId),
     removeList: () => removeList(listId),
   };
 };
@@ -78,6 +80,14 @@ const removeItem = async (listId: string, itemId: string) => {
     return;
   }
   throw new Error(`Could not remove '${itemId}' from ${listId}`);
+};
+
+const removeCheckedItems = async (listId: string) => {
+  const payload: DeleteCheckedItemsDto = {listId};
+  const res = await api('list/item/checked', {
+    method: RequestMethod.DELETE,
+    body: JSON.stringify(payload),
+  });
 };
 
 const removeList = async (listId: string) => {
