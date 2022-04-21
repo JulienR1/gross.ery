@@ -1,5 +1,5 @@
 import config from '../../config';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Text, TouchableOpacity, View, FlatList} from 'react-native';
 import {useNavigation} from '@react-navigation/core';
 import {IListParams} from '../../models/NavigationParams';
@@ -13,7 +13,6 @@ import {useFocus} from '../../contexts/FocusContext';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {useNotification} from '../../contexts/NotificationContext';
 import {GoBack} from '../../components/GoBack';
-import {useSocket} from '../../contexts/SocketContext';
 import QRCode from 'react-native-qrcode-svg';
 import {ItemEntity, ListEntity} from 'shared';
 
