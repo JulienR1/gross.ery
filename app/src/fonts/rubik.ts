@@ -1,0 +1,16 @@
+export enum Rubik {
+  Black = 'Rubik-Black',
+  BlackItalic = 'Rubik-BlackItalic',
+  Bold = 'Rubik-Bold',
+  BoldItalic = 'Rubik-BoldItalic',
+  ExtraBold = 'Rubik-ExtraBold',
+  ExtraBoldItalic = 'Rubik-ExtraBoldItalic',
+  Italic = 'Rubik-Italic',
+  Light = 'Rubik-Light',
+  LightItalic = 'Rubik-LightItalic',
+  Medium = 'Rubik-Medium',
+  MediumItalic = 'Rubik-MediumItalic',
+  Regular = 'Rubik-Regular',
+  SemiBold = 'Rubik-SemiBold',
+  SemiBoldItalic = 'Rubik-SemiBoldItalic',
+}
