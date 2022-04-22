@@ -1,14 +1,15 @@
 import React from 'react';
-import { SafeAreaView, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { AuthorizationProvider } from './modules/authorization';
 import { NavigationModule } from './modules/navigation';
+import { rootStyles } from './styles';
 
 const App = () => {
   return (
-    <SafeAreaView style={styles.body}>
-      <GestureHandlerRootView style={styles.body}>
+    <SafeAreaView style={rootStyles.body}>
+      <GestureHandlerRootView style={rootStyles.body}>
         <AuthorizationProvider>
           <NavigationModule />
         </AuthorizationProvider>
@@ -16,13 +17,5 @@ const App = () => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  body: {
-    flex: 1,
-    backgroundColor: 'white',
-    position: 'relative',
-  },
-});
 
 export default App;
