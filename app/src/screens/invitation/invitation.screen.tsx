@@ -1,16 +1,16 @@
 import React from 'react';
 import { Text, TouchableOpacity } from 'react-native';
 
-import { useNavigation } from '~/navigation';
+import { useAuthorization } from '~/modules/authorization';
 
 export const InvitationScreen = () => {
-  const { closeScreen } = useNavigation();
+  const { updateAuthorization } = useAuthorization();
 
   return (
     <>
       <Text>AUTH</Text>
-      <TouchableOpacity onPress={() => closeScreen()}>
-        <Text>Go back</Text>
+      <TouchableOpacity onPress={() => updateAuthorization(true)}>
+        <Text>Get authorized</Text>
       </TouchableOpacity>
     </>
   );

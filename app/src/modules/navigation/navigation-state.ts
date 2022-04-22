@@ -1,4 +1,4 @@
-import { Screen } from '../screens';
+import { Screen } from '~/screens';
 
 export interface INavigationState {
   rootScreen: Screen;

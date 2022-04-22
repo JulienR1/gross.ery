@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { NavigationProvider } from '~/navigation';
-import { NavigationScreen } from '~/navigation/navigation-screen';
+import { useAuthorization } from '~/modules/authorization';
+import { NavigationProvider, NavigationScreen } from '~/modules/navigation';
 import {
   HomeScreen,
   InvitationScreen,
@@ -11,7 +11,7 @@ import {
 } from '~/screens';
 
 export const NavigationModule = () => {
-  const isAuthorized = true;
+  const { isAuthorized } = useAuthorization();
 
   return (
     <NavigationProvider
