@@ -4,6 +4,7 @@ import { Action } from '~/types';
 export enum NavigationType {
   UPDATE_ROOT = '[NAVIGATION] UPDATE ROOT',
   REGISTER = '[NAVIGATION] REGISTER',
+  UNREGISTER = '[NAVIGATION] UNREGISTER',
   SELECT = '[NAVIGATION] SELECT',
   CLOSE = '[NAVIGATION] CLOSE',
 }
@@ -22,6 +23,12 @@ export interface NavigationUpdateRootScreen
 export interface NavigationRegisterAction
   extends Action<NavigationType.REGISTER, Screen> {
   type: NavigationType.REGISTER;
+  payload: Screen;
+}
+
+export interface NavigationUnregisterAction
+  extends Action<NavigationType.UNREGISTER, Screen> {
+  type: NavigationType.UNREGISTER;
   payload: Screen;
 }
 
@@ -44,6 +51,10 @@ export function registerScreen(screen: Screen): NavigationRegisterAction {
   return { type: NavigationType.REGISTER, payload: screen };
 }
 
+export function unregisterScreen(screen: Screen): NavigationUnregisterAction {
+  return { type: NavigationType.UNREGISTER, payload: screen };
+}
+
 export function selectScreen(
   screen: Screen,
   optionalProps?: Record<string, unknown>,
@@ -58,5 +69,6 @@ export function close(): NavigationCloseAction {
 export type NavigationAction =
   | NavigationUpdateRootScreen
   | NavigationRegisterAction
+  | NavigationUnregisterAction
   | NavigationSelectAction
   | NavigationCloseAction;

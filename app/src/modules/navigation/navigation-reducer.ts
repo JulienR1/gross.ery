@@ -16,6 +16,8 @@ export function navigationReducer(
       return onUpdateRootScreen(state, action.payload);
     case NavigationType.REGISTER:
       return onRegisterScreen(state, action.payload);
+    case NavigationType.UNREGISTER:
+      return onUnregisterScreen(state, action.payload);
     case NavigationType.SELECT:
       return onSelectScreen(state, action.payload);
     case NavigationType.CLOSE:
@@ -43,6 +45,18 @@ function onRegisterScreen(
   return {
     ...state,
     availableScreens: [...state.availableScreens, screen],
+  };
+}
+
+function onUnregisterScreen(
+  state: INavigationState,
+  screen: Screen,
+): INavigationState {
+  return {
+    ...state,
+    availableScreens: state.availableScreens.filter(
+      storedScreen => storedScreen !== screen,
+    ),
   };
 }
 
