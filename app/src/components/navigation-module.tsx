@@ -11,8 +11,11 @@ import {
 } from '~/screens';
 
 export const NavigationModule = () => {
+  const isAuthorized = true;
+
   return (
-    <NavigationProvider rootScreen={Screen.Home}>
+    <NavigationProvider
+      rootScreen={isAuthorized ? Screen.Home : Screen.Invitation}>
       <NavigationScreen name={Screen.Invitation} component={InvitationScreen} />
       <NavigationScreen name={Screen.Home} component={HomeScreen} />
       <NavigationScreen name={Screen.List} component={ListScreen} />

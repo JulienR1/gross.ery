@@ -3,12 +3,18 @@ import React, {
   Dispatch,
   ReactNode,
   useContext,
+  useEffect,
   useReducer,
 } from 'react';
 
 import { Screen } from '~/screens';
 
-import { close, NavigationAction, selectScreen } from './navigation-action';
+import {
+  close,
+  NavigationAction,
+  selectScreen,
+  updateRootScreen,
+} from './navigation-action';
 import { navigationReducer } from './navigation-reducer';
 import { initialState } from './navigation-state';
 
@@ -40,6 +46,10 @@ export const NavigationProvider = ({ children, rootScreen }: IProps) => {
     ...initialState,
     rootScreen,
   });
+
+  useEffect(() => {
+    dispatch(updateRootScreen(rootScreen));
+  }, [rootScreen]);
 
   const isActive = (screen: Screen) =>
     screen === rootScreen || currentScreen?.screen === screen;

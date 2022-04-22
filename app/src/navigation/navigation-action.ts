@@ -2,6 +2,7 @@ import { Screen } from '~/screens';
 import { Action } from '~/types';
 
 export enum NavigationType {
+  UPDATE_ROOT = '[NAVIGATION] UPDATE ROOT',
   REGISTER = '[NAVIGATION] REGISTER',
   SELECT = '[NAVIGATION] SELECT',
   CLOSE = '[NAVIGATION] CLOSE',
@@ -11,6 +12,12 @@ export type NavigationSelectPayload = {
   screen: Screen;
   optionalProps?: Record<string, unknown>;
 };
+
+export interface NavigationUpdateRootScreen
+  extends Action<NavigationType.UPDATE_ROOT, Screen> {
+  type: NavigationType.UPDATE_ROOT;
+  payload: Screen;
+}
 
 export interface NavigationRegisterAction
   extends Action<NavigationType.REGISTER, Screen> {
@@ -29,6 +36,10 @@ export interface NavigationCloseAction
   type: NavigationType.CLOSE;
 }
 
+export function updateRootScreen(screen: Screen): NavigationUpdateRootScreen {
+  return { type: NavigationType.UPDATE_ROOT, payload: screen };
+}
+
 export function registerScreen(screen: Screen): NavigationRegisterAction {
   return { type: NavigationType.REGISTER, payload: screen };
 }
@@ -45,6 +56,7 @@ export function close(): NavigationCloseAction {
 }
 
 export type NavigationAction =
+  | NavigationUpdateRootScreen
   | NavigationRegisterAction
   | NavigationSelectAction
   | NavigationCloseAction;

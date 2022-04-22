@@ -12,6 +12,8 @@ export function navigationReducer(
   action: NavigationAction,
 ): INavigationState {
   switch (action.type) {
+    case NavigationType.UPDATE_ROOT:
+      return onUpdateRootScreen(state, action.payload);
     case NavigationType.REGISTER:
       return onRegisterScreen(state, action.payload);
     case NavigationType.SELECT:
@@ -21,6 +23,13 @@ export function navigationReducer(
     default:
       return state;
   }
+}
+
+function onUpdateRootScreen(
+  state: INavigationState,
+  rootScreen: Screen,
+): INavigationState {
+  return { ...state, rootScreen, currentScreen: { screen: undefined } };
 }
 
 function onRegisterScreen(
