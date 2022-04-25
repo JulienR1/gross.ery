@@ -4,6 +4,7 @@ import { config as prod } from './env.prod';
 export interface VariableConfig {
   IS_PROD: boolean;
   SERVER_URL: string;
+  API_VERSION: number;
 }
 
 export interface Config extends VariableConfig {
