@@ -6,7 +6,8 @@ export enum NavigationType {
   REGISTER = '[NAVIGATION] REGISTER',
   UNREGISTER = '[NAVIGATION] UNREGISTER',
   SELECT = '[NAVIGATION] SELECT',
-  CLOSE = '[NAVIGATION] CLOSE',
+  BEGIN_CLOSE = '[NAVIGATION] BEGIN CLOSE',
+  COMPLETE_CLOSE = '[NAVIGATION] COMPLETE CLOSE',
 }
 
 export type NavigationSelectPayload = {
@@ -38,9 +39,14 @@ export interface NavigationSelectAction
   payload: NavigationSelectPayload;
 }
 
-export interface NavigationCloseAction
-  extends Action<NavigationType.CLOSE, undefined> {
-  type: NavigationType.CLOSE;
+export interface NavigationBeginCloseAction
+  extends Action<NavigationType.BEGIN_CLOSE, undefined> {
+  type: NavigationType.BEGIN_CLOSE;
+}
+
+export interface NavigationCompleteCloseAction
+  extends Action<NavigationType.COMPLETE_CLOSE, undefined> {
+  type: NavigationType.COMPLETE_CLOSE;
 }
 
 export function updateRootScreen(screen: Screen): NavigationUpdateRootScreen {
@@ -62,8 +68,12 @@ export function selectScreen(
   return { type: NavigationType.SELECT, payload: { screen, optionalProps } };
 }
 
-export function close(): NavigationCloseAction {
-  return { type: NavigationType.CLOSE, payload: undefined };
+export function beginClose(): NavigationBeginCloseAction {
+  return { type: NavigationType.BEGIN_CLOSE, payload: undefined };
+}
+
+export function completeClose(): NavigationCompleteCloseAction {
+  return { type: NavigationType.COMPLETE_CLOSE, payload: undefined };
 }
 
 export type NavigationAction =
@@ -71,4 +81,5 @@ export type NavigationAction =
   | NavigationRegisterAction
   | NavigationUnregisterAction
   | NavigationSelectAction
-  | NavigationCloseAction;
+  | NavigationBeginCloseAction
+  | NavigationCompleteCloseAction;

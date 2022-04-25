@@ -20,8 +20,10 @@ export function navigationReducer(
       return onUnregisterScreen(state, action.payload);
     case NavigationType.SELECT:
       return onSelectScreen(state, action.payload);
-    case NavigationType.CLOSE:
-      return onClose(state);
+    case NavigationType.BEGIN_CLOSE:
+      return onBeginClose(state);
+    case NavigationType.COMPLETE_CLOSE:
+      return onCompleteClose(state);
     default:
       return state;
   }
@@ -31,7 +33,11 @@ function onUpdateRootScreen(
   state: INavigationState,
   rootScreen: Screen,
 ): INavigationState {
-  return { ...state, rootScreen, currentScreen: { screen: undefined } };
+  return {
+    ...state,
+    rootScreen,
+    currentScreen: { screen: undefined },
+  };
 }
 
 function onRegisterScreen(
@@ -74,12 +80,19 @@ function onSelectScreen(
     );
   }
 
-  return { ...state, currentScreen: { screen, optionalProps } };
-}
-
-function onClose(state: INavigationState): INavigationState {
   return {
     ...state,
-    currentScreen: { screen: undefined },
+    currentScreen: { ...state.currentScreen, screen, optionalProps },
   };
+}
+
+function onBeginClose(state: INavigationState): INavigationState {
+  return {
+    ...state,
+    currentScreen: { ...state.currentScreen, isClosing: true },
+  };
+}
+
+function onCompleteClose(state: INavigationState): INavigationState {
+  return { ...state, currentScreen: { screen: undefined } };
 }

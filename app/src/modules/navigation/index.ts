@@ -5,3 +5,4 @@ export * from './navigation-state';
 export * from './navigation-screen';
 export * from './navigation-module';
 export * from './navigation-context';
+export * from './navigation-selectors';

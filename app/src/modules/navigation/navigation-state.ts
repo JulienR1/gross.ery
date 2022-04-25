@@ -1,12 +1,11 @@
 import { Screen } from '~/screens';
 
+import { ActiveScreen } from './types';
+
 export interface INavigationState {
   rootScreen: Screen;
   availableScreens: Screen[];
-  currentScreen: {
-    screen: Screen | undefined;
-    optionalProps?: Record<string, unknown>;
-  };
+  currentScreen: ActiveScreen;
 }
 
 export const initialState: INavigationState = {

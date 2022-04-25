@@ -1,8 +1,10 @@
 import React, { useContext, useEffect } from 'react';
 
 import { Screen } from '~/screens';
+import { ScreenWrapper } from '~/screens/components';
 
 import {
+  completeClose,
   registerScreen,
   unregisterScreen,
   updateRootScreen,
@@ -20,7 +22,7 @@ export const NavigationScreen = ({
   component: ScreenComponent,
   isRoot = false,
 }: IProps) => {
-  const { dispatch, isActive, getProps } = useContext(NavigationContext);
+  const { dispatch, getScreenState, getProps } = useContext(NavigationContext);
 
   useEffect(() => {
     dispatch(registerScreen(name));
@@ -31,8 +33,19 @@ export const NavigationScreen = ({
     if (isRoot) {
       dispatch(updateRootScreen(name));
     }
-  }, [isRoot, name]);
+  }, [isRoot, dispatch, name]);
 
-  const showComponent = isRoot || isActive(name);
-  return showComponent ? <ScreenComponent {...getProps(name)} /> : null;
+  const onScreenClosed = () => dispatch(completeClose());
+
+  const screenState = getScreenState(name);
+  const showComponent = isRoot || screenState.isActive;
+
+  return showComponent ? (
+    <ScreenWrapper
+      secondaryScreen={!isRoot}
+      isClosing={screenState.isClosing}
+      onClosed={onScreenClosed}>
+      <ScreenComponent {...getProps(name)} />
+    </ScreenWrapper>
+  ) : null;
 };

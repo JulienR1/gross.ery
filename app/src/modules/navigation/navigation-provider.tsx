@@ -1,12 +1,10 @@
-import React, { ReactNode, useReducer } from 'react';
+import React, { ReactNode, useEffect, useReducer } from 'react';
+import { BackHandler } from 'react-native';
 
-import { Screen } from '~/screens';
-
-import { close, selectScreen } from './navigation-action';
 import { NavigationContext } from './navigation-context';
 import { navigationReducer } from './navigation-reducer';
+import { getSelectors } from './navigation-selectors';
 import { initialState } from './navigation-state';
-import { ScreenProps } from './types';
 
 interface IProps {
   children: ReactNode | ReactNode[];
@@ -17,18 +15,25 @@ export const NavigationProvider = ({ children }: IProps) => {
     ...initialState,
   });
 
-  const isActive = (screen: Screen) => currentScreen?.screen === screen;
+  const selectors = getSelectors(currentScreen, dispatch);
+  const { closeScreen } = selectors;
 
-  const getProps = () => currentScreen?.optionalProps ?? {};
+  useEffect(() => {
+    const goBack = () => {
+      if (currentScreen.screen) {
+        closeScreen();
+      } else {
+        BackHandler.exitApp();
+      }
+      return true;
+    };
 
-  const closeScreen = () => dispatch(close());
-
-  const loadScreen = (screen: Screen, optionalProps?: ScreenProps) =>
-    dispatch(selectScreen(screen, optionalProps));
+    BackHandler.addEventListener('hardwareBackPress', goBack);
+    return () => BackHandler.removeEventListener('hardwareBackPress', goBack);
+  }, [currentScreen, closeScreen]);
 
   return (
-    <NavigationContext.Provider
-      value={{ dispatch, isActive, getProps, loadScreen, closeScreen }}>
+    <NavigationContext.Provider value={selectors}>
       {children}
     </NavigationContext.Provider>
   );

@@ -13,9 +13,9 @@ interface IProps extends ViewProps {
 }
 
 export const SwipeableView = ({
-  minSwipePercent = 0.15,
   swipeable,
   isAnimating,
+  minSwipePercent,
   onDragComplete,
   children,
   ...viewProps
