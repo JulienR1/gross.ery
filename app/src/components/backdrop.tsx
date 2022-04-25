@@ -9,14 +9,12 @@ interface IProps {
 }
 
 export const Backdrop = ({ opacityFactor, onPress }: IProps) => {
+  const { backdrop } = rootStyles;
+  const viewStyles = [backdrop, { opacity: backdrop.opacity * opacityFactor }];
+
   return (
     <TouchableWithoutFeedback onPress={onPress}>
-      <Animated.View
-        style={[
-          rootStyles.backdrop,
-          { opacity: rootStyles.backdrop.opacity * opacityFactor },
-        ]}
-      />
+      <Animated.View style={viewStyles} />
     </TouchableWithoutFeedback>
   );
 };

@@ -39,6 +39,17 @@ export const ScreenWrapper = ({
     }
   }, [isClosing, slideOut]);
 
+  const swipeableStyles = [
+    rootStyles.screen,
+    secondaryScreen && [
+      rootStyles.secondaryScreen,
+      {
+        transform: [{ translateY: (1 - slidePercent) * 150 }],
+        opacity: slidePercent,
+      },
+    ],
+  ];
+
   return (
     <>
       {secondaryScreen && (
@@ -49,16 +60,7 @@ export const ScreenWrapper = ({
         isAnimating={isClosing}
         swipeable={secondaryScreen}
         onDragComplete={closeScreen}
-        style={[
-          rootStyles.screen,
-          secondaryScreen && [
-            rootStyles.secondaryScreen,
-            {
-              transform: [{ translateY: (1 - slidePercent) * 150 }],
-              opacity: slidePercent,
-            },
-          ],
-        ]}>
+        style={swipeableStyles}>
         {children}
       </SwipeableView>
     </>

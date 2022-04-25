@@ -6,8 +6,10 @@ import { UpdateBanner } from './update-banner';
 import { VersionWatermark } from './version-watermark';
 
 export const Footer = () => {
+  const { footer } = styles;
+
   return (
-    <View style={styles.footer}>
+    <View style={footer}>
       <UpdateBanner />
       <VersionWatermark />
     </View>

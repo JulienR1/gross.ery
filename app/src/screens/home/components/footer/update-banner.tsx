@@ -27,21 +27,20 @@ export const UpdateBanner = () => {
     Linking.openURL(url);
   };
 
+  const { container, wrapper, text, bold, closeButton } = updateStyles;
+
   return showBanner ? (
-    <View style={updateStyles.container}>
+    <View style={container}>
       <TouchableOpacity onPress={openPlayStore}>
-        <View style={updateStyles.wrapper}>
-          <Text style={updateStyles.text}>
+        <View style={wrapper}>
+          <Text style={text}>
             Une nouvelle version de l'application est disponible.
           </Text>
-          <Text style={updateStyles.text}>
-            Cliquer <Text style={updateStyles.bold}>ici</Text> pour la
-            télécharger.
+          <Text style={text}>
+            Cliquer <Text style={bold}>ici</Text> pour la télécharger.
           </Text>
         </View>
-        <TouchableOpacity
-          onPress={closeBanner}
-          style={updateStyles.closeButton}>
+        <TouchableOpacity onPress={closeBanner} style={closeButton}>
           <Icon name="close" size={18} />
         </TouchableOpacity>
       </TouchableOpacity>

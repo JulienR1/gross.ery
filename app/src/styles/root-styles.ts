@@ -26,6 +26,7 @@ export const rootStyles = StyleSheet.create({
     shadowRadius: 10,
     borderRadius: 20,
     marginHorizontal: 0,
+    paddingHorizontal: 40,
   },
   backdrop: {
     position: 'absolute',

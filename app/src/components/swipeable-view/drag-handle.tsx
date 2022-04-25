@@ -4,9 +4,11 @@ import { View } from 'react-native';
 import { dragHandleStyles } from './styles';
 
 export const DragHandle = () => {
+  const { container, handle } = dragHandleStyles;
+
   return (
-    <View style={dragHandleStyles.container}>
-      <View style={dragHandleStyles.handle} />
+    <View style={container}>
+      <View style={handle} />
     </View>
   );
 };

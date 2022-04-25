@@ -7,8 +7,10 @@ import { NavigationModule } from './modules/navigation';
 import { rootStyles } from './styles';
 
 const App = () => {
+  const { body } = rootStyles;
+
   return (
-    <SafeAreaView style={rootStyles.body}>
+    <SafeAreaView style={body}>
       <AuthorizationProvider>
         <ApiProvider>
           <NavigationModule />

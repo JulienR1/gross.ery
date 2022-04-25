@@ -11,9 +11,11 @@ export const VersionWatermark = () => {
     ? `v${getCurrentAppVersion()}`
     : 'DEV';
 
+  const { container, text } = versionStyles;
+
   return (
-    <View style={versionStyles.container}>
-      <Text style={versionStyles.text}>{versionToDisplay}</Text>
+    <View style={container}>
+      <Text style={text}>{versionToDisplay}</Text>
     </View>
   );
 };
