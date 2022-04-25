@@ -15,7 +15,7 @@ export const rootStyles = StyleSheet.create({
     width: '100%',
     height: '100%',
     paddingTop: 50,
-    paddingHorizontal: 40,
+    marginHorizontal: 40,
     backgroundColor: Colors.White,
   },
   secondaryScreen: {
@@ -25,6 +25,7 @@ export const rootStyles = StyleSheet.create({
     shadowColor: Colors.BlackTransparent,
     shadowRadius: 10,
     borderRadius: 20,
+    marginHorizontal: 0,
   },
   backdrop: {
     position: 'absolute',

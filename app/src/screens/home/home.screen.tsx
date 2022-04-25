@@ -2,9 +2,11 @@ import React from 'react';
 import { Text, TouchableOpacity } from 'react-native';
 
 import { useAuthorization } from '~/modules/authorization';
+import { config } from '~/modules/config';
 import { useNavigation } from '~/modules/navigation';
 
-import { Screen } from './screen.enum';
+import { Screen } from '../screen.enum';
+import { Footer } from './components';
 
 export const HomeScreen = () => {
   const { loadScreen } = useNavigation();
@@ -13,9 +15,14 @@ export const HomeScreen = () => {
   return (
     <>
       <Text>HOME</Text>
-      <TouchableOpacity onPress={() => updateAuthorization(false)}>
-        <Text>Un-authorize</Text>
-      </TouchableOpacity>
+
+      {!config.IS_PROD && (
+        <TouchableOpacity onPress={() => updateAuthorization(false)}>
+          <Text>Un-authorize</Text>
+        </TouchableOpacity>
+      )}
+
+      <Footer />
     </>
   );
 };
