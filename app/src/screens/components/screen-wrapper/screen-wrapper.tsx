@@ -1,11 +1,9 @@
-import React, { ReactNode, useEffect, useRef, useState } from 'react';
-import { Animated } from 'react-native';
+import React, { ReactNode, useEffect } from 'react';
 
+import { useSlideAnimations } from '~/animations';
 import { Backdrop, SwipeableView } from '~/components';
 import { useNavigation } from '~/modules/navigation';
 import { rootStyles } from '~/styles';
-
-import { useAnimations } from './animations';
 
 interface IProps {
   secondaryScreen: boolean;
@@ -21,17 +19,12 @@ export const ScreenWrapper = ({
   children,
 }: IProps) => {
   const { closeScreen } = useNavigation();
-  const [slidePercent, setSlidePercent] = useState(0);
-  const slideAnimation = useRef(new Animated.Value(0)).current;
 
-  const { slideIn, slideOut } = useAnimations(slideAnimation, onClosed);
+  const { slidePercent, slideIn, slideOut } = useSlideAnimations(200, onClosed);
 
   useEffect(() => {
-    slideAnimation.addListener(({ value }) => setSlidePercent(value));
     slideIn();
-
-    return () => slideAnimation.removeAllListeners();
-  }, [slideAnimation, slideIn]);
+  }, [slideIn]);
 
   useEffect(() => {
     if (isClosing) {

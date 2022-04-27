@@ -24,7 +24,7 @@ export const useDotAnimation = ({
           }),
         ),
       ]),
-    [duration, idleTime, animationPercent],
+    [duration, offset, idleTime, animationPercent],
   );
 
   useEffect(() => {

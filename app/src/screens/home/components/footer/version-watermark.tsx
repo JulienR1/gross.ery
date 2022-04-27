@@ -2,8 +2,8 @@ import React from 'react';
 import { Text, View } from 'react-native';
 
 import { config } from '~/modules/config';
-import { getCurrentAppVersion } from './service';
 
+import { getCurrentAppVersion } from './service';
 import { versionStyles } from './styles';
 
 export const VersionWatermark = () => {
