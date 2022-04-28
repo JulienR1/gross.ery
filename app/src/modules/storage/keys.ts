@@ -1,3 +1,3 @@
 export enum Keys {
-  Authorized = 'authorized',
+  Authorized = '@invitation_approved',
 }

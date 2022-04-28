@@ -1,4 +1,5 @@
 import React, { ReactNode, useEffect, useState } from 'react';
+import { Loader } from '~/components';
 
 import { getIsAuthorized, setIsAuthorized } from '../storage';
 import { AuthorizationContext } from './authorization-context';
@@ -8,10 +9,11 @@ interface IProps {
 }
 
 export const AuthorizationProvider = ({ children }: IProps) => {
+  const [isLoading, setIsLoading] = useState(true);
   const [isAuthorized, setAuthorized] = useState(false);
 
   useEffect(() => {
-    reflectStoredAuthorization();
+    reflectStoredAuthorization().then(() => setIsLoading(false));
   }, []);
 
   const reflectStoredAuthorization = () =>
@@ -25,7 +27,8 @@ export const AuthorizationProvider = ({ children }: IProps) => {
   return (
     <AuthorizationContext.Provider
       value={{ isAuthorized, updateAuthorization }}>
-      {children}
+      {isLoading && <Loader />}
+      {!isLoading && children}
     </AuthorizationContext.Provider>
   );
 };
