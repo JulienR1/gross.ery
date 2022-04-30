@@ -1,14 +1,13 @@
-import { StyleSheet } from 'react-native';
+import { Dimensions, StyleSheet } from 'react-native';
 
-import { Colors, rootStyles, Rubik } from '~/styles';
+import { Colors, Rubik } from '~/styles';
 
 export const styles = StyleSheet.create({
   footer: {
+    width: Dimensions.get('window').width,
     position: 'absolute',
-    width: '100%',
     bottom: 0,
     zIndex: 1,
-    left: -rootStyles.screen.marginHorizontal,
   },
 });
 
@@ -26,8 +25,8 @@ export const versionStyles = StyleSheet.create({
 
 export const updateStyles = StyleSheet.create({
   container: {
+    width: Dimensions.get('window').width,
     position: 'absolute',
-    width: '100%',
     bottom: 0,
     left: 0,
     zIndex: 10,

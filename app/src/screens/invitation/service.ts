@@ -1,6 +1,7 @@
 import { CodeValidationEntity } from 'shared';
 
 import { ApiFunction } from '~/modules/api/types';
+
 import { InvitationState } from './invitation-state.enum';
 
 export const validateCode = async (api: ApiFunction, code: string) => {

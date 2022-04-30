@@ -29,8 +29,8 @@ export const InvitationScreen = () => {
   const [keyboardHeight, setKeyboardHeight] = useState(0);
   const { slidePercent, slideIn, slideOut } = useSlideAnimations(150);
 
-  useKeyboard(keyboardHeight => {
-    setKeyboardHeight(keyboardHeight);
+  useKeyboard(height => {
+    setKeyboardHeight(height);
     slideIn();
   }, slideOut);
 
@@ -44,7 +44,7 @@ export const InvitationScreen = () => {
       const timeout = setTimeout(resetInput, 4000);
       return () => clearTimeout(timeout);
     }
-  }, [invitationState]);
+  }, [invitationState, resetInput]);
 
   const onCode = useCallback(
     async (code: string) => {
@@ -73,23 +73,27 @@ export const InvitationScreen = () => {
   const imageContainerStyles = { maxWidth: 100 + 100 * (1 - slidePercent) };
 
   return (
-    <View style={container}>
-      <View style={[imageContainer, imageContainerStyles]}>
-        <CwoissantImage style={image} />
+    <>
+      <View style={container}>
+        <View style={[imageContainer, imageContainerStyles]}>
+          <CwoissantImage style={image} />
+        </View>
+
+        <Animated.View style={containerStyles}>
+          <Text style={[title, text]}>Entrer un code d'invitation</Text>
+          <CodeInput
+            onCode={onCode}
+            ref={codeInputRef}
+            characterCount={5}
+            enabled={canProcessState(invitationState)}
+          />
+
+          <Text style={[feedback, text]}>
+            {getFeedbackText(invitationState)}
+          </Text>
+          {invitationState === InvitationState.Validating && <Loader />}
+        </Animated.View>
       </View>
-
-      <Animated.View style={containerStyles}>
-        <Text style={[title, text]}>Entrer un code d'invitation</Text>
-        <CodeInput
-          onCode={onCode}
-          ref={codeInputRef}
-          characterCount={5}
-          enabled={canProcessState(invitationState)}
-        />
-
-        <Text style={[feedback, text]}>{getFeedbackText(invitationState)}</Text>
-        {invitationState === InvitationState.Validating && <Loader />}
-      </Animated.View>
 
       {!config.IS_PROD && (
         <View style={devStyles.container}>
@@ -100,6 +104,6 @@ export const InvitationScreen = () => {
           </TouchableOpacity>
         </View>
       )}
-    </View>
+    </>
   );
 };

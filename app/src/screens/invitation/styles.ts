@@ -1,11 +1,9 @@
-import { Dimensions, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 
-import { Colors, rootStyles, Rubik } from '~/styles';
+import { Colors, Rubik } from '~/styles';
 
 export const styles = StyleSheet.create({
   container: {
-    width:
-      Dimensions.get('window').width - 2 * rootStyles.screen.marginHorizontal,
     height: '100%',
   },
   imageContainer: {
