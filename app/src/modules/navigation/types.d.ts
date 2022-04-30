@@ -1,20 +1,30 @@
 export type ScreenProps = Record<string, unknown>;
 
+export type ScreenFC = FC<ScreenProps>;
+
+export type ScreenState = {
+  isActive: boolean;
+  isClosing: boolean;
+  props?: ScreenProps;
+};
+
 export interface GlobalNavigationPayload extends NavigationPayload {
   dispatch: Dispatch<NavigationAction>;
-  getScreenState: (screen: Screen) => { isActive: boolean; isClosing: boolean };
-  getProps: (screen: Screen) => ScreenProps;
+  getScreen: (screen: Screen) => ScreenState;
 }
 
 export type NavigationPayload = {
-  loadScreen: (screen: Screen, optionalProps?: ScreenProps) => void;
+  loadScreen: <T extends ScreenProps>(
+    screen: Screen,
+    optionalProps?: T,
+  ) => void;
   closeScreen: () => void;
 };
 
 export type NavigationHook = () => NavigationPayload;
 
 export type ActiveScreen = {
-  screen: Screen | undefined;
+  screen: Screen;
   optionalProps?: ScreenProps;
   isClosing?: boolean;
 };

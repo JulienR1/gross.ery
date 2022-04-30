@@ -5,11 +5,11 @@ import { ActiveScreen } from './types';
 export interface INavigationState {
   rootScreen: Screen;
   availableScreens: Screen[];
-  currentScreen: ActiveScreen;
+  activeStack: ActiveScreen[];
 }
 
 export const initialState: INavigationState = {
-  rootScreen: Screen.Home,
+  rootScreen: Screen.Invitation,
   availableScreens: [],
-  currentScreen: { screen: undefined },
+  activeStack: [{ screen: Screen.Invitation }],
 };

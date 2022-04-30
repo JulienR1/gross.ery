@@ -1,6 +1,8 @@
-import React, { ReactNode, useEffect, useReducer } from 'react';
-import { BackHandler } from 'react-native';
+import React, { ReactNode, useReducer } from 'react';
 
+import { Loader } from '~/components';
+
+import { useBackButton } from './hooks';
 import { NavigationContext } from './navigation-context';
 import { navigationReducer } from './navigation-reducer';
 import { getSelectors } from './navigation-selectors';
@@ -11,29 +13,18 @@ interface IProps {
 }
 
 export const NavigationProvider = ({ children }: IProps) => {
-  const [{ currentScreen }, dispatch] = useReducer(navigationReducer, {
-    ...initialState,
-  });
+  const [navigationState, dispatch] = useReducer(
+    navigationReducer,
+    initialState,
+  );
+  const { activeStack, availableScreens } = navigationState;
 
-  const selectors = getSelectors(currentScreen, dispatch);
-  const { closeScreen } = selectors;
-
-  useEffect(() => {
-    const goBack = () => {
-      if (currentScreen.screen) {
-        closeScreen();
-      } else {
-        BackHandler.exitApp();
-      }
-      return true;
-    };
-
-    BackHandler.addEventListener('hardwareBackPress', goBack);
-    return () => BackHandler.removeEventListener('hardwareBackPress', goBack);
-  }, [currentScreen, closeScreen]);
+  const selectors = getSelectors(navigationState, dispatch);
+  useBackButton(activeStack[activeStack.length - 1], selectors.closeScreen);
 
   return (
     <NavigationContext.Provider value={selectors}>
+      {availableScreens.length === 0 && <Loader />}
       {children}
     </NavigationContext.Provider>
   );

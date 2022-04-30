@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useCallback, useContext, useEffect } from 'react';
 
 import { Screen } from '~/screens';
 import { ScreenWrapper } from '~/screens/components';
@@ -10,19 +10,20 @@ import {
   updateRootScreen,
 } from './navigation-action';
 import { NavigationContext } from './navigation-context';
+import { ScreenFC, ScreenProps } from './types';
 
 interface IProps {
   name: Screen;
-  component: React.FC;
+  component: ScreenFC;
   isRoot?: boolean;
 }
 
-export const NavigationScreen = ({
+export const NavigationScreen = <T extends ScreenProps>({
   name,
   component: ScreenComponent,
   isRoot = false,
 }: IProps) => {
-  const { dispatch, getScreenState, getProps } = useContext(NavigationContext);
+  const { dispatch, getScreen } = useContext(NavigationContext);
 
   useEffect(() => {
     dispatch(registerScreen(name));
@@ -35,17 +36,19 @@ export const NavigationScreen = ({
     }
   }, [isRoot, dispatch, name]);
 
-  const onScreenClosed = () => dispatch(completeClose());
+  const onScreenClosed = useCallback(
+    () => dispatch(completeClose()),
+    [dispatch],
+  );
 
-  const screenState = getScreenState(name);
-  const showComponent = isRoot || screenState.isActive;
+  const { isActive, isClosing, props } = getScreen(name);
 
-  return showComponent ? (
+  return isActive ? (
     <ScreenWrapper
+      isClosing={isClosing}
       secondaryScreen={!isRoot}
-      isClosing={screenState.isClosing}
       onClosed={onScreenClosed}>
-      <ScreenComponent {...getProps(name)} />
+      <ScreenComponent<T> {...props} />
     </ScreenWrapper>
   ) : null;
 };

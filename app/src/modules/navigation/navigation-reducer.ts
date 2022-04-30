@@ -36,7 +36,7 @@ function onUpdateRootScreen(
   return {
     ...state,
     rootScreen,
-    currentScreen: { screen: undefined },
+    activeStack: [{ screen: rootScreen }],
   };
 }
 
@@ -82,17 +82,26 @@ function onSelectScreen(
 
   return {
     ...state,
-    currentScreen: { ...state.currentScreen, screen, optionalProps },
+    activeStack: [...state.activeStack, { screen, optionalProps }],
   };
 }
 
 function onBeginClose(state: INavigationState): INavigationState {
+  const newStack = [...state.activeStack];
+  const topScreen = newStack.pop();
+
+  if (!topScreen || newStack.length === 0) {
+    return state;
+  }
+
   return {
     ...state,
-    currentScreen: { ...state.currentScreen, isClosing: true },
+    activeStack: [...newStack, { ...topScreen, isClosing: true }],
   };
 }
 
 function onCompleteClose(state: INavigationState): INavigationState {
-  return { ...state, currentScreen: { screen: undefined } };
+  const newStack = [...state.activeStack];
+  newStack.pop();
+  return { ...state, activeStack: newStack };
 }

@@ -7,21 +7,29 @@ import {
   NavigationAction,
   selectScreen,
 } from './navigation-action';
+import { INavigationState } from './navigation-state';
 import { ActiveScreen, GlobalNavigationPayload, ScreenProps } from './types';
 
 export const getSelectors = (
-  currentScreen: ActiveScreen | undefined,
+  { availableScreens, activeStack }: INavigationState,
   dispatch: Dispatch<NavigationAction>,
 ): GlobalNavigationPayload => {
-  const getScreenState = (screen: Screen) => {
-    const isActive = currentScreen?.screen === screen;
-    return {
-      isActive,
-      isClosing: isActive && (currentScreen?.isClosing ?? false),
-    };
-  };
+  const getScreen = (screen: Screen) => {
+    const isAvailable = availableScreens.includes(screen);
+    const activeScreens = activeStack.reduce(
+      (allScreens, currentScreen) => ({
+        ...allScreens,
+        [currentScreen.screen]: { ...currentScreen },
+      }),
+      {} as { [key in Screen]: ActiveScreen },
+    );
 
-  const getProps = () => currentScreen?.optionalProps ?? {};
+    const isActive = isAvailable && activeScreens[screen] !== undefined;
+    const isClosing = (isActive && activeScreens[screen].isClosing) ?? false;
+    const props = activeScreens[screen]?.optionalProps;
+
+    return { isActive, isClosing, props };
+  };
 
   const closeScreen = () => dispatch(beginClose());
 
@@ -30,8 +38,7 @@ export const getSelectors = (
 
   return {
     dispatch,
-    getScreenState,
-    getProps,
+    getScreen,
     closeScreen,
     loadScreen,
   };
