@@ -1,4 +1,5 @@
 import React, { ReactNode, useEffect, useState } from 'react';
+
 import { Loader } from '~/components';
 
 import { getIsAuthorized, setIsAuthorized } from '../storage';
