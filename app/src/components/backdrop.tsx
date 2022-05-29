@@ -4,13 +4,16 @@ import { Animated, TouchableWithoutFeedback } from 'react-native';
 import { rootStyles } from '~/styles';
 
 interface IProps {
-  opacityFactor: number;
-  onPress: () => void;
+  opacityFactor?: number;
+  onPress?: () => void;
 }
 
 export const Backdrop = ({ opacityFactor, onPress }: IProps) => {
   const { backdrop } = rootStyles;
-  const viewStyles = [backdrop, { opacity: backdrop.opacity * opacityFactor }];
+  const viewStyles = [
+    backdrop,
+    { opacity: backdrop.opacity * (opacityFactor ?? 1) },
+  ];
 
   return (
     <TouchableWithoutFeedback onPress={onPress}>

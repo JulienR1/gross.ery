@@ -5,11 +5,11 @@ import { ScreenButton } from '~/components';
 import { useAuthorization } from '~/modules/authorization';
 import { config } from '~/modules/config';
 import { useNavigation } from '~/modules/navigation';
+import { rootStyles } from '~/styles';
 import { devStyles } from '~/styles/dev-styles';
 
 import { Screen } from '../screen.enum';
 import { Footer, ListShowcase } from './components';
-import { styles } from './styles';
 
 export const HomeScreen = () => {
   const { loadScreen } = useNavigation();
@@ -20,7 +20,7 @@ export const HomeScreen = () => {
     [loadScreen],
   );
 
-  const { title } = styles;
+  const { title } = rootStyles;
   return (
     <>
       <Text style={title}>Mes listes</Text>

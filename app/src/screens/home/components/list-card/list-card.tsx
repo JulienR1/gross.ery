@@ -6,7 +6,7 @@ import { ILocalList } from '~/modules/storage/types';
 import { Screen } from '~/screens';
 import { ListScreenProps } from '~/screens/list.screen';
 
-import { useFormattedDate } from './hook';
+import { useFormattedDate } from './hooks';
 import { styles } from './styles';
 
 interface IProps {
