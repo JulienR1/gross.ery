@@ -1,11 +1,11 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import { BarCodeReadEvent, RNCamera } from 'react-native-camera';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-import { Backdrop } from '~/components';
+import { Backdrop, Loader } from '~/components';
 import { useIsMounted } from '~/hooks';
 import { config } from '~/modules/config';
 import { Colors } from '~/styles';
@@ -21,6 +21,7 @@ interface IProps {
 
 export const QrCamera = ({ onData, onClose }: IProps) => {
   const isMounted = useIsMounted();
+  const [cameraReady, setCameraReady] = useState(false);
   const [cameraPermission, setCameraPermission] = useState(
     PermissionStatus.Loading,
   );
@@ -59,29 +60,35 @@ export const QrCamera = ({ onData, onClose }: IProps) => {
     noCameraText,
     closeIcon,
     scanner,
+    disabledScanner,
     scanIconContainer,
   } = styles;
   return (
     <View style={fullscreenWrapper}>
       <Backdrop opacityFactor={2.5} onPress={closeWhenNoCamera} />
 
-      {cameraPermission === PermissionStatus.Granted ? (
-        <>
-          <RNCamera
-            onBarCodeRead={onCodeRead}
-            style={scanner}
-            captureAudio={false}
-          />
-
-          <View style={scanIconContainer}>
-            <Ionicon name="scan-outline" size={250} color={Colors.White} />
-          </View>
-        </>
-      ) : (
+      {cameraPermission === PermissionStatus.Denied ? (
         <View style={noCameraContainer} pointerEvents={'none'}>
           <FeatherIcon size={50} color={Colors.White} name="camera-off" />
           <Text style={noCameraText}>Impossible d'accéder à la caméra</Text>
         </View>
+      ) : (
+        <>
+          <RNCamera
+            onCameraReady={() => setCameraReady(true)}
+            onBarCodeRead={onCodeRead}
+            captureAudio={false}
+            style={[scanner, !cameraReady && disabledScanner]}
+          />
+
+          {cameraReady ? (
+            <View style={scanIconContainer}>
+              <Ionicon name="scan-outline" size={250} color={Colors.White} />
+            </View>
+          ) : (
+            <Loader color={Colors.White} />
+          )}
+        </>
       )}
 
       <TouchableOpacity style={closeIcon} onPress={onClose}>

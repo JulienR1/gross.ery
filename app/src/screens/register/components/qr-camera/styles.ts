@@ -32,6 +32,10 @@ export const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
   },
+  disabledScanner: {
+    opacity: 0,
+    position: 'absolute',
+  },
   scanIconContainer: {
     position: 'absolute',
     justifyContent: 'center',

@@ -8,9 +8,10 @@ interface IProps {
   dotCount: number;
   dotSize: number;
   growFactor: number;
+  color?: string;
 }
 
-export const Loader = ({ dotCount, dotSize, growFactor }: IProps) => {
+export const Loader = ({ dotCount, dotSize, growFactor, color }: IProps) => {
   const dotAnimationTime = 800;
   const idleTime = dotAnimationTime / (dotCount - 1);
 
@@ -27,6 +28,7 @@ export const Loader = ({ dotCount, dotSize, growFactor }: IProps) => {
             offset: index * idleTime,
             duration: dotAnimationTime,
           }}
+          color={color}
         />
       ))}
     </View>
