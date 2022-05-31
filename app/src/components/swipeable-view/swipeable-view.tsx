@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { Animated, LayoutChangeEvent, ViewProps } from 'react-native';
 
 import { DragHandle } from './drag-handle';
@@ -56,12 +62,8 @@ export const SwipeableView = ({
     return () => pan.removeAllListeners();
   }, [pan, swipeable, viewHeight, onSwipeUpdate]);
 
-  return (
-    <Animated.View
-      {...viewProps}
-      {...(swipeable && !isAnimating && panResponder.panHandlers)}
-      onLayout={onViewInit}>
-      {swipeable && <DragHandle />}
+  const swipeableProvider = useMemo(
+    () => (
       <SwipeableContext.Provider
         value={{
           enableSwipe: () => setDisabled(false),
@@ -69,6 +71,17 @@ export const SwipeableView = ({
         }}>
         {children}
       </SwipeableContext.Provider>
+    ),
+    [children],
+  );
+
+  return (
+    <Animated.View
+      {...viewProps}
+      {...(swipeable && !isAnimating && panResponder.panHandlers)}
+      onLayout={onViewInit}>
+      {swipeable && <DragHandle />}
+      {swipeableProvider}
     </Animated.View>
   );
 };
