@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Animated, LayoutChangeEvent, ViewProps } from 'react-native';
 
 import { DragHandle } from './drag-handle';
+import { SwipeableContext } from './swipeable-context';
 import { getSwipeablePanResponder } from './swipeable-pan-responder';
 import { PanAnimatedValueXY } from './types';
 
@@ -21,6 +22,7 @@ export const SwipeableView = ({
   ...viewProps
 }: IProps) => {
   const [viewHeight, setViewHeight] = useState(0);
+  const [disabled, setDisabled] = useState(false);
 
   const pan = useRef(new Animated.ValueXY())
     .current as any as PanAnimatedValueXY;
@@ -33,6 +35,10 @@ export const SwipeableView = ({
 
   const onSwipeUpdate = useCallback(
     ({ y }: { y: number }) => {
+      if (disabled) {
+        return;
+      }
+
       const dragPercent = y / viewHeight;
       const clampedDragPercent = Math.min(1, Math.max(0, dragPercent));
 
@@ -40,7 +46,7 @@ export const SwipeableView = ({
         onDragComplete();
       }
     },
-    [minSwipePercent, viewHeight, onDragComplete],
+    [minSwipePercent, viewHeight, disabled, onDragComplete],
   );
 
   useEffect(() => {
@@ -56,7 +62,13 @@ export const SwipeableView = ({
       {...(swipeable && !isAnimating && panResponder.panHandlers)}
       onLayout={onViewInit}>
       {swipeable && <DragHandle />}
-      {children}
+      <SwipeableContext.Provider
+        value={{
+          enableSwipe: () => setDisabled(false),
+          disableSwipe: () => setDisabled(true),
+        }}>
+        {children}
+      </SwipeableContext.Provider>
     </Animated.View>
   );
 };
