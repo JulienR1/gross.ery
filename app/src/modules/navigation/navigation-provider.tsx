@@ -20,7 +20,7 @@ export const NavigationProvider = ({ children }: IProps) => {
   const { activeStack, availableScreens } = navigationState;
 
   const selectors = getSelectors(navigationState, dispatch);
-  useBackButton(activeStack[activeStack.length - 1], selectors.closeScreen);
+  useBackButton(activeStack.length > 1, selectors.closeScreen);
 
   return (
     <NavigationContext.Provider value={selectors}>

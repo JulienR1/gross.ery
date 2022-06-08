@@ -1,20 +1,15 @@
 import { useCallback, useEffect } from 'react';
 import { BackHandler } from 'react-native';
 
-import { ActiveScreen } from '../types';
-
-export const useBackButton = (
-  { screen }: ActiveScreen,
-  closeScreen: () => void,
-) => {
+export const useBackButton = (canGoBack: boolean, onBack: () => void) => {
   const goBack = useCallback(() => {
-    if (screen) {
-      closeScreen();
+    if (canGoBack) {
+      onBack();
     } else {
       BackHandler.exitApp();
     }
     return true;
-  }, [screen, closeScreen]);
+  }, [canGoBack, onBack]);
 
   useEffect(() => {
     BackHandler.addEventListener('hardwareBackPress', goBack);
