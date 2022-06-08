@@ -3,6 +3,7 @@ import { LogBox, SafeAreaView } from 'react-native';
 
 import { ApiProvider } from './modules/api';
 import { AuthorizationProvider } from './modules/authorization';
+import { ModalProvider } from './modules/modal';
 import { NavigationModule } from './modules/navigation';
 import { rootStyles } from './styles';
 
@@ -16,11 +17,13 @@ const App = () => {
 
   return (
     <SafeAreaView style={body}>
-      <AuthorizationProvider>
-        <ApiProvider>
-          <NavigationModule />
-        </ApiProvider>
-      </AuthorizationProvider>
+      <ModalProvider>
+        <AuthorizationProvider>
+          <ApiProvider>
+            <NavigationModule />
+          </ApiProvider>
+        </AuthorizationProvider>
+      </ModalProvider>
     </SafeAreaView>
   );
 };
