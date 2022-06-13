@@ -4,7 +4,8 @@ import { ModalInstance } from './types';
 
 export enum ModalType {
   PUSH = 'PUSH',
-  POP = 'POP',
+  BEGIN_POP = 'BEGIN_POP',
+  COMPLETE_POP = 'COMPLETE_POP',
 }
 
 export interface ModalPushAction<T>
@@ -13,8 +14,14 @@ export interface ModalPushAction<T>
   payload: ModalInstance<T>;
 }
 
-export interface ModalPopAction extends Action<ModalType.POP, undefined> {
-  type: ModalType.POP;
+export interface ModalBeginPopAction
+  extends Action<ModalType.BEGIN_POP, undefined> {
+  type: ModalType.BEGIN_POP;
+}
+
+export interface ModalCompletePopAction
+  extends Action<ModalType.COMPLETE_POP, undefined> {
+  type: ModalType.COMPLETE_POP;
 }
 
 export function pushModal<T>(
@@ -23,8 +30,15 @@ export function pushModal<T>(
   return { type: ModalType.PUSH, payload: modalRequest };
 }
 
-export function popModal(): ModalPopAction {
-  return { type: ModalType.POP, payload: undefined };
+export function beginPopModal(): ModalBeginPopAction {
+  return { type: ModalType.BEGIN_POP, payload: undefined };
 }
 
-export type ModalAction<T> = ModalPushAction<T> | ModalPopAction;
+export function completePopModal(): ModalCompletePopAction {
+  return { type: ModalType.COMPLETE_POP, payload: undefined };
+}
+
+export type ModalAction<T> =
+  | ModalPushAction<T>
+  | ModalBeginPopAction
+  | ModalCompletePopAction;

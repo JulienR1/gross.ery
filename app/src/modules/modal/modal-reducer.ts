@@ -9,8 +9,10 @@ export function modalReducer<T>(
   switch (action.type) {
     case ModalType.PUSH:
       return onPush(state, action.payload);
-    case ModalType.POP:
-      return onPop(state);
+    case ModalType.BEGIN_POP:
+      return onBeginPop(state);
+    case ModalType.COMPLETE_POP:
+      return onCompletePop(state);
     default:
       return state;
   }
@@ -21,11 +23,22 @@ function onPush<T>(
   instance: ModalInstance<T>,
 ): IModalState {
   const newStack = [...state.modalStack];
-  newStack.push(instance);
+  newStack.push({ ...instance, isClosing: false });
   return { ...state, modalStack: newStack };
 }
 
-function onPop(state: IModalState): IModalState {
+function onBeginPop(state: IModalState): IModalState {
+  const newStack = [...state.modalStack];
+  const topModal = newStack.pop();
+  if (!topModal) {
+    return state;
+  }
+
+  newStack.push({ ...topModal, isClosing: true });
+  return { ...state, modalStack: newStack };
+}
+
+function onCompletePop(state: IModalState): IModalState {
   const newStack = [...state.modalStack];
   newStack.pop();
   return { ...state, modalStack: newStack };

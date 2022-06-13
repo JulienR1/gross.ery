@@ -1,7 +1,7 @@
 import React, { ReactNode, useReducer } from 'react';
 import { View } from 'react-native';
 
-import { popModal, pushModal } from './modal-action';
+import { beginPopModal, completePopModal, pushModal } from './modal-action';
 import { ModalContext } from './modal-context';
 import { modalReducer } from './modal-reducer';
 import { initialState } from './modal-state';
@@ -19,10 +19,13 @@ export const ModalProvider = ({ children }: IProps) => {
   const openModal = <T, P>(modalRequest: ModalRequest<T, P>) => {
     return new Promise<ModalResponse<T>>(resolve => {
       const onClose = (response: ModalResponse<T>) => {
-        dispatch(popModal());
+        dispatch(beginPopModal());
         resolve(response);
       };
-      dispatch(pushModal({ ...modalRequest, onClose }));
+
+      const completePop = () => dispatch(completePopModal());
+
+      dispatch(pushModal({ ...modalRequest, onClose, completePop }));
     });
   };
 
@@ -32,7 +35,11 @@ export const ModalProvider = ({ children }: IProps) => {
       {children}
       <View style={modalContainer}>
         {modalStack.map((modal, index) => (
-          <ModalWrapper key={index} {...modal} onClose={modal.onClose} />
+          <ModalWrapper
+            key={index}
+            {...modal}
+            onClose={modal.isClosing ? undefined : modal.onClose}
+          />
         ))}
       </View>
     </ModalContext.Provider>
