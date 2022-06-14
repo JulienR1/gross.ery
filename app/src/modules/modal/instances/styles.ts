@@ -10,14 +10,6 @@ export const styles = StyleSheet.create({
     borderRadius: 4,
     overflow: 'hidden',
   },
-  section: {
-    paddingVertical: '10%',
-    paddingHorizontal: '8%',
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    backgroundColor: Colors.LightGrey,
-  },
   titleText: {
     fontSize: 20,
     textAlign: 'center',
@@ -29,18 +21,6 @@ export const styles = StyleSheet.create({
     fontFamily: Rubik.Regular,
     color: Colors.BlackTransparent,
     textAlign: 'center',
-  },
-  button: {
-    flex: 1,
-    paddingVertical: 10,
-    borderRadius: 4,
-    marginHorizontal: '4%',
-    backgroundColor: Colors.Main,
-    maxHeight: 36,
-    overflow: 'hidden',
-  },
-  buttonRed: {
-    backgroundColor: Colors.Red,
   },
   textWithIconContainer: {
     display: 'flex',
