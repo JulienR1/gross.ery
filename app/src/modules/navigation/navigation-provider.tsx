@@ -17,9 +17,7 @@ export const NavigationProvider = ({ children }: IProps) => {
     navigationReducer,
     initialState,
   );
-  const { activeStack, availableScreens, ...rest } = navigationState;
-
-  console.log({ activeStack, availableScreens, ...rest });
+  const { activeStack, availableScreens } = navigationState;
 
   const selectors = getSelectors(navigationState, dispatch);
   useBackButton(activeStack.length > 1, selectors.closeScreen);

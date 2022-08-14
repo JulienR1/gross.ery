@@ -30,4 +30,9 @@ export const styles = StyleSheet.create({
   loaderContainer: {
     flex: 1,
   },
+  checkmark: {
+    height: '90%',
+    justifyContent: 'center',
+    alignSelf: 'center',
+  },
 });

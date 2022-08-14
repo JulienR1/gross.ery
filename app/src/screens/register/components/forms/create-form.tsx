@@ -1,3 +1,4 @@
+import LottieView from 'lottie-react-native';
 import React, { memo, useCallback, useMemo, useRef, useState } from 'react';
 import { Text, TextInput, View } from 'react-native';
 
@@ -13,8 +14,16 @@ import { FormWrapperRef } from '../form-wrapper/types';
 import { createList } from './service';
 import { styles } from './styles';
 
+const checkmarkAnimation = require('../../../../assets/checkmark.json');
+
 interface IProps {
   onClose: () => void;
+}
+
+enum FormState {
+  Editing,
+  Loading,
+  Success,
 }
 
 export const CreateForm = memo(({ onClose }: IProps) => {
@@ -24,21 +33,24 @@ export const CreateForm = memo(({ onClose }: IProps) => {
   const formRef = useRef<FormWrapperRef>(null);
 
   const [title, setTitle] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [formState, setFormState] = useState(FormState.Editing);
 
   const canSubmit = useMemo(
-    () => !isLoading && title.trim().length > 0,
-    [title, isLoading],
+    () => formState === FormState.Editing && title.trim().length > 0,
+    [title, formState],
   );
 
   const submit = useCallback(async () => {
     if (apiInfo.connected) {
-      setIsLoading(true);
+      setFormState(FormState.Loading);
       const id = await createList(apiInfo.api, title);
       if (isMounted() && id) {
-        // TODO: add delay before closing the screen to understand what happened
-        // TODO: add checkmark animation
-        replaceScreen<ListScreenProps>(Screen.List, { listId: id });
+        setFormState(FormState.Success);
+        setTimeout(() => {
+          if (isMounted()) {
+            replaceScreen<ListScreenProps>(Screen.List, { listId: id });
+          }
+        }, 750);
       }
     } else {
       // TOOD: NO internet connection notification?
@@ -51,8 +63,9 @@ export const CreateForm = memo(({ onClose }: IProps) => {
     inputField,
     disabled,
     loaderContainer,
+    checkmark,
   } = styles;
-  const inputStyles = [inputField, isLoading && disabled];
+  const inputStyles = [inputField, formState !== FormState.Editing && disabled];
 
   return (
     <FormWrapper
@@ -65,11 +78,21 @@ export const CreateForm = memo(({ onClose }: IProps) => {
         <Text style={titleStyles}>Nom de la liste</Text>
         <TextInput
           style={inputStyles}
-          editable={!isLoading}
+          editable={formState === FormState.Editing}
           onChangeText={setTitle}
           onSubmitEditing={() => formRef.current?.submit()}
         />
-        <View style={loaderContainer}>{isLoading && <Loader />}</View>
+        <View style={loaderContainer}>
+          {formState === FormState.Loading && <Loader />}
+          {formState === FormState.Success && (
+            <LottieView
+              autoPlay
+              loop={false}
+              style={checkmark}
+              source={checkmarkAnimation}
+            />
+          )}
+        </View>
       </View>
     </FormWrapper>
   );
