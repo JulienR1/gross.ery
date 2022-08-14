@@ -1,5 +1,6 @@
 import React from 'react';
 import { Animated } from 'react-native';
+
 import { Colors } from '~/styles';
 
 import { useDotAnimation } from './animations';

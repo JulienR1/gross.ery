@@ -1,11 +1,13 @@
 import React, { memo, useCallback } from 'react';
 import { Text, View } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+
+import { Colors } from '~/styles';
+
+import { ModalForm } from '../components';
+import { styles as modalStyles } from '../styles';
 import { ModalProps } from '../types';
 import { styles } from './styles';
-import { styles as modalStyles } from '../styles';
-import { ModalForm } from '../components';
-import { Colors } from '~/styles';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export const CancelEditModal = memo(({ onClose }: ModalProps<void>) => {
   const {
@@ -36,7 +38,7 @@ export const CancelEditModal = memo(({ onClose }: ModalProps<void>) => {
       <View style={section}>
         <Text style={titleText}>Confirmer l'opération</Text>
         <Text style={messageText}>
-          Voulez-vous vraiment continuer? Les valeurs saisies seront perdues.
+          Voulez-vous vraiment quitter? Les valeurs saisies seront perdues.
         </Text>
       </View>
 

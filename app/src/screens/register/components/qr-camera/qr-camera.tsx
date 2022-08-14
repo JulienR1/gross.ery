@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import { BarCodeReadEvent, RNCamera } from 'react-native-camera';
 import FeatherIcon from 'react-native-vector-icons/Feather';

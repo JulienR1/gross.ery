@@ -3,6 +3,7 @@ import { Animated, Keyboard, Text, TouchableOpacity, View } from 'react-native';
 
 import { useSlideAnimations } from '~/animations';
 import { Loader } from '~/components';
+import { useKeyboard } from '~/hooks';
 import { useApi } from '~/modules/api';
 import { useAuthorization } from '~/modules/authorization';
 import { config } from '~/modules/config';
@@ -10,7 +11,6 @@ import { devStyles } from '~/styles/dev-styles';
 
 import { CodeInput, CwoissantImage } from './components';
 import { CodeInputRef } from './components/code-input/types';
-import { useKeyboard } from './hooks';
 import { InvitationState } from './invitation-state.enum';
 import {
   canProcessState,
