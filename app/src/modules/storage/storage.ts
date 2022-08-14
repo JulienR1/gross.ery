@@ -1,7 +1,20 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { Keys } from './keys';
-import { ILocalList } from './types';
+import { ILocalList, Subscriber } from './types';
+
+const subscribers: Subscriber[] = [];
+
+const notifySubscribers = async (lists: ILocalList[]) => {
+  subscribers.forEach(callback => callback(lists));
+};
+
+export const subscribe = (callback: Subscriber) => {
+  subscribers.push(callback);
+  return () => {
+    subscribers.filter(currentCallback => currentCallback !== callback);
+  };
+};
 
 export const getIsAuthorized = async (): Promise<boolean> => {
   const authorizedStr = await AsyncStorage.getItem(Keys.Authorized);
@@ -13,5 +26,19 @@ export const setIsAuthorized = async (isAuthorized = true): Promise<void> => {
 };
 
 export const getStoredLists = async (): Promise<ILocalList[]> => {
-  return [];
+  const storedListsStr = await AsyncStorage.getItem(Keys.Lists);
+  const storedLists: ILocalList[] = JSON.parse(storedListsStr ?? '[]');
+  return storedLists.map(list => ({
+    ...list,
+    lastUpdate: new Date(list.lastUpdate),
+  }));
+};
+
+export const addStoredList = async (id: string, name: string) => {
+  const newList: ILocalList = { id, name, items: [], lastUpdate: new Date() };
+
+  const previousLists = await getStoredLists();
+  const updatedLists = [...previousLists, newList];
+  await AsyncStorage.setItem(Keys.Lists, JSON.stringify(updatedLists));
+  await notifySubscribers(updatedLists);
 };

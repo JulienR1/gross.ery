@@ -1,6 +1,7 @@
-import { StyleSheet } from 'react-native';
+import { Dimensions, StyleSheet } from 'react-native';
 
 import { Colors } from './colors';
+import { Rubik } from './fonts';
 
 export const rootStyles = StyleSheet.create({
   body: {
@@ -24,9 +25,11 @@ export const rootStyles = StyleSheet.create({
     elevation: 12,
     shadowColor: Colors.BlackTransparent,
     shadowRadius: 10,
-    borderRadius: 20,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
     marginHorizontal: 0,
     paddingHorizontal: 40,
+    height: Dimensions.get('window').height - 85,
   },
   backdrop: {
     position: 'absolute',
@@ -34,7 +37,13 @@ export const rootStyles = StyleSheet.create({
     left: 0,
     width: '100%',
     height: '100%',
-    opacity: 0.15,
+    opacity: 0.25,
     backgroundColor: Colors.Black,
+  },
+  title: {
+    fontSize: 28,
+    fontFamily: Rubik.SemiBold,
+    color: Colors.Black,
+    paddingRight: 4,
   },
 });
