@@ -24,6 +24,8 @@ export function navigationReducer(
       return onBeginClose(state);
     case NavigationType.COMPLETE_CLOSE:
       return onCompleteClose(state);
+    case NavigationType.REPLACE:
+      return onReplaceScreen(state, action.payload);
     default:
       return state;
   }
@@ -78,6 +80,7 @@ function onSelectScreen(
     console.warn(
       `Could not load '${screen}'. Has it been added in the list of possible screen?`,
     );
+    return state;
   }
 
   return {
@@ -103,5 +106,22 @@ function onBeginClose(state: INavigationState): INavigationState {
 function onCompleteClose(state: INavigationState): INavigationState {
   const newStack = [...state.activeStack];
   newStack.pop();
-  return { ...state, activeStack: newStack };
+
+  const newState: INavigationState = {
+    ...state,
+    activeStack: newStack,
+    pendingScreen: undefined,
+  };
+
+  return state.pendingScreen
+    ? onSelectScreen(newState, state.pendingScreen)
+    : newState;
+}
+
+function onReplaceScreen(
+  state: INavigationState,
+  { screen, optionalProps }: NavigationSelectPayload,
+): INavigationState {
+  const closingState = onBeginClose(state);
+  return { ...closingState, pendingScreen: { screen, optionalProps } };
 }

@@ -8,6 +8,7 @@ export enum NavigationType {
   SELECT = '[NAVIGATION] SELECT',
   BEGIN_CLOSE = '[NAVIGATION] BEGIN CLOSE',
   COMPLETE_CLOSE = '[NAVIGATION] COMPLETE CLOSE',
+  REPLACE = '[NAVIGATION] REPLACE SCREEN',
 }
 
 export type NavigationSelectPayload = {
@@ -49,6 +50,12 @@ export interface NavigationCompleteCloseAction
   type: NavigationType.COMPLETE_CLOSE;
 }
 
+export interface NavigationReplaceAction
+  extends Action<NavigationType.REPLACE, NavigationSelectPayload> {
+  type: NavigationType.REPLACE;
+  payload: NavigationSelectPayload;
+}
+
 export function updateRootScreen(screen: Screen): NavigationUpdateRootScreen {
   return { type: NavigationType.UPDATE_ROOT, payload: screen };
 }
@@ -76,10 +83,18 @@ export function completeClose(): NavigationCompleteCloseAction {
   return { type: NavigationType.COMPLETE_CLOSE, payload: undefined };
 }
 
+export function replace(
+  screen: Screen,
+  optionalProps?: Record<string, unknown>,
+): NavigationReplaceAction {
+  return { type: NavigationType.REPLACE, payload: { screen, optionalProps } };
+}
+
 export type NavigationAction =
   | NavigationUpdateRootScreen
   | NavigationRegisterAction
   | NavigationUnregisterAction
   | NavigationSelectAction
   | NavigationBeginCloseAction
-  | NavigationCompleteCloseAction;
+  | NavigationCompleteCloseAction
+  | NavigationReplaceAction;

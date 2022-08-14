@@ -5,6 +5,7 @@ import { Screen } from '~/screens';
 import {
   beginClose,
   NavigationAction,
+  replace,
   selectScreen,
 } from './navigation-action';
 import { INavigationState } from './navigation-state';
@@ -36,10 +37,14 @@ export const getSelectors = (
   const loadScreen = (screen: Screen, optionalProps?: ScreenProps) =>
     dispatch(selectScreen(screen, optionalProps));
 
+  const replaceScreen = (screen: Screen, optionalProps?: ScreenProps) =>
+    dispatch(replace(screen, optionalProps));
+
   return {
     dispatch,
     getScreen,
     closeScreen,
     loadScreen,
+    replaceScreen,
   };
 };

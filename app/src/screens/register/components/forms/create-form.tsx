@@ -10,6 +10,7 @@ import { Screen } from '~/screens/screen.enum';
 
 import { FormWrapper } from '../form-wrapper';
 import { FormWrapperRef } from '../form-wrapper/types';
+import { createList } from './service';
 import { styles } from './styles';
 
 interface IProps {
@@ -18,7 +19,7 @@ interface IProps {
 
 export const CreateForm = memo(({ onClose }: IProps) => {
   const apiInfo = useApi();
-  const { loadScreen, closeScreen } = useNavigation();
+  const { replaceScreen } = useNavigation();
   const isMounted = useIsMounted();
   const formRef = useRef<FormWrapperRef>(null);
 
@@ -33,17 +34,16 @@ export const CreateForm = memo(({ onClose }: IProps) => {
   const submit = useCallback(async () => {
     if (apiInfo.connected) {
       setIsLoading(true);
-      // const id = await createList(apiInfo.api, title);
-      const id = '62f92ee0dc32dccdba97d13c';
+      const id = await createList(apiInfo.api, title);
       if (isMounted() && id) {
-        console.log(id);
-        // closeScreen();
-        loadScreen<ListScreenProps>(Screen.List, { listId: id });
+        // TODO: add delay before closing the screen to understand what happened
+        // TODO: add checkmark animation
+        replaceScreen<ListScreenProps>(Screen.List, { listId: id });
       }
     } else {
       // TOOD: NO internet connection notification?
     }
-  }, [apiInfo, title, isMounted]);
+  }, [apiInfo, title, isMounted, replaceScreen]);
 
   const {
     container,

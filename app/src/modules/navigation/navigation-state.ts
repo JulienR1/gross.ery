@@ -6,6 +6,7 @@ export interface INavigationState {
   rootScreen: Screen;
   availableScreens: Screen[];
   activeStack: ActiveScreen[];
+  pendingScreen?: ActiveScreen;
 }
 
 export const initialState: INavigationState = {

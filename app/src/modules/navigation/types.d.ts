@@ -1,3 +1,5 @@
+import { Screen } from '~/screens';
+
 export type ScreenProps = Record<string, unknown>;
 
 export type ScreenFC = FC<ScreenProps>;
@@ -15,6 +17,10 @@ export interface GlobalNavigationPayload extends NavigationPayload {
 
 export type NavigationPayload = {
   loadScreen: <T extends ScreenProps>(
+    screen: Screen,
+    optionalProps?: T,
+  ) => void;
+  replaceScreen: <T extends ScreenProps>(
     screen: Screen,
     optionalProps?: T,
   ) => void;

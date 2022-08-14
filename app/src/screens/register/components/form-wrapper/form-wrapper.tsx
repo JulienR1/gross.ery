@@ -62,14 +62,17 @@ const FormWrapperComponent = <T extends Record<string, unknown>>(
     buttonDisabled,
   } = styles;
 
-  const onFormLayout = useCallback((event: LayoutChangeEvent) => {
-    const formHeight = event.nativeEvent.layout.height;
-    const reductionHeight =
-      buttonContainer.bottom +
-      buttonLabel.lineHeight +
-      (button.paddingVertical + button.borderRadius) * 2;
-    setContainerViewHeight(formHeight - reductionHeight);
-  }, []);
+  const onFormLayout = useCallback(
+    (event: LayoutChangeEvent) => {
+      const formHeight = event.nativeEvent.layout.height;
+      const reductionHeight =
+        buttonContainer.bottom +
+        buttonLabel.lineHeight +
+        (button.paddingVertical + button.borderRadius) * 2;
+      setContainerViewHeight(formHeight - reductionHeight);
+    },
+    [buttonContainer, buttonLabel, button],
+  );
 
   const childrenContainerStyles = { height: containerViewHeight };
 
