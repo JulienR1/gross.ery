@@ -16,7 +16,7 @@ import { styles } from './styles';
 
 interface IProps {
   onData: (data: string) => void;
-  onClose: () => void;
+  onClose: (forceClose: boolean) => void;
 }
 
 export const QrCamera = ({ onData, onClose }: IProps) => {
@@ -33,7 +33,7 @@ export const QrCamera = ({ onData, onClose }: IProps) => {
         if (lowerData.startsWith(config.QR_PREFIX)) {
           const foundData = lowerData.replace(config.QR_PREFIX, '').trim();
           onData(foundData);
-          onClose();
+          onClose(false);
         }
       }
     },
@@ -42,7 +42,7 @@ export const QrCamera = ({ onData, onClose }: IProps) => {
 
   const closeWhenNoCamera = useCallback(() => {
     if (cameraPermission !== PermissionStatus.Granted) {
-      onClose();
+      onClose(true);
     }
   }, [cameraPermission, onClose]);
 
@@ -91,7 +91,7 @@ export const QrCamera = ({ onData, onClose }: IProps) => {
         </>
       )}
 
-      <TouchableOpacity style={closeIcon} onPress={onClose}>
+      <TouchableOpacity style={closeIcon} onPress={() => onClose(true)}>
         <Icon name="close" size={35} color={Colors.White} />
       </TouchableOpacity>
     </View>

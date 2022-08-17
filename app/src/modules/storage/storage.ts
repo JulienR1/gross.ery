@@ -42,3 +42,20 @@ export const addStoredList = async (id: string, name: string) => {
   await AsyncStorage.setItem(Keys.Lists, JSON.stringify(updatedLists));
   await notifySubscribers(updatedLists);
 };
+
+export const removeStoredListFromId = async (listId: string) => {
+  await removedStoredListsFromIds([listId]);
+};
+
+export const removedStoredListsFromIds = async (listIds: string[]) => {
+  const lists = await getStoredLists();
+  const updatedLists = lists.filter(list => !listIds.includes(list.id));
+  await AsyncStorage.setItem(Keys.Lists, JSON.stringify(updatedLists));
+  await notifySubscribers(updatedLists);
+};
+
+export const removeAllStoredLists = async () => {
+  const lists = await getStoredLists();
+  const listIds = lists.map(list => list.id);
+  await removedStoredListsFromIds(listIds);
+};

@@ -32,7 +32,7 @@ const FormWrapperComponent = <T extends Record<string, unknown>>(
 ) => {
   const { openModal } = useModal();
   const isDirty = useIsDirty(formValue);
-  const [containerViewHeight, setContainerViewHeight] = useState(0);
+  const [containerViewHeight, setContainerViewHeight] = useState(200);
 
   useImperativeHandle(ref, () => ({
     submit: () => canSubmit && submit.onPress(),

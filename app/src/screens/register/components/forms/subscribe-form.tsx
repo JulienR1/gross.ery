@@ -9,24 +9,26 @@ interface IProps {
 
 export const SubscribeForm = ({ onClose }: IProps) => {
   const [readQr, setReadQr] = useState(true);
-  const [qrData, setQrData] = useState('');
 
-  const onQrClose = useCallback(() => {
-    setReadQr(false);
-    if (!qrData) {
-      onClose();
-    }
-  }, [qrData, onClose]);
+  const onQrClose = useCallback(
+    (forceClose: boolean) => {
+      setReadQr(false);
+      if (!forceClose) {
+        onClose();
+      }
+    },
+    [onClose],
+  );
 
-  useEffect(() => {
+  const onQrData = (qrData: string) => {
     console.log('Processing qr data...', qrData);
-  }, [qrData]);
+  };
 
   return (
     <>
       <FormWrapper
         canSubmit={false}
-        isDirty={false}
+        formValue={{}}
         submit={{
           onPress: () => {
             console.log('submit');
@@ -41,9 +43,7 @@ export const SubscribeForm = ({ onClose }: IProps) => {
         }}>
         {/* <FormItem></FormItem> */}
       </FormWrapper>
-      {readQr && (
-        <QrCamera onData={data => setQrData(data)} onClose={onQrClose} />
-      )}
+      {readQr && <QrCamera onData={onQrData} onClose={onQrClose} />}
     </>
   );
 };
