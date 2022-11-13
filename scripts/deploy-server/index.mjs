@@ -38,7 +38,7 @@ const main = async () => {
   await updatePackageLock();
 
   await setupGit();
-  await pushToHeroku();
+  await pushToRemote();
 };
 
 const backupDatabase = async () => {
@@ -145,11 +145,15 @@ const setupGit = async () => {
   });
 };
 
-const pushToHeroku = async () => {
-  await executeCommand({
-    title: "Pushing to heroku",
-    command: `git push ${process.env.HEROKU_URL} --force`,
+const pushToRemote = async () => {
+  await executeManyCommands({
+    title: "Pushing to release branch",
+    commands: [
+      `git remote add origin ${process.env.RELEASE_GIT_URL}`,
+      "git push -u origin master:releases --force",
+    ],
     showLogs: true,
+    chainCommands: true,
     dir: buildDirPath,
   });
 };
